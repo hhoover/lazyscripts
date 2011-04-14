@@ -14,11 +14,6 @@
 * Farid Saad
 
 <h3>How to use:</h3>
-
-	git clone https://hhoover@github.com/hhoover/lazyscripts. /root/.lazyscripts/tools
-	cd /root/.lazyscripts/tools
-	source ls-init.sh && lslogin
-
-<p>You can also use this bash function upon login as root:</p>
-	function lsgethelper() { cd ~ ; git clone git://github.com/hhoover/lazyscripts.git /root/.lazyscripts/tools; source /root/.lazyscripts/tools/ls-init.sh; }; lsgethelper && lslogin
+<p> Run this bash function as root:</p>
+	function lsgethelper() { if [ -d /root/.lazyscripts ]; then rm -rf /root/.lazyscripts; fi; cd ~ ; git clone git://github.com/hhoover/lazyscripts.git /root/.lazyscripts/tools; source /root/.lazyscripts/tools/ls-init.sh; }; lsgethelper && lslogin
 <p>Enjoy!</p>
