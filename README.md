@@ -20,7 +20,5 @@
 	source ls-init.sh && lslogin
 
 <p>You can also use this bash function upon login as root:</p>
-
-	function lsgethelper() { LZS_PREFIX="/root/.lazyscripts/tools"; LZS_URLPREFIX="https://hhoover@github.com/hhoover/lazyscripts.git"; LZS_APP="$LZS_PREFIX/ls-init.sh"; if [ -e $LZS_APP ]; then rm -rf $LZS_PREFIX; fi; echo "Installing LazyScripts..."; cd ~ ; git clone $LZS_URLPREFIX $LZS_PREFIX > /dev/null 2>&1 ; source $LZS_APP; } lsgethelper && lslogin
-
+	function lsgethelper() { cd ~ ; git clone git://github.com/hhoover/lazyscripts.git /root/.lazyscripts/tools; source /root/.lazyscripts/tools/ls-init.sh; }; lsgethelper && lslogin
 <p>Enjoy!</p>

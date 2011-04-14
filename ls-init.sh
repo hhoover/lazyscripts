@@ -4,7 +4,7 @@
 LZS_VERSION=001
 LZS_PREFIX="/root/.lazyscripts/tools"
 LZS_APP="$LZS_PREFIX/ls-init.sh"
-LZS_URLPREFIX="https://hhoover@github.com/hhoover/lazyscripts.git"
+LZS_URLPREFIX="git://github.com/hhoover/lazyscripts.git"
 LZS_GETURL="$LZS_URLPREFIX/ls-init.sh"
 MYTUNERAPP="mysqltuner.pl"
 
@@ -279,28 +279,22 @@ function lsrblcheck() {
 
 function lswordpress() {
 	cd $LZS_PREFIX
-	wget -q $LZS_URLPREFIX/wordpress.sh
 	chmod +x wordpress.sh
 	./wordpress.sh
-	rm -f wordpress.sh
 	cd - > /dev/null 2>&1
 }
 
 function lspostfix() {
 	cd $LZS_PREFIX
-	wget -q $LZS_URLPREFIX/postfix.sh
 	chmod +x postfix.sh
 	./postfix.sh
-	rm -f postfix.sh
 	cd - > /dev/null 2>&1
 }
 
 function lswebmin() {
 	cd $LZS_PREFIX
-	wget -q $LZS_URLPREFIX/webmin.sh
 	chmod +x webmin.sh
 	./webmin.sh
-	rm -f webmin.sh
 	cd - > /dev/null 2>&1
 }
 
@@ -337,6 +331,8 @@ function lsvhost() {
 		mkdir -p /var/www/vhosts/$domain
 		a2ensite $domain > /dev/null 2>&1
 		service apache2 restart	 > /dev/null 2>&1
+	else
+		echo "Unsupported OS"
 fi
 }
 
