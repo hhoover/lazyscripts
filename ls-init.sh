@@ -299,7 +299,7 @@ function lswebmin() {
 }
 
 function lsvhost() {
-	read -p "Please enter a domain (no www): " domain
+	read -p "Please enter a domain (no www): " 	domain
 	if [[ $distro = "redhat" ]]; then
 		cat > /etc/httpd/vhost.d/$domain.conf <<-EOF
 		<VirtualHost *:80>
