@@ -298,6 +298,13 @@ function lswebmin() {
 	cd - > /dev/null 2>&1
 }
 
+function lslsync() {
+	cd $LZS_PREFIX
+	chmod +x lsync.sh
+	./lsync.sh
+	cd - > /dev/null 2>&1
+}
+
 function lsvhost() {
 	read -p "Please enter a domain (no www): " 	domain
 	if [[ $distro = "redhat" ]]; then
@@ -368,6 +375,7 @@ echo -e "[ls-scr] $brightred\b lsapproc $norm - $brightblue\b Shows the memory u
 echo -e "[ls-scr] $brightred\b lsrblcheck $norm - $brightblue\b Server Email Blacklist Check $norm"
 echo -e "[ls-scr] $brightred\b lsvhost $norm - $brightblue\b Add an Apache virtual host $norm"
 echo -e "[ls-scr] $brightred\b lspostfix $norm - $brightblue\b Set up Postfix for relaying email $norm"
+echo -e "[ls-scr] $brightred\b lslsync $norm - $brightblue\b Install lsyncd and configure this server as a master$norm"
 echo -e "[ls-scr] $brightred\b lswordpress $norm - $brightblue\b Install Wordpress on this server $norm"
 echo -e "[ls-scr] $brightred\b lswebmin $norm - $brightblue\b Install Webmin on this server $norm"
 echo -e "[ls-scr] $brightred\b lsconcurchk $norm - $brightblue\b Show concurrent connections $norm"
