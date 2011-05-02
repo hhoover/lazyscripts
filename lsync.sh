@@ -1,6 +1,6 @@
 #!/bin/bash
 ## Lsyncd Installation Script
-## Author: David Wittman <david.wittman@rackspace.com>
+## Author: David Wittman <david@wittman.com>
 
 SOURCE="http://lsyncd.googlecode.com/files/lsyncd-2.0.4.tar.gz"
 BASENAME=$(basename ${SOURCE})
