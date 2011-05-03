@@ -129,6 +129,7 @@ echo -ne "\007"
 echo "Ding fries are done! Now, try to send a mail and check the logs; ensure that"
 echo "the mail sent successfully (status=sent) and that it was properly relayed"
 echo "(relay=${RELAYHOST})."
+sleep 1
 postmap /etc/postix/generic > /dev/null 2>&1
 service postfix restart > /dev/null 2>&1
 exit 0

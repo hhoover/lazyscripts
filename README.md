@@ -12,6 +12,7 @@
 * Jason Dunsmore
 * Jacob Walcik
 * Farid Saad
+* David Wittman
 
 <h3>How to use:</h3>
 <p> Run this bash function as root:</p>

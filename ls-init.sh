@@ -198,7 +198,8 @@ function lsapcheck() {
 	        apt-get -y install perl
 	    fi
 	fi
-curl -L -s $LZS_URLPREFIX/apachebuddy.pl | perl
+$PERL=`which perl`
+$PERL $LZS_PREFIX/apachebuddy.pl
 }
 
 function lsapdocs() {
