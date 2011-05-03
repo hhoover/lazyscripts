@@ -17,4 +17,26 @@
 <h3>How to use:</h3>
 <p> Run this bash function as root:</p>
 	function lsgethelper() { if [ -d /root/.lazyscripts ]; then rm -rf /root/.lazyscripts; fi; cd ~ ; git clone git://github.com/hhoover/lazyscripts.git /root/.lazyscripts/tools; source /root/.lazyscripts/tools/ls-init.sh; }; lsgethelper && lslogin
+
+<h3>Functions included:</h3>
+lsinfo  - Display useful system information 
+ lsbwprompt  - Switch to a plain prompt. 
+ lscolorprompt  - Switch to a fancy colorized prompt. 
+ lsbigfiles  - List the top 50 files based on disk usage. 
+ lsmytuner  - MySQL Tuner. 
+ lshighio  - Reports stats on processes in an uninterruptable sleep state. 
+ lsmylogin  - Auto login to MySQL 
+ lsmyengines  - List MySQL tables and their storage engine. 
+ lsmyusers  - List MySQL users and grants. 
+ lsapcheck  - Verify apache max client settings and memory usage. 
+ lsapdocs  - Prints out Apache's DocumentRoots 
+ lsapproc  - Shows the memory used by each Apache process 
+ lsrblcheck  - Server Email Blacklist Check 
+ lsvhost  - Add an Apache virtual host 
+ lspostfix  - Set up Postfix for relaying email 
+ lslsync  - Install lsyncd and configure this server as a master
+ lswordpress  - Install Wordpress on this server 
+ lswebmin  - Install Webmin on this server 
+ lsconcurchk  - Show concurrent connections 
+ lswhatis  - Output the script that would be run with a specific command.
 <p>Enjoy!</p>
