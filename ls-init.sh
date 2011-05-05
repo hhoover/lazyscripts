@@ -344,6 +344,13 @@ function lsvhost() {
 fi
 }
 
+function lssuphp() {
+	cd $LZS_PREFIX
+	chmod +x suphp.sh
+	./suphp.sh
+	cd - > /dev/null 2>&1
+}
+
 function lsconcurchk() {
 
 echo -e "[ls-scr] $brightyellow\b Concurrent connections listed by netstat in numerical order.$norm"
@@ -379,6 +386,7 @@ echo -e "[ls-scr] $brightred\b lspostfix $norm - $brightblue\b Set up Postfix fo
 echo -e "[ls-scr] $brightred\b lslsync $norm - $brightblue\b Install lsyncd and configure this server as a master$norm"
 echo -e "[ls-scr] $brightred\b lswordpress $norm - $brightblue\b Install Wordpress on this server $norm"
 echo -e "[ls-scr] $brightred\b lswebmin $norm - $brightblue\b Install Webmin on this server $norm"
+echo -e "[ls-scr] $brightred\b lssuphp $norm - $brightblue\b Replaces mod_php with mod_suphp $norm"
 echo -e "[ls-scr] $brightred\b lsconcurchk $norm - $brightblue\b Show concurrent connections $norm"
 echo -e "[ls-scr] $brightred\b lswhatis $norm - $brightblue\b Output the script that would be run with a specific command. $norm"
 echo -e "[ls-scr] ---------------------------------------------------------------------------------------------"
