@@ -27,7 +27,9 @@ function install_webmin() {
 		mirrorlist=http://download.webmin.com/download/yum/mirrorlist
 		enabled=1
 		EOF
-		rpm --import http://www.webmin.com/jcameron-key.asc > /dev/null 2>&1
+		curl -s http://www.webmin.com/jcameron-key.asc -o "/tmp/jcameron-key.asc"
+                rpm --import /tmp/jcameron-key.asc > /dev/null 2>&1
+                rm -f /tmp/jcameron-key.asc
 		yum -y -q install webmin perl-Net-SSLeay
 		iptables -I INPUT -m tcp -p tcp --dport 10000 -j ACCEPT
 		service iptables save > /dev/null 2>&1
