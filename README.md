@@ -32,10 +32,12 @@
 * lsapdocs  - Prints out Apache's DocumentRoots 
 * lsapproc  - Shows the memory used by each Apache process 
 * lsrblcheck  - Server Email Blacklist Check 
+* lscloudkick - Installs the Cloudkick agent
 * lsvhost  - Add an Apache virtual host 
 * lspostfix  - Set up Postfix for relaying email 
 * lslsync  - Install lsyncd and configure this server as a master
 * lswordpress  - Install Wordpress on this server 
+* lssuphp - Converts a server from mod_php to suPHP
 * lswebmin  - Install Webmin on this server 
 * lsconcurchk  - Show concurrent connections 
 * lswhatis  - Output the script that would be run with a specific command.

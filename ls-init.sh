@@ -141,12 +141,50 @@ find / -type f -printf "%s %h/%f\n" | sort -rn -k1 | head -n 50 | awk '{ print $
 
 }
 
-function lsmytuner(){
+function lsmytuner() {
+	if [[ $distro = "redhat" ]]; then
+		if [ -z "`which bc 2>/dev/null`" ]; then
+		yum -y -q install bc
+	else 
+		echo "BC installed, proceeding"
+		fi
+	elif [ "${distro}" == "debian" ]; then
+	     if [ -z "`which bc 2>/dev/null`" ]; then
+	        apt-get -y -q install bc
+	    else
+	        echo "BC installed, proceeding"
+	     fi
+	fi
   cd $LZS_PREFIX
   chmod +x tuning-primer.sh
   ./tuning-primer.sh
   cd - > /dev/null 2>&1
 }
+
+function lscloudkick() {
+if [[ $distro = "redhat" ]]; then
+	cat > /etc/yum.repos.d/cloudkick.repo <<-EOF
+	[cloudkick]
+	name=Cloudkick
+	baseurl=http://packages.cloudkick.com/redhat/x86_64
+	gpgcheck=0
+	EOF
+	yum -y -q install cloudkick-agent
+	chkconfig cloudkick-agent on
+	echo -e "Please enter the login credentials and $blinkred\bstart the agent. $norm"
+	cloudkick-config
+elif [ "${distro}" == "debian" ]; then
+	echo 'deb http://packages.cloudkick.com/ubuntu lucid main' > /etc/apt/sources.list.d/cloudkick.list
+	curl http://packages.cloudkick.com/cloudkick.packages.key | apt-key add -
+	apt-get -q update
+	apt-get -y -q install cloudkick-agent
+	echo -e "Please enter the login credentials and $blinkred\bstart the agent. $norm"
+	cloudkick-config
+else 
+	echo "Unsupported OS. See https://support.cloudkick.com/Category:Installing_Cloudkick"
+	exit
+fi
+}	
 
 function lsmylogin() {
 # MySQL login helper
@@ -373,6 +411,7 @@ echo -e "[ls-scr] $brightred\b lsapcheck $norm - $brightblue\b Verify apache max
 echo -e "[ls-scr] $brightred\b lsapdocs $norm - $brightblue\b Prints out Apache's DocumentRoots $norm"
 echo -e "[ls-scr] $brightred\b lsapproc $norm - $brightblue\b Shows the memory used by each Apache process $norm"
 echo -e "[ls-scr] $brightred\b lsrblcheck $norm - $brightblue\b Server Email Blacklist Check $norm"
+echo -e "[ls-scr] $brightred\b lscloudkick $norm - $brightblue\b Install the Cloudkick agent $norm"
 echo -e "[ls-scr] $brightred\b lsvhost $norm - $brightblue\b Add an Apache virtual host $norm"
 echo -e "[ls-scr] $brightred\b lspostfix $norm - $brightblue\b Set up Postfix for relaying email $norm"
 echo -e "[ls-scr] $brightred\b lslsync $norm - $brightblue\b Install lsyncd and configure this server as a master$norm"
