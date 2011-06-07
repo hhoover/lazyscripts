@@ -107,7 +107,7 @@ function configure_postfix() {
 		EOF
 	fi
 # configure authentication
-echo "$RELAYHOST $USERNAME:$PASSWERD" >> /etc/postfix/sasl_passwd
+echo "$RELAYHOST $USERNAME:$PASSWERD" > /etc/postfix/sasl_passwd
 chmod 600 /etc/postfix/sasl_passwd
 postmap /etc/postfix/sasl_passwd
 if [[ $distro == "redhat" ]]; then
@@ -130,6 +130,6 @@ echo "Ding fries are done! Now, try to send a mail and check the logs; ensure th
 echo "the mail sent successfully (status=sent) and that it was properly relayed"
 echo "(relay=${RELAYHOST})."
 sleep 1
-postmap /etc/postix/generic > /dev/null 2>&1
+postmap /etc/postfix/generic > /dev/null 2>&1
 service postfix restart > /dev/null 2>&1
 exit 0
