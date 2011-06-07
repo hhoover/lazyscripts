@@ -142,13 +142,10 @@ find / -type f -printf "%s %h/%f\n" | sort -rn -k1 | head -n 50 | awk '{ print $
 }
 
 function lsmytuner(){
-if [ "$?" -eq "0" ]; then
   cd $LZS_PREFIX
   chmod +x tuning-primer.sh
   ./tuning-primer.sh
-else
-  echo -e "[ls-scr] $brightred\bError: Please file a bug report: https://github.com/hhoover/lazyscripts $norm"
-fi
+  cd - > /dev/null 2>&1
 }
 
 function lsmylogin() {
