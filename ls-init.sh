@@ -1,12 +1,11 @@
 #!/bin/bash
 #
 
-LZS_VERSION=001
+LZS_VERSION=002
 LZS_PREFIX="/root/.lazyscripts/tools"
 LZS_APP="$LZS_PREFIX/ls-init.sh"
 LZS_URLPREFIX="git://github.com/hhoover/lazyscripts.git"
 LZS_GETURL="$LZS_URLPREFIX/ls-init.sh"
-MYTUNERAPP="mysqltuner.pl"
 
 
 function lscolors() { 
@@ -51,7 +50,9 @@ function lscolorprompt() {
     local LIGHT_BLUE="\[\033[1;34m\]" 
     local YELLOW="\[\033[1;33m\]" 
     local BLUE="\[\033[0;34m\]" 
-    PS1="$BLUE[$CYAN\000LZShell$LIGHT_BLUE \t$BLUE]$GRAY=$LIGHT_GRAY-$GRAY=$BLUE<$CYAN`uname -sm`$BLUE>$GRAY=$LIGHT_GRAY-$GRAY=$BLUE($CYAN\u$GRAY @ $LIGHT_CYAN\H$BLUE)\n$BLUE($YELLOW\w$BLUE)$NORM # "
+    local RED="\[\e[1;31m\]"
+    local GREEN="\[\e[1;32m\]"
+    PS1="$BLUE[$RED\000LZShell$LIGHT_BLUE \t$BLUE]$GRAY=$LIGHT_GRAY-$GRAY=$BLUE<$CYAN`uname -sr`$BLUE>$GRAY=$LIGHT_GRAY-$GRAY=$BLUE($CYAN\u$GRAY @ $LIGHT_CYAN\H$BLUE)\n$BLUE($YELLOW\w$BLUE)$NORM # "
 }
 
 function lsbwprompt() {
@@ -99,7 +100,7 @@ if [ -f /usr/local/psa/version ]; then
         hmpsaversion=`cat /usr/local/psa/version`
         echo -e "$brightyellow\bPlesk Detected: $brightblue\b $hmpsaversion. $norm\n"
 # Check for cPanel
-elif [ -f /usr/local/cpanel/version ]; then
+elif [ -d /usr/local/cpanel ]; then
 		hmcpanversion=`cat /usr/local/cpanel/version`
 		echo -e "$brightyellow\bcPanel Detected: $brightblue\b $hmcpanversion. $norm\n"
 else
@@ -141,18 +142,12 @@ find / -type f -printf "%s %h/%f\n" | sort -rn -k1 | head -n 50 | awk '{ print $
 }
 
 function lsmytuner(){
-# Get Major Hayden's mysqltuner.pl script
-# https://github.com/rackerhacker/MySQLTuner-perl
-if [ -e $MYTUNERAPP ]; then
- rm $MYTUNERAPP
-fi
-echo -e "[ls-scr] $brightwhite\bRetrieving latest version of MySQL Tuner"
-cd $LZS_PREFIX ; wget -q http://mysqltuner.pl
 if [ "$?" -eq "0" ]; then
-  chmod +x $MYTUNERAPP
-  perl $MYTUNERAPP
+  cd $LZS_PREFIX
+  chmod +x tuning-primer.sh
+  ./tuning-primer.sh
 else
-  echo -e "[ls-scr] $brightred\bError retrieving latest version of MySQLTuner. Please file a bug report: https://github.com/hhoover/lazyscripts $norm"
+  echo -e "[ls-scr] $brightred\bError: Please file a bug report: https://github.com/hhoover/lazyscripts $norm"
 fi
 }
 
@@ -372,7 +367,7 @@ echo -e "[ls-scr] $brightred\b lsinfo $norm - $brightblue\b Display useful syste
 echo -e "[ls-scr] $brightred\b lsbwprompt $norm - $brightblue\b Switch to a plain prompt. $norm"
 echo -e "[ls-scr] $brightred\b lscolorprompt $norm - $brightblue\b Switch to a fancy colorized prompt. $norm"
 echo -e "[ls-scr] $brightred\b lsbigfiles $norm - $brightblue\b List the top 50 files based on disk usage. $norm"
-echo -e "[ls-scr] $brightred\b lsmytuner $norm - $brightblue\b MySQL Tuner. $norm"
+echo -e "[ls-scr] $brightred\b lsmytuner $norm - $brightblue\b MySQL Tuning Primer $norm"
 echo -e "[ls-scr] $brightred\b lshighio $norm - $brightblue\b Reports stats on processes in an uninterruptable sleep state. $norm"
 echo -e "[ls-scr] $brightred\b lsmylogin $norm - $brightblue\b Auto login to MySQL $norm"
 echo -e "[ls-scr] $brightred\b lsmyengines $norm - $brightblue\b List MySQL tables and their storage engine. $norm"
