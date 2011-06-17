@@ -381,6 +381,18 @@ function lssuphp() {
 	cd - > /dev/null 2>&1
 }
 
+function lscsr() {
+	cd $LZS_PREFIX
+	openssl req -new -nodes -newkey rsa:2048 -out server.csr -keyout server.key
+	echo
+	cat server.csr
+	echo
+	cat server.key
+	rm -f server.csr
+	rm -f server.key
+	cd - > /dev/null 2>&1
+}
+
 function lsconcurchk() {
 
 echo -e "[ls-scr] $brightyellow\b Concurrent connections listed by netstat in numerical order.$norm"
@@ -419,6 +431,7 @@ echo -e "[ls-scr] $brightred\b lswordpress $norm - $brightblue\b Install Wordpre
 echo -e "[ls-scr] $brightred\b lswebmin $norm - $brightblue\b Install Webmin on this server $norm"
 echo -e "[ls-scr] $brightred\b lssuphp $norm - $brightblue\b Replaces mod_php with mod_suphp $norm"
 echo -e "[ls-scr] $brightred\b lsconcurchk $norm - $brightblue\b Show concurrent connections $norm"
+echo -e "[ls-scr] $brightred\b lscsr $norm - $brightblue\b Generate a CSR and Private Key for SSL $norm"
 echo -e "[ls-scr] $brightred\b lswhatis $norm - $brightblue\b Output the script that would be run with a specific command. $norm"
 echo -e "[ls-scr] ---------------------------------------------------------------------------------------------"
 }

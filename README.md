@@ -40,6 +40,7 @@
 * lssuphp - Converts a server from mod_php to suPHP
 * lswebmin  - Install Webmin on this server 
 * lsconcurchk  - Show concurrent connections 
+* lscsr - Generate CSR and Private Key for SSL
 * lswhatis  - Output the script that would be run with a specific command.
 
 <p>Enjoy!</p>
