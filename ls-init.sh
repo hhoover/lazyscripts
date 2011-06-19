@@ -52,7 +52,7 @@ function lscolorprompt() {
     local BLUE="\[\033[0;34m\]" 
     local RED="\[\e[1;31m\]"
     local GREEN="\[\e[1;32m\]"
-    PS1="$BLUE[$RED\000LZShell$LIGHT_BLUE \t$BLUE]$GRAY=$LIGHT_GRAY-$GRAY=$BLUE<$CYAN`uname -sr`$BLUE>$GRAY=$LIGHT_GRAY-$GRAY=$BLUE($CYAN\u$GRAY @ $LIGHT_CYAN\H$BLUE)\n$BLUE($YELLOW\w$BLUE)$NORM # "
+    PS1="$BLUE[$RED\000LZShell$LIGHT_BLUE \t$BLUE]$GRAY=$LIGHT_GRAY-$GRAY=$BLUE<$CYAN${distro}$BLUE>$GRAY=$LIGHT_GRAY-$GRAY=$BLUE($CYAN\u$GRAY @ $LIGHT_CYAN\H$BLUE)\n$BLUE($YELLOW\w$BLUE)$NORM # "
 }
 
 function lsbwprompt() {
@@ -63,12 +63,12 @@ function lsbwprompt() {
 function ostype() {
 
     if [ -e /etc/redhat-release ]; then
-        distro="redhat"
+        distro="Redhat/CentOS"
     else
         if [ "$(lsb_release -d | awk '{print $2}')" == "Ubuntu" ];then
-        distro="debian"
+        distro="Ubuntu"
     else
-        echo -e "could not detect operating system" && distro="other"
+        echo -e "could not detect operating system" && distro="Other"
     
     fi
 fi
@@ -82,7 +82,7 @@ echo -e "----- Operating System -----"
         if [ "$(lsb_release -d | awk '{print $2}')" == "Ubuntu" ];then
             lsb_release -d
     else
-        echo -e "could not detect operating system" && distro="other"
+        echo -e "could not detect operating system" && distro="Other"
     
     fi
 fi
@@ -110,7 +110,7 @@ else
 
 function lsresize() {
 
-if [ "${distro}" == "redhat" ]; then
+if [ "${distro}" == "Redhat/CentOS" ]; then
     if [ -z "`which resize`" ]; then
         echo "Installing xterm"
         yum -y install xterm
@@ -120,7 +120,7 @@ if [ "${distro}" == "redhat" ]; then
         resize
     fi
 fi
-    if [ "${distro}" == "debian" ]; then
+    if [ "${distro}" == "Ubuntu" ]; then
         if [ -z "`which resize`" ]; then
         echo "Installing xterm"
         apt-get -y install xterm
@@ -142,13 +142,13 @@ find / -type f -printf "%s %h/%f\n" | sort -rn -k1 | head -n 50 | awk '{ print $
 }
 
 function lsmytuner() {
-	if [[ $distro = "redhat" ]]; then
+	if [[ $distro = "Redhat/CentOS" ]]; then
 		if [ -z "`which bc 2>/dev/null`" ]; then
 		yum -y -q install bc
 	else 
 		echo "BC installed, proceeding"
 		fi
-	elif [ "${distro}" == "debian" ]; then
+	elif [ "${distro}" == "Ubuntu" ]; then
 	     if [ -z "`which bc 2>/dev/null`" ]; then
 	        apt-get -y -q install bc
 	    else
@@ -162,7 +162,7 @@ function lsmytuner() {
 }
 
 function lscloudkick() {
-if [[ $distro = "redhat" ]]; then
+if [[ $distro = "Redhat/CentOS" ]]; then
 	cat > /etc/yum.repos.d/cloudkick.repo <<-EOF
 	[cloudkick]
 	name=Cloudkick
@@ -173,7 +173,7 @@ if [[ $distro = "redhat" ]]; then
 	chkconfig cloudkick-agent on
 	echo -e "Please enter the login credentials and $blinkred\bstart the agent. $norm"
 	cloudkick-config
-elif [ "${distro}" == "debian" ]; then
+elif [ "${distro}" == "Ubuntu" ]; then
 	echo 'deb http://packages.cloudkick.com/ubuntu lucid main' > /etc/apt/sources.list.d/cloudkick.list
 	curl http://packages.cloudkick.com/cloudkick.packages.key | apt-key add -
 	apt-get -q update
@@ -216,13 +216,13 @@ if [ -e /root/.my.cnf ]; then
 }
 
 function lsapcheck() {
-	if [ "${distro}" == "redhat" ]; then
+	if [ "${distro}" == "Redhat/CentOS" ]; then
 	    if [ -z "`which perl`" ]; then
 	        echo "Installing perl"
 	        yum -y install perl
 		fi
 	fi
-	    if [ "${distro}" == "debian" ]; then
+	    if [ "${distro}" == "Ubuntu" ]; then
 	        if [ -z "`which perl`" ]; then
 	        echo "Installing perl"
 	        apt-get -y install perl
@@ -233,10 +233,10 @@ $PERL $LZS_PREFIX/apachebuddy.pl
 }
 
 function lsapdocs() {
-	if [[ "${distro}" == "redhat" ]]
+	if [[ "${distro}" == "Redhat/CentOS" ]]
 		then
     httpd -S 2>&1|grep -v "^Warning:"|egrep "\/.*\/"|sed 's/.*(\(.*\):.*).*/\1/'|sort|uniq|xargs cat|grep -i DocumentRoot|egrep -v "^#"|awk '{print $2}'|sort|uniq
-	elif [[ "${distro}" == "debian" ]]
+	elif [[ "${distro}" == "Ubuntu" ]]
 		then
 	apache2ctl -S 2>&1|grep -v "^Warning:"|egrep "\/.*\/"|sed 's/.*(\(.*\):.*).*/\1/'|sort|uniq|xargs cat|grep -i DocumentRoot|egrep -v "^#"|awk '{print $2}'|sort|uniq
 else
@@ -288,12 +288,12 @@ function lsmyengines() {
 }
 
 function lsapproc() {
-if [ "${distro}" == "redhat" ]; then
+if [ "${distro}" == "Redhat/CentOS" ]; then
 	for pid in $(pgrep httpd); do
 		echo $pid $(ps -p$pid -ouser|sed '1d') $(pmap -d $pid 2>/dev/null | awk '/private/{print $4}')|tr -d 'K'|awk '{printf "%s %s %s MB\n", $1, $2, $3/1024}'
 	done
 fi
-if [[ "${distro}" == "debian" ]]; then
+if [[ "${distro}" == "Ubuntu" ]]; then
 	for pid in $(pgrep apache2); do
 		echo $pid $(ps -p$pid -ouser|sed '1d') $(pmap -d $pid 2>/dev/null | awk '/private/{print $4}')|tr -d 'K'|awk '{printf "%s %s %s MB\n", $1, $2, $3/1024}'
 	done
@@ -338,7 +338,7 @@ function lslsync() {
 
 function lsvhost() {
 	read -p "Please enter a domain (no www): " 	domain
-	if [[ $distro = "redhat" ]]; then
+	if [[ $distro = "Redhat/CentOS" ]]; then
 		cat > /etc/httpd/vhost.d/$domain.conf <<-EOF
 		<VirtualHost *:80>
 		ServerName $domain
@@ -353,7 +353,7 @@ function lsvhost() {
 		EOF
 		mkdir -p /var/www/vhosts/$domain
 		service httpd restart > /dev/null 2>&1
-	elif [[ $distro = "debian" ]]; then
+	elif [[ $distro = "Ubuntu" ]]; then
 		cat > /etc/apache2/sites-available/$domain <<-EOF
 		<VirtualHost *:80>
 		ServerName $domain
