@@ -52,7 +52,16 @@ function lscolorprompt() {
     local BLUE="\[\033[0;34m\]" 
     local RED="\[\e[1;31m\]"
     local GREEN="\[\e[1;32m\]"
-    PS1="$BLUE[$RED\000LZShell$LIGHT_BLUE \t$BLUE]$GRAY=$LIGHT_GRAY-$GRAY=$BLUE<$CYAN${distro}$BLUE>$GRAY=$LIGHT_GRAY-$GRAY=$BLUE($CYAN\u$GRAY @ $LIGHT_CYAN\H$BLUE)\n$BLUE($YELLOW\w$BLUE)$NORM # "
+    local BROWN="\[\e[0;33m\]"
+if [ "${distro}" == "Redhat/CentOS" ]; then
+	PS1="$BLUE[$RED\000LZShell$LIGHT_BLUE \t$BLUE]$GRAY=$LIGHT_GRAY-$GRAY=$BLUE<$RED${distro}$BLUE>$GRAY=$LIGHT_GRAY-$GRAY=$BLUE($CYAN\u$GRAY @ $LIGHT_CYAN\H$BLUE)\n$BLUE($YELLOW\w$BLUE)$NORM # "
+else
+	if [ "${distro}" == "Ubuntu" ]; then
+	PS1="$BLUE[$RED\000LZShell$LIGHT_BLUE \t$BLUE]$GRAY=$LIGHT_GRAY-$GRAY=$BLUE<$BROWN${distro}$BLUE>$GRAY=$LIGHT_GRAY-$GRAY=$BLUE($CYAN\u$GRAY @ $LIGHT_CYAN\H$BLUE)\n$BLUE($YELLOW\w$BLUE)$NORM # "
+else
+	lsbwprompt
+	fi
+fi
 }
 
 function lsbwprompt() {
@@ -142,6 +151,14 @@ find / -type f -printf "%s %h/%f\n" | sort -rn -k1 | head -n 50 | awk '{ print $
 }
 
 function lsmytuner() {
+  install_bc
+  cd $LZS_PREFIX
+  chmod +x tuning-primer.sh
+  ./tuning-primer.sh
+  cd - > /dev/null 2>&1
+}
+
+function install_bc() {
 	if [[ $distro = "Redhat/CentOS" ]]; then
 		if [ -z "`which bc 2>/dev/null`" ]; then
 		yum -y -q install bc
@@ -155,11 +172,7 @@ function lsmytuner() {
 	        echo "BC installed, proceeding"
 	     fi
 	fi
-  cd $LZS_PREFIX
-  chmod +x tuning-primer.sh
-  ./tuning-primer.sh
-  cd - > /dev/null 2>&1
-}
+}	
 
 function lscloudkick() {
 if [[ $distro = "Redhat/CentOS" ]]; then
