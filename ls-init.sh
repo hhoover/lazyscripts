@@ -99,6 +99,8 @@ echo -e "----- Disk Utilization -----"
 df -l -h
 echo -e "----- Memory Information -----"
 free -m
+echo -e "----- Network Interfaces -----"
+lsip
 echo -e "----- Uptime / Who is Online -----"
 uptime ; who
 }
@@ -415,6 +417,11 @@ netstat -an |grep -i tcp |grep -v "0.0.0.0" |grep -v "::" |awk '{print $4, $5}' 
 else
 netstat -an |grep -i tcp |grep -v "0.0.0.0" |grep -v "::" |awk '{print $4, $5}' |awk -F: '{print $2}' |awk '{print $2, $1}' |sort |uniq -c |sort -n
 fi
+}
+
+# Prints IPv4 addresses for all eth* interfaces
+function lsip() {
+/sbin/ifconfig | awk '/^eth/ { printf("%s: ",$1) } /inet addr:/ { gsub(/.*:/,"",$2); if ($2 !~ /^127/) print $2; }'
 }
 
 function lshelp() {
