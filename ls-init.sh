@@ -96,7 +96,7 @@ echo -e "----- Operating System -----"
     fi
 fi
 echo -e "----- Disk Utilization -----"
-df -l -h
+df -l -h /
 echo -e "----- Memory Information -----"
 free -m
 echo -e "----- Network Interfaces -----"
