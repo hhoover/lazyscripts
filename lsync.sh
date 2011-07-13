@@ -5,6 +5,7 @@
 SOURCE="http://lsyncd.googlecode.com/files/lsyncd-2.0.4.tar.gz"
 BASENAME=$(basename ${SOURCE})
 SOURCEDEST=/usr/local/src/$(echo ${BASENAME} | sed 's/\.tar\.gz//')
+DEFAULT_PATH="/var/www"
 
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -39,13 +40,14 @@ N_HOSTS=${N_HOSTS:-1}
 for ((i=1; i <= $N_HOSTS; i++)); do
     read -p "Hostname #${i}: " -e SYNC_HOSTS[$i]
 done
-read -p "Enter source directory: [/var/www] " -e SYNC_SOURCE
-read -p "Enter target directory: [/var/www] " -e SYNC_TARGET
-unset N_HOSTS
 
-# Set variables to defaults if they're empty
-SYNC_SOURCE=${SYNC_SOURCE:-"/var/www"}
-SYNC_TARGET=${SYNC_TARGET:-"/var/www"}
+read -p "Enter source directory: [${DEFAULT_PATH}] " -e SYNC_SOURCE
+# Set SYNC_SOURCE to default if empty
+SYNC_SOURCE=${SYNC_SOURCE:-${DEFAULT_PATH}}
+read -p "Enter target directory: [${SYNC_SOURCE}] " -e SYNC_TARGET
+# Set SYNC_TARGET to SYNC_SOURCE if empty
+SYNC_TARGET=${SYNC_TARGET:-${SYNC_SOURCE}}
+unset N_HOSTS
 
 if [ ! -d $SYNC_SOURCE ]; then
 	/bin/mkdir -p $SYNC_SOURCE
