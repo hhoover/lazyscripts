@@ -421,7 +421,7 @@ fi
 
 # Prints IPv4 addresses for all eth* interfaces
 function lsip() {
-/sbin/ifconfig | awk '/^eth/ { printf("%s: ",$1) } /inet addr:/ { gsub(/.*:/,"",$2); if ($2 !~ /^127/) print $2; }'
+/sbin/ifconfig | awk '/^eth/ { printf("%s\t",$1) } /inet addr:/ { gsub(/.*:/,"",$2); if ($2 !~ /^127/) print $2; }'
 }
 
 function lshelp() {
