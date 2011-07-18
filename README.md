@@ -13,6 +13,9 @@
 * Jacob Walcik
 * Farid Saad
 * David Wittman
+* Curtus Regnier
+* Jordan Callicoat
+* Ryan Walker
 
 <h3>How to use:</h3>
 <p> Run this bash function as root:</p>

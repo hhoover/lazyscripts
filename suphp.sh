@@ -1,5 +1,6 @@
 #!/bin/bash
 # Author: Hart Hoover
+# Code added by Curtus Regnier and Jordan Callicoat
 # Purpose: to convert a server from mod_php to mod_suphp
 # Works with CentOS, RHEL, and Ubuntu
 
@@ -16,6 +17,28 @@ function ostype() {
     	exit
     	fi
 	fi
+}
+
+function backup_perms() {
+	if [[ $distro == "redhat" ]]; then
+		echo "Installing ACL for permission backup"
+		yum -y install acl > /dev/null 2>&1
+		echo "ACL installed."
+	elif [[ $distro == "debian" ]]; then
+		echo "Installing ACL for permission backup"
+		apt-get -y install acl > /dev/null 2>&1
+		echo "ACL installed."
+	else
+		echo "Unsupported OS"
+		exit 1
+	fi
+	
+while [[ -z "$DIR" ]]; do
+	read -p "Please provide the parent path to the website document roots [ex: /var/www/vhosts] " -e DIR
+done
+
+	echo "Backing up permissions."
+	getfacl -R $DIR > /root/.docrootperms.acl
 }
 
 function disable_mod_php() {
@@ -190,9 +213,12 @@ function install_mod_suphp() {
 }
 
 ostype
+backup_perms
 echo "Moving mod_php out of the way."
 disable_mod_php
 echo "Installing mod_suphp."
 install_mod_suphp
 echo "Mod_suphp installed and configured."
+echo "Current permissions backed up to /root/.docrootperms.acl"
+echo "Current permissions can be restored with setfacl --restore=/root/.docrootperms.acl"
 echo "I like salsa!"
