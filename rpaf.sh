@@ -45,8 +45,8 @@ fi
 reload_apache() {
 	/etc/init.d/${APACHE} reload > /dev/null 2>&1
 	if [ $? -ne 0 ]; then
-		echo "${red}Error${normal} detected upon Apache reload. Removing config file."
-		rm -f /etc/${APACHE}/${CONFIGFILE}
+		echo "${red}Error${normal} detected upon Apache reload. Moving config file to ${CONFIGFILE}.old"
+		mv /etc/${APACHE}/${CONFIGFILE}{,.old}
 		/etc/init.d/${APACHE} reload
 		exit 1
 	fi
