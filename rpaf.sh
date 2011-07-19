@@ -56,7 +56,7 @@ guess_lb() {
 	if [ ! -d /var/log/${APACHE} ]; then
 		return
 	fi
-	LB_GUESS=$(/bin/grep -o -e "^10\.18.\.[^ ]*" /var/log/${APACHE}/*access?log | cut -d: -f2 | head -1)
+	LB_GUESS=$(awk '/^10\.18.\.[^\s]*/ { print $1; exit }' /var/log/httpd/*access?log)
 	LB_GUESS=${LB_GUESS:-""}
 }
 
