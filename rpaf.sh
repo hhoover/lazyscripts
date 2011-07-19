@@ -93,7 +93,11 @@ LoadModule rpaf_module /usr/lib64/httpd/modules/mod_rpaf-2.0.so
 <IfModule mod_rpaf-2.0.c>
 	RPAFenable On
 	RPAFsethostname On
+	# RPAFproxy_ips:	
+	#	List of load balancer/proxy IP addresses (space delimited) 
 	RPAFproxy_ips 127.0.0.1 ${LBIP}
+	# RPAFheader: 	
+	#	Header from which to pull client IP, commonly X-Forwarded-For
 	RPAFheader X-Cluster-Client-Ip
 </IfModule>
 EOF
