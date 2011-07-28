@@ -72,13 +72,13 @@ function lsbwprompt() {
 function ostype() {
 
     if [ -e /etc/redhat-release ]; then
-        distro="Redhat/CentOS"
+        export distro="Redhat/CentOS"
     else
         if [ "$(lsb_release -d | awk '{print $2}')" == "Ubuntu" ];then
-        distro="Ubuntu"
+        export distro="Ubuntu"
+		
     else
-        echo -e "could not detect operating system" && distro="Other"
-    
+        echo -e "could not detect operating system" && export distro="Other"
     fi
 fi
 }
@@ -108,11 +108,11 @@ uptime ; who
 function lscpchk() {
 # Check for Plesk
 if [ -f /usr/local/psa/version ]; then
-        hmpsaversion=`cat /usr/local/psa/version`
+        hmpsaversion=$( cat /usr/local/psa/version )
         echo -e "$brightyellow\bPlesk Detected: $brightblue\b $hmpsaversion. $norm\n"
 # Check for cPanel
 elif [ -d /usr/local/cpanel ]; then
-		hmcpanversion=`cat /usr/local/cpanel/version`
+		hmcpanversion=$( cat /usr/local/cpanel/version )
 		echo -e "$brightyellow\bcPanel Detected: $brightblue\b $hmcpanversion. $norm\n"
 else
         echo -e "$brightred\bNo Control Panel Detected.$norm"
@@ -203,7 +203,7 @@ fi
 
 function lsmylogin() {
 # MySQL login helper
- mysql_client=`which mysql`
+ mysql_client=$( which mysql )
  if [ -x $mysql_client ]; then
    if [ -e /etc/psa/.psa.shadow ]; then
     echo -e "[ls-scr] $brightyellow \bUsing Plesk's admin login. $norm"
@@ -275,7 +275,7 @@ function lshighio() {
 
 function lsmyengines() {
 	# MySQL login helper
-	 mysql_client=`which mysql`
+	 mysql_client=$( which mysql )
 	 if [ -x $mysql_client ]; then
 	   if [ -e /etc/psa/.psa.shadow ]; then
 	    echo -e "[ls-scr] $brightyellow \bUsing Plesk's admin login. $norm"

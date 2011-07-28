@@ -2,21 +2,6 @@
 # webmin.sh
 # Installs Webmin for fun and profit
 
-# What are we on?
-function ostype() {
-
-    if [ -e /etc/redhat-release ]; then
-        distro="redhat"
-    else
-        if [ "$(lsb_release -d | awk '{print $2}')" == "Ubuntu" ];then
-        distro="debian"
-    else
-        echo -e "could not detect operating system" && distro="other"
-    
-    fi
-fi
-}
-
 # Set up a repo and install
 function install_webmin() {
 	if [[ $distro == "redhat" ]]; then
@@ -48,7 +33,6 @@ function install_webmin() {
 	fi
 }
 
-ostype
 echo "Beginning Installation"
 install_webmin
 echo "Webmin installation complete. Port 10000 is open."

@@ -53,23 +53,14 @@ if [ ! -d $SYNC_SOURCE ]; then
 	/bin/mkdir -p $SYNC_SOURCE
 fi
 
-# Determine distribution
-if [ -f /etc/lsb-release ]; then
-    DISTRO="Ubuntu"
-elif [ -f /etc/redhat-release ]; then
-    DISTRO="Redhat/CentOS"
-else
-    DISTRO=""
-fi
-
-echo "${bold}${DISTRO}${normal} detected."
+echo "${bold}${distro}${normal} detected."
 
 # Install lua shit
 OUTPUT="Installing dependencies..."
 printf "$OUTPUT"
-if [ "$DISTRO" = "Ubuntu" ]; then
+if [ "$distro" = "Ubuntu" ]; then
     /usr/bin/apt-get install -yq lua5.1 liblua5.1-0-dev pkg-config rsync > /dev/null || die $OUTPUT
-elif [ "$DISTRO" = "Redhat/CentOS" ]; then
+elif [ "$distro" = "Redhat/CentOS" ]; then
     /usr/bin/yum -qy install lua lua-devel pkgconfig > /dev/null || die $OUTPUT
 fi
 pass "$OUTPUT"
@@ -94,7 +85,7 @@ pass "$OUTPUT"
 # Post-install stuff
 OUTPUT="Creating configuration files..."
 printf "$OUTPUT"
-if [ "$DISTRO" = "Ubuntu" ]; then
+if [ "$distro" = "Ubuntu" ]; then
 # Create init script
     cat > /etc/init.d/lsyncd << EOF
 #!/bin/bash
@@ -187,7 +178,7 @@ EOF
     /bin/chmod 644 /etc/init/lsyncd.conf
 
 # Post-install stuff for Redhat based OSes
-elif [ "$DISTRO" = "Redhat/CentOS" ]; then
+elif [ "$distro" = "Redhat/CentOS" ]; then
 # Create init script
     cat > /etc/init.d/lsyncd << EOF
 #!/bin/bash

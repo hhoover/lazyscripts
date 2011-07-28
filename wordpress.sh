@@ -11,29 +11,14 @@ function get_domain() {
 	read -p "Please enter the 10.x.x.x address of your DB Server (or use localhost): " dbhost
 	read -p "Please enter desired MySQL database name: " database
 	read -p "Please enter desired MySQL username: " db_user
-	web_password=`apg -m 7 -n 1`
-	db_password=`apg -m 7 -n 1`
-	eth1ip=`ifconfig eth1 | grep 'inet addr:'| cut -d: -f2 | awk '{ print $1}'`
-}
-
-# what OS is this?
-function ostype() {
-
-    if [ -e /etc/redhat-release ]; then
-        distro="redhat"
-    else
-        if [ "$(lsb_release -d | awk '{print $2}')" == "Ubuntu" ];then
-        distro="debian"
-    else
-        echo -e "could not detect operating system" && distro="other"
-    	exit
-    	fi
-	fi
+	web_password=$( apg -m 7 -n 1 )
+	db_password=$( apg -m 7 -n 1 )
+	eth1ip=$( ifconfig eth1 | grep 'inet addr:'| cut -d: -f2 | awk '{ print $1}' )
 }
 
 # add a virtual host and restart Apache
 function configure_apache() {
-	if [[ $distro = "redhat" ]]; then
+	if [[ $distro = "Redhat/CentOS" ]]; then
 		cat > /etc/httpd/vhost.d/$domain.conf <<-EOF
 		<VirtualHost *:80>
 		ServerName $domain
@@ -47,7 +32,7 @@ function configure_apache() {
 		</VirtualHost>
 		EOF
 		service httpd restart > /dev/null 2>&1
-	elif [[ $distro = "debian" ]]; then
+	elif [[ $distro = "Ubuntu" ]]; then
 		cat > /etc/apache2/sites-available/$domain <<-EOF
 		<VirtualHost *:80>
 		ServerName $domain
@@ -79,7 +64,7 @@ function get_wordpress() {
 
 # Set up a database locally OR show the commands to run
 function configure_mysql() {
-	MYSQL=`which mysql`
+	MYSQL=$( which mysql )
 	CREATE_DB="CREATE DATABASE ${database};"
 	CREATE_DB_LOCAL_USER="GRANT ALL PRIVILEGES ON ${database}.* TO '${db_user}'@'${dbhost}' IDENTIFIED BY '${db_password}';"
 	CREATE_DB_REMOTE_USER="GRANT ALL PRIVILEGES ON ${database}.* TO '${db_user}'@'${eth1ip}' IDENTIFIED BY '${db_password}';"
@@ -101,7 +86,7 @@ function configure_mysql() {
 # make wp-config.php and protect it
 function create_wp_config() {
 	cd /var/www/vhosts/$domain/wordpress
-	keys=`curl -s -k https://api.wordpress.org/secret-key/1.1/salt`
+	keys=$( curl -s -k https://api.wordpress.org/secret-key/1.1/salt )
 	cat > wp-config.php <<-EOF
 	<?php
 	define('DB_NAME', '${database}');
@@ -127,7 +112,6 @@ function create_wp_config() {
 	chown -R $username: /var/www/vhosts/$domain
 }
 
-ostype
 get_domain
 echo "Beginning Wordpress installation."
 get_wordpress

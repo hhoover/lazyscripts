@@ -29,11 +29,9 @@ die() {
 
 get_distro() {
 if [ -f /etc/lsb-release ]; then
-    DISTRO="Ubuntu"
 	EXT=".deb"
 	APACHE="apache2"
 elif [ -f /etc/redhat-release ]; then
-    DISTRO="Redhat/CentOS"
 	EXT=".rpm"
 	APACHE="httpd"
 else
@@ -61,7 +59,7 @@ guess_lb() {
 }
 
 get_distro
-echo "${bold}${DISTRO}${normal} detected."
+echo "${bold}${distro}${normal} detected."
 
 guess_lb
 read -p "Enter the load balancer's internal IP address: [${LB_GUESS}] " -e LBIP
@@ -77,9 +75,9 @@ pass "$OUTPUT"
 # Install package
 OUTPUT="Installing package..."
 printf "$OUTPUT"
-if [ "$DISTRO" = "Ubuntu" ]; then
+if [ "$distro" = "Ubuntu" ]; then
 	dpkg -i ${TEMPDIR}/${BASENAME}${EXT} > /dev/null 2>&1 || die "$OUTPUT"
-elif [ "$DISTRO" = "Redhat/CentOS" ]; then
+elif [ "$distro" = "Redhat/CentOS" ]; then
 	rpm -Uvh ${TEMPDIR}/${BASENAME}${EXT} > /dev/null 2>&1 || die "$OUTPUT"
 fi
 pass "$OUTPUT"

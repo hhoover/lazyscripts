@@ -44,6 +44,7 @@
 * lswebmin  - Install Webmin on this server 
 * lsconcurchk  - Show concurrent connections 
 * lscsr - Generate CSR and Private Key for SSL
+* lsrpaf - Install mod_rpaf to set correct client IP behind a proxy.
 * lswhatis  - Output the script that would be run with a specific command.
 
 <p>Enjoy!</p>

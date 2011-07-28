@@ -2,21 +2,6 @@
 # Postfix configurator
 # based on Kale's super happy kitty Postfix configurator
 
-# what OS is this?
-function ostype() {
-
-    if [ -e /etc/redhat-release ]; then
-        distro="redhat"
-    else
-        if [ "$(lsb_release -d | awk '{print $2}')" == "Ubuntu" ];then
-        distro="debian"
-    else
-        echo -e "could not detect operating system" && distro="other"
-    	exit
-    	fi
-	fi
-}
-
 # pause 
 function pause() {
     key=""
@@ -53,10 +38,10 @@ echo "to /etc/postfix/main.cf.orig. Hit ctrl-C to cancel, or enter to gooooooooo
 
 pause
 
-	if [[ $distro == "redhat" ]]; then
+	if [[ $distro == "Redhat/CentOS" ]]; then
 		yum -q -y install postfix cyrus-sasl-plain cyrus-sasl-md5  > /dev/null 2>&1
 		chkconfig postfix on
-	elif [[ $distro == "debian" ]]; then
+	elif [[ $distro == "Ubuntu" ]]; then
 		export DEBIAN_FRONTEND=noninteractive
 		apt-get -q -y install postfix libsasl2-modules  > /dev/null 2>&1
 		export DEBIAN_FRONTEND=dialog
@@ -110,9 +95,9 @@ function configure_postfix() {
 echo "$RELAYHOST $USERNAME:$PASSWERD" > /etc/postfix/sasl_passwd
 chmod 600 /etc/postfix/sasl_passwd
 postmap /etc/postfix/sasl_passwd
-if [[ $distro == "redhat" ]]; then
+if [[ $distro == "Redhat/CentOS" ]]; then
 	echo "apache ${USERNAME}" > /etc/postfix/generic
-elif [[ $distro == "debian" ]]; then
+elif [[ $distro == "Ubuntu" ]]; then
 	echo "www-data ${USERNAME}" > /etc/postfix/generic	
 else
 	echo "OMG BROKEN"
@@ -120,7 +105,6 @@ else
 fi
 }
 
-ostype
 root_check
 get_info
 install_postfix

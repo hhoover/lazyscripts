@@ -4,27 +4,12 @@
 # Purpose: to convert a server from mod_php to mod_suphp
 # Works with CentOS, RHEL, and Ubuntu
 
-# what OS is this?
-function ostype() {
-
-    if [ -e /etc/redhat-release ]; then
-        distro="redhat"
-    else
-        if [ "$(lsb_release -d | awk '{print $2}')" == "Ubuntu" ];then
-        distro="debian"
-    else
-        echo -e "could not detect operating system" && distro="other"
-    	exit
-    	fi
-	fi
-}
-
 function backup_perms() {
-	if [[ $distro == "redhat" ]]; then
+	if [[ $distro == "Redhat/CentOS" ]]; then
 		echo "Installing ACL for permission backup"
 		yum -y install acl > /dev/null 2>&1
 		echo "ACL installed."
-	elif [[ $distro == "debian" ]]; then
+	elif [[ $distro == "Ubuntu" ]]; then
 		echo "Installing ACL for permission backup"
 		apt-get -y install acl > /dev/null 2>&1
 		echo "ACL installed."
@@ -42,9 +27,9 @@ done
 }
 
 function disable_mod_php() {
-	if [[ $distro == "redhat" ]]; then
+	if [[ $distro == "Redhat/CentOS" ]]; then
 		mv /etc/httpd/conf.d/php.conf /etc/httpd/conf.d/php.conf.disabled
-	elif [[ $distro == "debian" ]]; then
+	elif [[ $distro == "Ubuntu" ]]; then
 		a2dismod php5 > /dev/null 2>&1
 	else
 		echo "Unsupported OS"
@@ -53,7 +38,7 @@ function disable_mod_php() {
 }
 
 function install_mod_suphp() {
-	if [[ $distro == "redhat" ]]; then
+	if [[ $distro == "Redhat/CentOS" ]]; then
 		yum -y -q install mod_suphp > /dev/null 2>&1
 		cat > /etc/httpd/conf.d/mod_suphp.conf <<-EOF
 		# This is the Apache server configuration file providing suPHP support..
@@ -133,7 +118,7 @@ function install_mod_suphp() {
 		x-suphp-cgi=execute:!self
 		EOF
 		service httpd restart > /dev/null 2>&1
-	elif [[ $distro == "debian" ]]; then
+	elif [[ $distro == "Ubuntu" ]]; then
 		apt-get -y -q install suphp-common libapache2-mod-suphp > /dev/null 2>&1
 		cat > /etc/apache2/mods-available/suphp.conf <<-EOF
 		<IfModule mod_suphp.c>
@@ -212,7 +197,6 @@ function install_mod_suphp() {
 	fi
 }
 
-ostype
 backup_perms
 echo "Moving mod_php out of the way."
 disable_mod_php
