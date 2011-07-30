@@ -4,7 +4,7 @@
 
 # Set up a repo and install
 function install_webmin() {
-	if [[ $distro == "redhat" ]]; then
+	if [[ $distro == "Redhat/CentOS" ]]; then
 		cat > /etc/yum.repos.d/webmin.repo <<-EOF
 		[Webmin]
 		name=Webmin Distribution Neutral
@@ -18,7 +18,7 @@ function install_webmin() {
 		yum -y -q install webmin perl-Net-SSLeay
 		iptables -I INPUT -m tcp -p tcp --dport 10000 -j ACCEPT
 		service iptables save > /dev/null 2>&1
-	elif [[ $distro == "debian" ]]; then
+	elif [[ $distro == "Ubuntu" ]]; then
 		echo "deb http://download.webmin.com/download/repository sarge contrib" >> /etc/apt/sources.list
 		echo "deb http://webmin.mirror.somersettechsolutions.co.uk/repository sarge contrib" >> /etc/apt/sources.list
 		wget -q http://www.webmin.com/jcameron-key.asc
