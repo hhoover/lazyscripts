@@ -28,10 +28,10 @@ die() {
 }
 
 get_distro() {
-if [ -f /etc/lsb-release ]; then
+if [ "$distro" == "Ubuntu" ]; then
 	EXT=".deb"
 	APACHE="apache2"
-elif [ -f /etc/redhat-release ]; then
+elif [ "$distro" == "Redhat/CentOS" ]; then
 	EXT=".rpm"
 	APACHE="httpd"
 else
@@ -75,9 +75,9 @@ pass "$OUTPUT"
 # Install package
 OUTPUT="Installing package..."
 printf "$OUTPUT"
-if [ "$distro" = "Ubuntu" ]; then
+if [ "$distro" == "Ubuntu" ]; then
 	dpkg -i ${TEMPDIR}/${BASENAME}${EXT} > /dev/null 2>&1 || die "$OUTPUT"
-elif [ "$distro" = "Redhat/CentOS" ]; then
+elif [ "$distro" == "Redhat/CentOS" ]; then
 	rpm -Uvh ${TEMPDIR}/${BASENAME}${EXT} > /dev/null 2>&1 || die "$OUTPUT"
 fi
 pass "$OUTPUT"
