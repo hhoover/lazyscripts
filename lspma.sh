@@ -49,12 +49,13 @@ function configure_apache() {
 		exit 1
 	fi
 }
-
+IP=$( ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}' )
 echo "Beginning phpMyAdmin installation"
 install_phpmyadmin
 echo "Configuring Apache"
 configure_apache
 echo "phpMyAdmin installation complete."
-echo "MySQL root credentials:"
+echo "phpMyAdmin is available here: http://${IP}/phpmyadmin"
+echo "Your MySQL root credentials are:"
 grep -v "client" /root/.my.cnf
 exit 0
