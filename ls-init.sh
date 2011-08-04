@@ -352,7 +352,11 @@ function lslsync() {
 }
 
 function lsvhost() {
+if [[ $1 != "" ]]; then
+		domain=$1
+	else
 	read -p "Please enter a domain (no www): " 	domain
+fi
 	if [[ $distro = "Redhat/CentOS" ]]; then
 		cat > /etc/httpd/vhost.d/$domain.conf <<-EOF
 		<VirtualHost *:80>
