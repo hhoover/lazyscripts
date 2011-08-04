@@ -33,6 +33,7 @@ function lscolors() {
     blinkmagenta='\E[5;1;35m';
     blinkcyan='\E[5;1;36m';
     blinkwhite='\E[5;1;37m';
+alias ls='ls --color'
 }
 
 function lsversion(){
@@ -430,6 +431,12 @@ function lsip() {
 /sbin/ifconfig | awk '/^eth/ { printf("%s\t",$1) } /inet addr:/ { gsub(/.*:/,"",$2); if ($2 !~ /^127/) print $2; }'
 }
 
+function lspma() {
+	cd $LZS_PREFIX > /dev/null 2>&1
+	/bin/bash lspma.sh
+	cd - > /dev/null 2>&1
+}
+
 function lshelp() {
 
 echo -e "[ls-scr] $brightred\b LazyScripts Project Page - https://github.com/hhoover/lazyscripts $norm"
@@ -458,8 +465,9 @@ echo -e "[ls-scr] $brightred\b lswebmin $norm - $brightblue\b Install Webmin on 
 echo -e "[ls-scr] $brightred\b lssuphp $norm - $brightblue\b Replaces mod_php with mod_suphp $norm"
 echo -e "[ls-scr] $brightred\b lsconcurchk $norm - $brightblue\b Show concurrent connections $norm"
 echo -e "[ls-scr] $brightred\b lscsr $norm - $brightblue\b Generate a CSR and Private Key for SSL $norm"
-echo -e "[ls-scr] $brightred\b lswhatis $norm - $brightblue\b Output the script that would be run with a specific command. $norm"
 echo -e "[ls-scr] $brightred\b lsrpaf $norm - $brightblue\b Install mod_rpaf to set correct client IP behind a proxy. $norm"
+echo -e "[ls-scr] $brightred\b lspma $norm - $brightblue\b Installs phpMyAdmin. $norm"
+echo -e "[ls-scr] $brightred\b lswhatis $norm - $brightblue\b Output the script that would be run with a specific command. $norm"
 echo -e "[ls-scr] ---------------------------------------------------------------------------------------------"
 }
 

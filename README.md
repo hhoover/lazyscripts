@@ -45,6 +45,7 @@
 * lsconcurchk  - Show concurrent connections 
 * lscsr - Generate CSR and Private Key for SSL
 * lsrpaf - Install mod_rpaf to set correct client IP behind a proxy.
+* lspma - Installs phpMyAdmin
 * lswhatis  - Output the script that would be run with a specific command.
 
 <p>Enjoy!</p>
