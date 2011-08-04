@@ -1,11 +1,9 @@
 #!/bin/bash
 # Installs Wordpress for a new domain
-# intended for use as part of ls-cloudservers
 # usage ./wordpress.sh
 
 # Get some information and set variables
 function get_domain() {
-	clear
 	read -p "Please enter the domain name (no www): " domain
 	read -p "Please enter desired SFTP username: " username
 	read -p "Please enter the 10.x.x.x address of your DB Server (or use localhost): " dbhost
