@@ -3,6 +3,18 @@
 # Code added by Curtus Regnier and Jordan Callicoat
 # Purpose: to convert a server from mod_php to mod_suphp
 # Works with CentOS, RHEL, and Ubuntu
+function lsapdocs() {
+	if [[ "${distro}" == "Redhat/CentOS" ]]
+		then
+    httpd -S 2>&1|grep -v "^Warning:"|egrep "\/.*\/"|sed 's/.*(\(.*\):.*).*/\1/'|sort|uniq|xargs cat|grep -i DocumentRoot|egrep -v "^#"|awk '{print $2}'|sort|uniq
+	elif [[ "${distro}" == "Ubuntu" ]]
+		then
+	apache2ctl -S 2>&1|grep -v "^Warning:"|egrep "\/.*\/"|sed 's/.*(\(.*\):.*).*/\1/'|sort|uniq|xargs cat|grep -i DocumentRoot|egrep -v "^#"|awk '{print $2}'|sort|uniq
+else
+	echo "Unsupported OS. You're on your own."
+	exit 1
+fi
+}
 
 function backup_perms() {
 	if [[ $distro == "Redhat/CentOS" ]]; then
@@ -197,6 +209,8 @@ function install_mod_suphp() {
 	fi
 }
 
+echo "Apache document roots:"
+lsapdocs
 backup_perms
 echo "Moving mod_php out of the way."
 disable_mod_php
