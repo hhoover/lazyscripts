@@ -44,7 +44,7 @@
 * lssuphp - Converts a server from mod_php to suPHP
 * lswebmin  - Install Webmin on this server 
 * lsconcurchk  - Show concurrent connections 
-* lscsr - Generate CSR and Private Key for SSL
+* lscrtchk - Check SSL Cert/Key to make sure they match
 * lsrpaf - Install mod_rpaf to set correct client IP behind a proxy.
 * lspma - Installs phpMyAdmin
 * lswhatis  - Output the script that would be run with a specific command.

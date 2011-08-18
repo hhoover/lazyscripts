@@ -407,15 +407,17 @@ function lssuphp() {
 	cd - > /dev/null 2>&1
 }
 
-function lscsr() {
+function lscrtchk() {
 	cd $LZS_PREFIX
-	openssl req -new -nodes -newkey rsa:2048 -out server.csr -keyout server.key
-	echo
-	cat server.csr
-	echo
-	cat server.key
-	rm -f server.csr
-	rm -f server.key
+	read -p "Enter path to key [/path/to/server.key]: " key
+	read -p "Enter path to certificate [/path/to/server.crt]: " cert
+	CERT_CHECK=$( openssl rsa -in ${key} -modulus -noout | openssl md5 )
+	KEY_CHECK=$( openssl x509 -in ${cert} -modulus -noout | openssl md5 )
+	if [[ $CERT_CHECK == $KEY_CHECK ]]; then
+		echo "Match!"
+	else
+		echo "No Match! *sad trombone*"
+	fi
 	cd - > /dev/null 2>&1
 }
 
@@ -475,7 +477,7 @@ echo -e "[ls-scr] $brightred\b lsdrupal $norm - $brightblue\b Install Drupal 7 o
 echo -e "[ls-scr] $brightred\b lswebmin $norm - $brightblue\b Install Webmin on this server $norm"
 echo -e "[ls-scr] $brightred\b lssuphp $norm - $brightblue\b Replaces mod_php with mod_suphp $norm"
 echo -e "[ls-scr] $brightred\b lsconcurchk $norm - $brightblue\b Show concurrent connections $norm"
-echo -e "[ls-scr] $brightred\b lscsr $norm - $brightblue\b Generate a CSR and Private Key for SSL $norm"
+echo -e "[ls-scr] $brightred\b lscrtchk $norm - $brightblue\b Check SSL Cert/Key to make sure they match $norm"
 echo -e "[ls-scr] $brightred\b lsrpaf $norm - $brightblue\b Install mod_rpaf to set correct client IP behind a proxy. $norm"
 echo -e "[ls-scr] $brightred\b lspma $norm - $brightblue\b Installs phpMyAdmin. $norm"
 echo -e "[ls-scr] $brightred\b lswhatis $norm - $brightblue\b Output the script that would be run with a specific command. $norm"
