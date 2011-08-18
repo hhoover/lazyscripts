@@ -83,7 +83,7 @@ function configure_mysql() {
 
 # make settings.php
 function create_settings() {
-	cd /var/www/vhosts/$domain/drupal/sites/default
+	cd /var/www/vhosts/$domain/drupal-7.7/sites/default
 	cat > settings.php <<-EOF
 	<?php
 	$databases['default']['default'] = array(
@@ -103,7 +103,7 @@ function create_settings() {
 	ini_set('session.cookie_lifetime', 2000000);
 	?>
 	EOF
-	chmod 666 /var/www/vhosts/$domain/drupal/sites/default/settings.php
+	chmod 666 /var/www/vhosts/$domain/drupal-7.7/sites/default/settings.php
 	chown -R $username: /var/www/vhosts/$domain
 }
 
