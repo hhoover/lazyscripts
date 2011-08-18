@@ -110,7 +110,7 @@ function create_settings() {
 get_domain
 echo "Beginning Drupal 7 installation."
 get_drupal
-echo "Drupal has been installed in /var/www/vhosts/${domain}/drupal."
+echo "Drupal has been installed in /var/www/vhosts/${domain}/drupal-7.7."
 create_settings
 configure_apache
 echo "Apache has been configured for ${domain} and restarted."
