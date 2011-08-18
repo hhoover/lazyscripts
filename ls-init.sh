@@ -344,6 +344,13 @@ function lswebmin() {
 	cd - > /dev/null 2>&1
 }
 
+function lsdrupal() {
+	cd $LZS_PREFIX
+	chmod +x drupal.sh
+	./drupal.sh
+	cd - > /dev/null 2>&1
+}
+
 function lslsync() {
 	cd $LZS_PREFIX
 	chmod +x lsync.sh
@@ -464,6 +471,7 @@ echo -e "[ls-scr] $brightred\b lsvhost $norm - $brightblue\b Add an Apache virtu
 echo -e "[ls-scr] $brightred\b lspostfix $norm - $brightblue\b Set up Postfix for relaying email $norm"
 echo -e "[ls-scr] $brightred\b lslsync $norm - $brightblue\b Install lsyncd and configure this server as a master$norm"
 echo -e "[ls-scr] $brightred\b lswordpress $norm - $brightblue\b Install Wordpress on this server $norm"
+echo -e "[ls-scr] $brightred\b lsdrupal $norm - $brightblue\b Install Drupal 7 on this server $norm"
 echo -e "[ls-scr] $brightred\b lswebmin $norm - $brightblue\b Install Webmin on this server $norm"
 echo -e "[ls-scr] $brightred\b lssuphp $norm - $brightblue\b Replaces mod_php with mod_suphp $norm"
 echo -e "[ls-scr] $brightred\b lsconcurchk $norm - $brightblue\b Show concurrent connections $norm"
