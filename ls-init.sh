@@ -370,9 +370,9 @@ fi
 		ServerName $domain
 		ServerAlias www.$domain
 		DocumentRoot /var/www/vhosts/$domain
-		<Directory /var/www/vhosts/$domain>
-		AllowOverride All
-		</Directory>
+			<Directory /var/www/vhosts/$domain>
+			AllowOverride All
+			</Directory>
 		CustomLog logs/$domain-access_log common
 		ErrorLog logs/$domain-error_log
 		</VirtualHost>
@@ -385,9 +385,9 @@ fi
 		ServerName $domain
 		ServerAlias www.$domain
 		DocumentRoot /var/www/vhosts/$domain
-		<Directory /var/www/vhosts/$domain>
-		AllowOverride All
-		</Directory>
+			<Directory /var/www/vhosts/$domain>
+			AllowOverride All
+			</Directory>
 		CustomLog /var/log/apache2/$domain-access_log common
 		ErrorLog /var/log/apache2/$domain-error_log
 		</VirtualHost>
