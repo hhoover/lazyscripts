@@ -1,12 +1,13 @@
 #!/bin/sh
 
+# vim: ts=8
 #########################################################################
 #									#
 #	MySQL performance tuning primer script				#
 #	Writen by: Matthew Montgomery					#
 #	Report bugs to: https://bugs.launchpad.net/mysql-tuning-primer	#
 #	Inspired by: MySQLARd (http://gert.sos.be/demo/mysqlar/)	#
-#	Version: 1.6-r0		Released: 2011-05-14			#
+#	Version: 1.6-r1		Released: 2011-08-06			#
 #	Licenced under GPLv2                                            #
 #									#
 #########################################################################
@@ -57,7 +58,7 @@ export boldwhite='\033[1;37m'
 cecho ()
 
 ## -- Function to easliy print colored text -- ##
-
+	
 	# Color-echo.
 	# Argument $1 = message
 	# Argument $2 = color
@@ -131,37 +132,37 @@ color=${2:-black}		# Defaults to black, if not specified.
 
 case $color in
 	black)
-		 printf "$black" ;;
+		printf "$black" ;;
 	boldblack)
-		 printf "$boldblack" ;;
+		printf "$boldblack" ;;
 	red)
-		 printf "$red" ;;
+		printf "$red" ;;
 	boldred)
-		 printf "$boldred" ;;
+		printf "$boldred" ;;
 	green)
-		 printf "$green" ;;
+		printf "$green" ;;
 	boldgreen)
-		 printf "$boldgreen" ;;
+		printf "$boldgreen" ;;
 	yellow)
-		 printf "$yellow" ;;
+		printf "$yellow" ;;
 	boldyellow)
-		 printf "$boldyellow" ;;
+		printf "$boldyellow" ;;
 	blue)
-		 printf "$blue" ;;
+		printf "$blue" ;;
 	boldblue)
-		 printf "$boldblue" ;;
+		printf "$boldblue" ;;
 	magenta)
-		 printf "$magenta" ;;
+		printf "$magenta" ;;
 	boldmagenta)
-		 printf "$boldmagenta" ;;
+		printf "$boldmagenta" ;;
 	cyan)
-		 printf "$cyan" ;;
+		printf "$cyan" ;;
 	boldcyan)
-		 printf "$boldcyan" ;;
+		printf "$boldcyan" ;;
 	white)
-		 printf "$white" ;;
+		printf "$white" ;;
 	boldwhite)
-		 printf "$boldwhite" ;;
+		printf "$boldwhite" ;;
 esac
   printf "%s"  "$message"
   tput sgr0			# Reset to normal.
@@ -269,7 +270,7 @@ second_login_failed () {
 ## -- create a ~/.my.cnf and exit when all else fails -- ##
 
 	cecho "Could not auto detect login info!"
-	cecho "Found Sockets: $found_socks"
+	cecho "Found potential sockets: $found_socks"
 	cecho "Using: $socket" red
 	read -p "Would you like to provide a different socket?: [y/N] " REPLY
 		case $REPLY in 
@@ -1178,9 +1179,16 @@ check_table_locking () {
 		cecho "If you have long running SELECT's against MyISAM tables and perform"
 		cecho "frequent updates consider setting 'low_priority_updates=1'"
 		fi
-		if [ $concurrent_insert -le 1 ] && [ "$mysql_version_num" -gt 050000 ] ; then
-		cecho "If you have a high concurrency of inserts on Dynamic row-length tables"
-		cecho "consider setting 'concurrent_insert=2'."
+		if [ "$mysql_version_num" -gt 050000 ] && [ "$mysql_version_num" -lt 050500 ]; then
+			if [ $concurrent_insert -le 1 ] ; then
+			cecho "If you have a high concurrency of inserts on Dynamic row-length tables"
+			cecho "consider setting 'concurrent_insert=2'."
+			fi
+		elif [ "$mysql_version_num" -gt 050500 ] ; then
+			if [ "$concurrent_insert" = 'AUTO' ] || [ "$concurrent_insert" = 'NEVER' ] ; then
+			cecho "If you have a high concurrency of inserts on Dynamic row-length tables"
+			cecho "consider setting 'concurrent_insert=ALWAYS'."
+			fi
 		fi
 	else
 		cecho "Your table locking seems to be fine" green
@@ -1233,9 +1241,30 @@ check_innodb_status () {
 
 ## -- InnoDB -- ##
 
-	mysql_variable \'have_innodb\' have_innodb
+	## See http://bugs.mysql.com/59393
 
-	if [ "$have_innodb" = "YES" ] ; then
+	if [ "$mysql_version_num" -lt 50603 ] ; then
+	mysql_variable \'have_innodb\' have_innodb
+	fi
+	if [ "$mysql_version_num" -lt 50500 ] && [ "$have_innodb" = "YES" ] ; then
+	innodb_enabled=1
+	fi
+	if [ "$mysql_version_num" -ge 50500 ] && [ "$mysql_version_num" -lt 50512 ] ; then 
+	mysql_variable \'ignore_builtin_innodb\' ignore_builtin_innodb
+		if [ "$ignore_builtin_innodb" = "ON" ] || [ $have_innodb = "NO" ] ; then
+		innodb_enabled=0
+		else
+		innodb_enabled=1
+		fi
+	elif [ "$mysql_version_num" -ge 50600 ] && [ "$mysql_version_num" -lt 50603 ] ; then
+	mysql_variable \'ignore_builtin_innodb\' ignore_builtin_innodb
+		if [ "$ignore_builtin_innodb" = "ON" ] || [ $have_innodb = "NO" ] ; then
+		innodb_enabled=0
+		else
+		innodb_enabled=1
+		fi
+	fi
+	if [ "$innodb_enabled" = 1 ] ; then
 		mysql_variable \'innodb_buffer_pool_size\' innodb_buffer_pool_size
 		mysql_variable \'innodb_additional_mem_pool_size\' innodb_additional_mem_pool_size
 		mysql_variable \'innodb_fast_shutdown\' innodb_fast_shutdown
@@ -1416,26 +1445,26 @@ get_system_info () {
     
     # Get information for various UNIXes
     if [ "$OS" = 'Darwin' ]; then
-	ps_socket=$(netstat -ln | awk '/mysql(d)?\.sock/ { print $9 }' | head -1)
-	found_socks=$(netstat -ln | awk '/mysql(d)?\.sock/ { print $9 }')
+	ps_socket=$(netstat -ln | awk '/mysql(.*)?\.sock/ { print $9 }' | head -1)
+	found_socks=$(netstat -ln | awk '/mysql(.*)?\.sock/ { print $9 }')
         export physical_memory=$(sysctl -n hw.memsize)
 	export duflags=''
     elif [ "$OS" = 'FreeBSD' ] || [ "$OS" = 'OpenBSD' ]; then
 	## On FreeBSD must be root to locate sockets.
-	ps_socket=$(netstat -ln | awk '/mysql(d)?\.sock/ { print $9 }' | head -1)
-	found_socks=$(netstat -ln | awk '/mysql(d)?\.sock/ { print $9 }')
+	ps_socket=$(netstat -ln | awk '/mysql(.*)?\.sock/ { print $9 }' | head -1)
+	found_socks=$(netstat -ln | awk '/mysql(.*)?\.sock/ { print $9 }')
         export physical_memory=$(sysctl -n hw.realmem)
 	export duflags=''
     elif [ "$OS" = 'Linux' ] ; then
 	## Includes SWAP
         ## export physical_memory=$(free -b | grep -v buffers |  awk '{ s += $2 } END { printf("%.0f\n", s ) }')
-	ps_socket=$(netstat -ln | awk '/mysql(d)?\.sock/ { print $9 }' | head -1)
-	found_socks=$(netstat -ln | awk '/mysql(d)?\.sock/ { print $9 }')
+	ps_socket=$(netstat -ln | awk '/mysql(.*)?\.sock/ { print $9 }' | head -1)
+	found_socks=$(netstat -ln | awk '/mysql(.*)?\.sock/ { print $9 }')
 	export physical_memory=$(awk '/^MemTotal/ { printf("%.0f", $2*1024 ) }' < /proc/meminfo)
 	export duflags='-b'
     elif [ "$OS" = 'SunOS' ] ; then
-	ps_socket=$(netstat -an | awk '/mysql(d)?.sock/ { print $5 }' | head -1)
-	found_socks=$(netstat -an | awk '/mysql(d)?.sock/ { print $5 }') 
+	ps_socket=$(netstat -an | awk '/mysql(.*)?.sock/ { print $5 }' | head -1)
+	found_socks=$(netstat -an | awk '/mysql(.*)?.sock/ { print $5 }') 
 	export physical_memory=$(prtconf | awk '/^Memory\ size:/ { print $3*1048576 }')
     fi
     if [ -z $(which bc) ] ; then
