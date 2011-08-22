@@ -41,6 +41,7 @@ done
 function disable_mod_php() {
 	if [[ $distro == "Redhat/CentOS" ]]; then
 		mv /etc/httpd/conf.d/php.conf /etc/httpd/conf.d/php.conf.disabled
+		touch /etc/httpd/conf.d/php.conf
 	elif [[ $distro == "Ubuntu" ]]; then
 		a2dismod php5 > /dev/null 2>&1
 	else
