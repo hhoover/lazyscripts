@@ -266,7 +266,7 @@ cat > /etc/logrotate.d/lsyncd << EOF
     sharedscripts
     postrotate
 
-        /sbin/service lsyncd restart > /dev/null 2>/dev/null || true
+        /etc/init.d/lsyncd restart &> /dev/null || true
 
     endscript
 }
