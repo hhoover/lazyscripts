@@ -358,6 +358,13 @@ function lslsync() {
 	cd - > /dev/null 2>&1
 }
 
+function lshistsetup() {
+	cd $LZS_PREFIX
+	chmod +x hist.sh
+	./hist.sh
+	cd - > /dev/null 2>&1
+}
+
 function lsvhost() {
 if [[ $1 != "" ]]; then
 		domain=$1
@@ -495,6 +502,7 @@ clear
 lscolors
 lsinfo
 lscolorprompt
+lshistsetup
 lscpchk
 # Print the MOTD
 cat /etc/motd
