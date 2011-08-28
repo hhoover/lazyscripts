@@ -2,7 +2,7 @@
 ## Lsyncd Installation Script
 ## Author: David Wittman <david@wittman.com>
 
-SOURCE="http://lsyncd.googlecode.com/files/lsyncd-2.0.4.tar.gz"
+SOURCE="http://lsyncd.googlecode.com/files/lsyncd-2.0.5.tar.gz"
 BASENAME=$(basename ${SOURCE})
 SOURCEDEST=/usr/local/src/$(echo ${BASENAME} | sed 's/\.tar\.gz//')
 DEFAULT_PATH="/var/www"
@@ -70,8 +70,8 @@ pass "$OUTPUT"
 OUTPUT="Compiling and installing lsyncd..."
 printf "$OUTPUT"
 cd ${SOURCEDEST}
-./configure > /dev/null 2>&1 || die $OUTPUT
-/usr/bin/make > /dev/null 2>&1 && /usr/bin/make install > /dev/null 2>&1 || die $OUTPUT
+./configure &> /dev/null || die $OUTPUT
+/usr/bin/make &> /dev/null && /usr/bin/make install &> /dev/null || die $OUTPUT
 pass "$OUTPUT"
 
 # Post-install stuff
@@ -294,7 +294,7 @@ pass "${OUTPUT}"
 # Start the service
 OUTPUT="Starting lsyncd service..."
 printf "$OUTPUT"
-/etc/init.d/lsyncd start > /dev/null 2>&1 || die $OUTPUT
+/etc/init.d/lsyncd start &> /dev/null || die $OUTPUT
 pass "${OUTPUT}"
 
 echo
