@@ -12,14 +12,6 @@ normal=$(tput sgr0)
 red=$(tput setaf 1)
 green=$(tput setaf 2)
 
-isInteger() {
-    # 2>&- is fancy for outputting stderr to /dev/null
-    if [ $1 -eq $1 2>&- ]; then
-        return 0
-    fi
-    return 1
-}
-
 pass() {
     COLUMNS=$(tput cols)
     echo $1 | awk -v width=${COLUMNS} '{ padding=(width-length($0)-8); printf "%"(padding)"s", "[  ";}'
