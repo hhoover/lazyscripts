@@ -284,7 +284,7 @@ sync {
     source="${SYNC_SOURCE}",
     host="${HOST}",
     targetdir="${SYNC_TARGET}",
-    rsyncOps="-avz"
+    rsyncOpts="-avz"
 }
 
 EOF
@@ -299,5 +299,4 @@ pass "${OUTPUT}"
 
 echo
 echo "Ding! Fries are done. Now install SSH keys and rsync on the slaves."
-
-
+echo "${red}NOTE:${normal} Lsyncd 2.0.5+ will gracefully quit if it cannot rsync to the destination servers."
