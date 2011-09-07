@@ -316,7 +316,8 @@ fi
 }
 
 function lsmyusers() {
-    mysql -B -N -e "SELECT DISTINCT CONCAT('SHOW GRANTS FOR ''',user,'''@''',host,''';') AS query FROM user" mysql | mysql 
+    #mysql -B -N -e "SELECT DISTINCT CONCAT('SHOW GRANTS FOR ''',user,'''@''',host,''';') AS query FROM user" mysql | mysql 
+mysql -e "SELECT User,Host from mysql.user;" && mysql -B -N -e "SELECT user, host FROM user" mysql | sed 's,\t,"@",g;s,^,show grants for ",g;s,$,";,g;' | mysql | sed 's,$,;,g'
 }
 
 function lsrblcheck() {
@@ -445,6 +446,22 @@ function lsrpaf() {
 	cd - > /dev/null 2>&1
 }
 
+function lsparsar() {
+	if [ "${distro}" == "Redhat/CentOS" ]; then
+	    if [ -z "`which perl`" ]; then
+	        echo "Installing perl"
+	        yum -y install perl
+		fi
+	fi
+	    if [ "${distro}" == "Ubuntu" ]; then
+	        if [ -z "`which perl`" ]; then
+	        echo "Installing perl"
+	        apt-get -y install perl
+	    fi
+	fi
+/usr/bin/perl $LZS_PREFIX/parsar.pl
+}
+
 # Prints IPv4 addresses for all eth* interfaces
 function lsip() {
 /sbin/ifconfig | awk '/^eth/ { printf("%s\t",$1) } /inet addr:/ { gsub(/.*:/,"",$2); if ($2 !~ /^127/) print $2; }'
@@ -471,6 +488,7 @@ echo -e "[ls-scr] $brightred\b lshighio $norm - $brightblue\b Reports stats on p
 echo -e "[ls-scr] $brightred\b lsmylogin $norm - $brightblue\b Auto login to MySQL $norm"
 echo -e "[ls-scr] $brightred\b lsmyengines $norm - $brightblue\b List MySQL tables and their storage engine. $norm"
 echo -e "[ls-scr] $brightred\b lsmyusers $norm - $brightblue\b List MySQL users and grants. $norm"
+echo -e "[ls-scr] $brightred\b lsparsar $norm - $brightblue\b Pretty sar output $norm"
 echo -e "[ls-scr] $brightred\b lsapcheck $norm - $brightblue\b Verify apache max client settings and memory usage. $norm"
 echo -e "[ls-scr] $brightred\b lsapdocs $norm - $brightblue\b Prints out Apache's DocumentRoots $norm"
 echo -e "[ls-scr] $brightred\b lsapproc $norm - $brightblue\b Shows the memory used by each Apache process $norm"

@@ -4,19 +4,6 @@
 
 <p>Compatibility - RHEL 5, CentOS 5, Ubuntu 10.04, Ubuntu 10.10</p>
 
-<h3>Contributors:</h3>
-* Hart Hoover
-* Tim Galyean
-* Kale Stedman
-* Trey Feagle
-* Jason Dunsmore
-* Jacob Walcik
-* Farid Saad
-* David Wittman
-* Curtus Regnier
-* Jordan Callicoat
-* Ryan Walker
-
 <h3>How to use:</h3>
 <p> Run this bash function as root:</p>
 	function lsgethelper() { if [ -d /root/.lazyscripts ]; then cd /root/.lazyscripts/tools && git pull git://github.com/hhoover/lazyscripts.git; fi; cd ~ ; git clone git://github.com/hhoover/lazyscripts.git /root/.lazyscripts/tools; source /root/.lazyscripts/tools/ls-init.sh; }; lsgethelper && lslogin
@@ -37,7 +24,8 @@
 * lsrblcheck  - Server Email Blacklist Check 
 * lscloudkick - Installs the Cloudkick agent
 * lsvhost  - Add an Apache virtual host 
-* lspostfix  - Set up Postfix for relaying email 
+* lspostfix  - Set up Postfix for relaying email
+* lsparsar - Pretty sar output
 * lslsync  - Install lsyncd and configure this server as a master
 * lswordpress  - Install Wordpress on this server 
 * lsdrupal  - Install Drupal 7 on this server 
