@@ -31,6 +31,7 @@
 * lsdrupal  - Install Drupal 7 on this server 
 * lssuphp - Converts a server from mod_php to suPHP
 * lswebmin  - Install Webmin on this server 
+* lsvarnish - Installs Varnish 3.0
 * lsconcurchk  - Show concurrent connections 
 * lscrtchk - Check SSL Cert/Key to make sure they match
 * lsrpaf - Install mod_rpaf to set correct client IP behind a proxy.

@@ -446,6 +446,12 @@ function lsrpaf() {
 	cd - > /dev/null 2>&1
 }
 
+function lsvarnish() {
+	cd $LZS_PREFIX > /dev/null 2>&1
+	/bin/bash varnish.sh
+	cd - > /dev/null 2>&1
+}
+
 function lsparsar() {
 	if [ "${distro}" == "Redhat/CentOS" ]; then
 	    if [ -z "`which perl`" ]; then
@@ -500,6 +506,7 @@ echo -e "[ls-scr] $brightred\b lslsync $norm - $brightblue\b Install lsyncd and 
 echo -e "[ls-scr] $brightred\b lswordpress $norm - $brightblue\b Install Wordpress on this server $norm"
 echo -e "[ls-scr] $brightred\b lsdrupal $norm - $brightblue\b Install Drupal 7 on this server $norm"
 echo -e "[ls-scr] $brightred\b lswebmin $norm - $brightblue\b Install Webmin on this server $norm"
+echo -e "[ls-scr] $brightred\b lsvarnish $norm - $brightblue\b Install Varnish on this server $norm"
 echo -e "[ls-scr] $brightred\b lssuphp $norm - $brightblue\b Replaces mod_php with mod_suphp $norm"
 echo -e "[ls-scr] $brightred\b lsconcurchk $norm - $brightblue\b Show concurrent connections $norm"
 echo -e "[ls-scr] $brightred\b lscrtchk $norm - $brightblue\b Check SSL Cert/Key to make sure they match $norm"
