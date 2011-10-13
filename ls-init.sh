@@ -452,15 +452,14 @@ function lsparsar() {
 	        echo "Installing perl"
 	        yum -y install perl
 		fi
-		/usr/bin/perl $LZS_PREFIX/parsar.pl
 	fi
 	    if [ "${distro}" == "Ubuntu" ]; then
-	        #if [ -z "`which perl`" ]; then
-	        #echo "Installing perl"
-	        #apt-get -y install perl
-	    	echo "lsparsar currently unvailable for Ubuntu"
-		fi
+	        if [ -z "`which perl`" ]; then
+	        echo "Installing perl"
+	        apt-get -y install perl
+	    fi
 	fi
+/usr/bin/perl $LZS_PREFIX/parsar.pl
 }
 
 # Prints IPv4 addresses for all eth* interfaces
