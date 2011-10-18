@@ -452,6 +452,12 @@ function lsvarnish() {
 	cd - > /dev/null 2>&1
 }
 
+function lsftp() {
+	cd $LZS_PREFIX > /dev/null 2>&1
+	/bin/bash vsftpd.sh
+	cd - > /dev/null 2>&1
+}
+
 function lsparsar() {
 	if [ "${distro}" == "Redhat/CentOS" ]; then
 	    if [ -z "`which perl`" ]; then
@@ -500,6 +506,7 @@ echo -e "[ls-scr] $brightred\b lsapdocs $norm - $brightblue\b Prints out Apache'
 echo -e "[ls-scr] $brightred\b lsapproc $norm - $brightblue\b Shows the memory used by each Apache process $norm"
 echo -e "[ls-scr] $brightred\b lsrblcheck $norm - $brightblue\b Server Email Blacklist Check $norm"
 echo -e "[ls-scr] $brightred\b lscloudkick $norm - $brightblue\b Install the Cloudkick agent $norm"
+echo -e "[ls-scr] $brightred\b lsftp $norm - $brightblue\b Installs and configures VSFTPD $norm"
 echo -e "[ls-scr] $brightred\b lsvhost $norm - $brightblue\b Add an Apache virtual host $norm"
 echo -e "[ls-scr] $brightred\b lspostfix $norm - $brightblue\b Set up Postfix for relaying email $norm"
 echo -e "[ls-scr] $brightred\b lslsync $norm - $brightblue\b Install lsyncd and configure this server as a master$norm"
