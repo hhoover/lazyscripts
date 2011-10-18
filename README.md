@@ -24,7 +24,7 @@
 * lsrblcheck  - Server Email Blacklist Check 
 * lscloudkick - Installs the Cloudkick agent
 * lsvhost  - Add an Apache virtual host 
-* lsftp - Installs/configures vsftpd
+* lsvsftpd - Installs/configures vsftpd
 * lspostfix  - Set up Postfix for relaying email
 * lsparsar - Pretty sar output
 * lslsync  - Install lsyncd and configure this server as a master
