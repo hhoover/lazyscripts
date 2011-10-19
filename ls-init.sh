@@ -386,90 +386,80 @@ fi
 		ErrorLog logs/$domain-error_log
 		</VirtualHost>
 		EOF
-                if [[ $reqssl = "y" ]]; then
-                        cat >> /etc/httpd/vhost.d/$domain.conf <<-EOF
-                        <VirtualHost *:443>
-                                ServerName $domain
-                                DocumentRoot /var/www/vhosts/$domain
-                                <Directory /var/www/vhosts/$domain>
-                                        Options FollowSymLinks MultiViews
-                                        AllowOverride All
-                                </Directory>
-
-                                CustomLog /var/log/httpd/$domain-ssl-access.log combined
-                                ErrorLog /var/log/httpd/$domain-ssl-error.log
-
-                                LogLevel warn
-
-                                SSLEngine on
-                                SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
-                                SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
-
-                                <FilesMatch "\.(cgi|shtml|phtml|php)$">
-                                        SSLOptions +StdEnvVars
-                                </FilesMatch>
-
-                                BrowserMatch "MSIE [2-6]" \
-                                        nokeepalive ssl-unclean-shutdown \
-                                        downgrade-1.0 force-response-1.0
-                                BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
-                        </VirtualHost>
-                        EOF
-                fi
-		mkdir -p /var/www/vhosts/$domain
-		service httpd restart > /dev/null 2>&1
-	elif [[ $distro = "Ubuntu" ]]; then
-		cat > /etc/apache2/sites-available/$domain <<-EOF
-		<VirtualHost *:80>
-		ServerName $domain
-		ServerAlias www.$domain
-		DocumentRoot /var/www/vhosts/$domain
+	if [[ $reqssl = "y" ]]; then
+		cat >> /etc/httpd/vhost.d/$domain.conf <<-EOF
+		<VirtualHost *:443>
+			ServerName $domain
+			DocumentRoot /var/www/vhosts/$domain
 			<Directory /var/www/vhosts/$domain>
-			AllowOverride All
+				Options FollowSymLinks MultiViews
+				AllowOverride All
 			</Directory>
-		CustomLog /var/log/apache2/$domain-access_log common
-		ErrorLog /var/log/apache2/$domain-error_log
+			CustomLog /var/log/httpd/$domain-ssl-access.log combined
+			ErrorLog /var/log/httpd/$domain-ssl-error.log
+			LogLevel warn
+			SSLEngine on
+			SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
+			SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+			<FilesMatch "\.(cgi|shtml|phtml|php)$">
+				SSLOptions +StdEnvVars
+			</FilesMatch>
+			BrowserMatch "MSIE [2-6]" \
+				nokeepalive ssl-unclean-shutdown \
+				downgrade-1.0 force-response-1.0
+			BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 		</VirtualHost>
 		EOF
-                if [[ $reqssl = "y" ]]; then
-                        cat >> /etc/apache2/sites-available/$domain <<-EOF
-                        <VirtualHost _default_:443>
-                                ServerName $domain
-                                DocumentRoot /var/www/$domain
-                                <Directory /var/www/$domain>
-                                        AllowOverride All
-                                </Directory>
-
-                                CustomLog /var/log/apache2/$domain-ssl-access.log combined
-                                ErrorLog /var/log/apache2/$domain-ssl-error.log
-
-                                LogLevel warn
-
-                                SSLEngine on
-                                SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
-                                SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-
-                                <FilesMatch "\.(cgi|shtml|phtml|php)$">
-                                        SSLOptions +StdEnvVars
-                                </FilesMatch>
-
-                                BrowserMatch "MSIE [2-6]" \
-                                        nokeepalive ssl-unclean-shutdown \
-                                        downgrade-1.0 force-response-1.0
-                                BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
-                        </VirtualHost>
-                        EOF
-                fi
-		mkdir -p /var/www/vhosts/$domain
-		a2ensite $domain > /dev/null 2>&1
-		service apache2 restart	 > /dev/null 2>&1
-	else
-		echo "Unsupported OS"
-fi
-if [[ $reqssl = "y" ]]; then
-        echo "SSL setup. Make sure to configure the certificates..."
-fi
-}
+			fi
+			mkdir -p /var/www/vhosts/$domain
+			service httpd restart > /dev/null 2>&1
+		elif [[ $distro = "Ubuntu" ]]; then
+			cat > /etc/apache2/sites-available/$domain <<-EOF
+			<VirtualHost *:80>
+			ServerName $domain
+			ServerAlias www.$domain
+			DocumentRoot /var/www/vhosts/$domain
+				<Directory /var/www/vhosts/$domain>
+				AllowOverride All
+				</Directory>
+			CustomLog /var/log/apache2/$domain-access_log common
+			ErrorLog /var/log/apache2/$domain-error_log
+			</VirtualHost>
+			EOF
+			if [[ $reqssl = "y" ]]; then
+				cat > /etc/apache2/sites-available/$domain <<-EOF
+				<VirtualHost _default_:443>
+					ServerName $domain
+					DocumentRoot /var/www/$domain
+					<Directory /var/www/$domain>
+						AllowOverride All
+					</Directory>
+					CustomLog /var/log/apache2/$domain-ssl-access.log combined
+					ErrorLog /var/log/apache2/$domain-ssl-error.log
+					LogLevel warn
+					SSLEngine on
+					SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+					SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+					<FilesMatch "\.(cgi|shtml|phtml|php)$">
+						SSLOptions +StdEnvVars
+					</FilesMatch>
+					BrowserMatch "MSIE [2-6]" \
+						nokeepalive ssl-unclean-shutdown \
+						downgrade-1.0 force-response-1.0
+					BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+				</VirtualHost>
+				EOF
+			fi
+			mkdir -p /var/www/vhosts/$domain
+			a2ensite $domain > /dev/null 2>&1
+			service apache2 restart	 > /dev/null 2>&1
+		else
+			echo "Unsupported OS"
+	fi
+	if [[ $reqssl = "y" ]]; then
+		echo "SSL setup. Make sure to configure the certificates..."
+	fi
+	}
 
 function lssuphp() {
 	cd $LZS_PREFIX
