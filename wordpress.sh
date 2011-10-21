@@ -17,32 +17,32 @@ function get_domain() {
 # add a virtual host and restart Apache
 function configure_apache() {
 	if [[ $distro = "Redhat/CentOS" ]]; then
-		cat > /etc/httpd/vhost.d/$domain.conf <<-EOF
-		<VirtualHost *:80>
-		ServerName $domain
-		ServerAlias www.$domain
-		DocumentRoot /var/www/vhosts/$domain/wordpress
-		<Directory /var/www/vhosts/$domain/wordpress>
-		AllowOverride All
-		</Directory>
-		CustomLog logs/$domain-access_log common
-		ErrorLog logs/$domain-error_log
-		</VirtualHost>
-		EOF
+		cat > /etc/httpd/vhost.d/$domain.conf << EOF
+<VirtualHost *:80>
+ServerName $domain
+ServerAlias www.$domain
+DocumentRoot /var/www/vhosts/$domain/wordpress
+	<Directory /var/www/vhosts/$domain/wordpress>
+	AllowOverride All
+	</Directory>
+CustomLog logs/$domain-access_log common
+ErrorLog logs/$domain-error_log
+</VirtualHost>
+EOF
 		service httpd restart > /dev/null 2>&1
 	elif [[ $distro = "Ubuntu" ]]; then
-		cat > /etc/apache2/sites-available/$domain <<-EOF
-		<VirtualHost *:80>
-		ServerName $domain
-		ServerAlias www.$domain
-		DocumentRoot /var/www/vhosts/$domain/wordpress
-		<Directory /var/www/vhosts/$domain/wordpress>
-		AllowOverride All
-		</Directory>
-		CustomLog /var/log/apache2/$domain-access_log common
-		ErrorLog /var/log/apache2/$domain-error_log
-		</VirtualHost>
-		EOF
+		cat > /etc/apache2/sites-available/$domain << EOF
+<VirtualHost *:80>
+ServerName $domain
+ServerAlias www.$domain
+DocumentRoot /var/www/vhosts/$domain/wordpress
+	<Directory /var/www/vhosts/$domain/wordpress>
+	AllowOverride All
+	</Directory>
+CustomLog /var/log/apache2/$domain-access_log common
+ErrorLog /var/log/apache2/$domain-error_log
+</VirtualHost>
+EOF
 		a2ensite $domain > /dev/null 2>&1
 		service apache2 restart	 > /dev/null 2>&1
 fi
