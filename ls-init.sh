@@ -1,12 +1,40 @@
 #!/bin/bash
+# LazyScripts Initializer Script
+# https://github.com/hhoover/lazyscripts/
+#
+# Usage: dot (`. ls-init.sh`) or source this file (`source ls-init.sh`)
+#        to load into your current shell
 #
 
-LZS_VERSION=002
-LZS_PREFIX="/root/.lazyscripts/tools"
+LZS_VERSION=003
+LZS_PREFIX=$(dirname $(readlink -f $BASH_SOURCE))
 LZS_APP="$LZS_PREFIX/ls-init.sh"
 LZS_URLPREFIX="git://github.com/hhoover/lazyscripts.git"
 LZS_GETURL="$LZS_URLPREFIX/ls-init.sh"
+LZS_MOD_PATH="${LZS_PREFIX}/modules/"
 
+function isFunction() {
+        declare -F $1 &> /dev/null
+        return $?
+}
+
+# lz - Main function
+function lz() {
+        # Find files matching the parameter, limit 1
+        local FILE=$(/bin/ls ${LZS_MOD_PATH}${1}.* 2> /dev/null | head -1)
+
+        if [ $# -eq 1 ]; then
+                if ( isFunction ${1} ); then
+                        # Run the function
+                        ${1}
+                elif [ -r "${FILE}" ]; then
+                        # Execute the module
+                        chmod +x ${FILE} && ${FILE}
+		else
+			return 1
+		fi
+	fi
+}
 
 function lscolors() { 
 # defines the available colors and makes them globally accessible
@@ -231,22 +259,6 @@ if [ -e /root/.my.cnf ]; then
  return 0;
 }
 
-function lsapcheck() {
-	if [ "${distro}" == "Redhat/CentOS" ]; then
-	    if [ -z "`which perl`" ]; then
-	        echo "Installing perl"
-	        yum -y install perl
-		fi
-	fi
-	    if [ "${distro}" == "Ubuntu" ]; then
-	        if [ -z "`which perl`" ]; then
-	        echo "Installing perl"
-	        apt-get -y install perl
-	    fi
-	fi
-/usr/bin/perl $LZS_PREFIX/apachebuddy.pl
-}
-
 function lsapdocs() {
 	if [[ "${distro}" == "Redhat/CentOS" ]]
 		then
@@ -324,48 +336,6 @@ function lsrblcheck() {
 	curl checkrbl.com
 }
 
-function lswordpress() {
-	cd $LZS_PREFIX
-	chmod +x wordpress.sh
-	./wordpress.sh
-	cd - > /dev/null 2>&1
-}
-
-function lspostfix() {
-	cd $LZS_PREFIX
-	chmod +x postfix.sh
-	./postfix.sh
-	cd - > /dev/null 2>&1
-}
-
-function lswebmin() {
-	cd $LZS_PREFIX
-	chmod +x webmin.sh
-	./webmin.sh
-	cd - > /dev/null 2>&1
-}
-
-function lsdrupal() {
-	cd $LZS_PREFIX
-	chmod +x drupal.sh
-	./drupal.sh
-	cd - > /dev/null 2>&1
-}
-
-function lslsync() {
-	cd $LZS_PREFIX
-	chmod +x lsync.sh
-	./lsync.sh
-	cd - > /dev/null 2>&1
-}
-
-function lshistsetup() {
-	cd $LZS_PREFIX
-	chmod +x hist.sh
-	./hist.sh
-	cd - > /dev/null 2>&1
-}
-
 function lsvhost() {
 if [[ $1 != "" ]]; then
 		domain=$1
@@ -412,13 +382,6 @@ EOF
 fi
 }
 
-function lssuphp() {
-	cd $LZS_PREFIX
-	chmod +x suphp.sh
-	./suphp.sh
-	cd - > /dev/null 2>&1
-}
-
 function lscrtchk() {
 	cd $LZS_PREFIX
 	read -p "Enter path to key [/path/to/server.key]: " key
@@ -444,49 +407,9 @@ netstat -an |grep -i tcp |grep -v "0.0.0.0" |grep -v "::" |awk '{print $4, $5}' 
 fi
 }
 
-function lsrpaf() {
-	cd $LZS_PREFIX > /dev/null 2>&1
-	/bin/bash rpaf.sh
-	cd - > /dev/null 2>&1
-}
-
-function lsvarnish() {
-	cd $LZS_PREFIX > /dev/null 2>&1
-	/bin/bash varnish.sh
-	cd - > /dev/null 2>&1
-}
-
-function lsvsftpd() {
-	cd $LZS_PREFIX > /dev/null 2>&1
-	/bin/bash vsftpd.sh
-	cd - > /dev/null 2>&1
-}
-
-function lsparsar() {
-	if [ "${distro}" == "Redhat/CentOS" ]; then
-	    if [ -z "`which perl`" ]; then
-	        echo "Installing perl"
-	        yum -y install perl
-		fi
-	fi
-	    if [ "${distro}" == "Ubuntu" ]; then
-	        if [ -z "`which perl`" ]; then
-	        echo "Installing perl"
-	        apt-get -y install perl
-	    fi
-	fi
-/usr/bin/perl $LZS_PREFIX/parsar.pl
-}
-
 # Prints IPv4 addresses for all eth* interfaces
 function lsip() {
 /sbin/ifconfig | awk '/^eth/ { printf("%s\t",$1) } /inet addr:/ { gsub(/.*:/,"",$2); if ($2 !~ /^127/) print $2; }'
-}
-
-function lspma() {
-	cd $LZS_PREFIX > /dev/null 2>&1
-	/bin/bash lspma.sh
-	cd - > /dev/null 2>&1
 }
 
 function lshelp() {
@@ -529,8 +452,24 @@ echo -e "[ls-scr] --------------------------------------------------------------
 
 function lswhatis() { export -f $1; export -pf; export -fn $1; }
 
+function _aliases() {
+	alias lsapcheck="lz apachebuddy"
+	alias lsdrupal="lz drupal"
+	alias lshistsetup="lz hist"
+	alias lsrpaf="lz rpaf"
+	alias lsparsar="lz parsar"
+	alias lspostfix="lz postfix"
+	alias lspma="lz pma"
+	alias lslsync="lz lsync"
+	alias lsvarnish="lz varnish"
+	alias lsvsftpd="lz vsftpd"
+	alias lswebmin="lz webmin"
+	alias lswordpress="lz wordpress"
+}
+
 function lslogin() {
 # Set of commands to run at login
+_aliases
 ostype
 lsresize
 tset -s xterm
