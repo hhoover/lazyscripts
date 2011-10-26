@@ -170,26 +170,21 @@ function lsbigfiles() {
 }
 
 function lsmytuner() {
-	install_bc
-	cd $LZS_PREFIX
-	chmod +x tuning-primer.sh
-	./tuning-primer.sh
-	cd - > /dev/null 2>&1
+	lsinstall bc
+	lz tuning-primer
 }
 
-function install_bc() {
-	if [[ $distro = "Redhat/CentOS" ]]; then
-		if [ -z "`which bc 2>/dev/null`" ]; then
-		yum -y -q install bc
-	else 
-		echo "BC installed, proceeding"
+# lsinstall - Distro-agnostic quick installer 
+function lsinstall() {
+	if [[ -z $(which "$1" 2>-) ]]; then
+		if [[ ${distro} == "Redhat/CentOS" ]]; then
+			rpm -qa | egrep "^$1" &>- || yum -y install $1 &>-
+		elif [[ ${distro} == "Ubuntu" ]]; then
+			dpkg -l | egrep "^$1" &>- || apt-get -y install $1 &>-
+		else
+			echo "[ERROR] Unknown distribution. Exiting"
+			exit 1
 		fi
-	elif [ "${distro}" == "Ubuntu" ]; then
-	     if [ -z "`which bc 2>/dev/null`" ]; then
-	        apt-get -y -q install bc
-	    else
-	        echo "BC installed, proceeding"
-	     fi
 	fi
 }	
 
