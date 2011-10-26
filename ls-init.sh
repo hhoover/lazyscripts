@@ -453,7 +453,7 @@ function lslogin() {
 	lscolors
 	lsinfo
 	lscolorprompt
-	lshistsetup
+	lz hist
 	lscpchk
 	# Print the MOTD
 	cat /etc/motd
