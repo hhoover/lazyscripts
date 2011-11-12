@@ -445,8 +445,6 @@ function _aliases() {
 
 function lslogin() {
 	# Set of commands to run at login
-	_aliases
-	ostype
 	lsresize
 	tset -s xterm
 	clear
@@ -459,3 +457,13 @@ function lslogin() {
 	cat /etc/motd
 	echo -e "LazyScripts Project Page - https://github.com/hhoover/lazyscripts"
 }
+
+# Run these functions at source time
+ostype
+_aliases	 # Export the function aliases
+
+# Temporary RedHat/CentOS Fix
+if [[ $distro == "Redhat/CentOS" ]]; then
+	chmod 644 /etc/resolv.conf
+fi
+
