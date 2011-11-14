@@ -422,6 +422,7 @@ function lshelp() {
 	echo -e "    lscrtchk\t\tCheck SSL Cert/Key to make sure they match"
 	echo -e "    lsrpaf\t\tInstall mod_rpaf to set correct client IP behind a proxy."
 	echo -e "    lspma\t\tInstalls phpMyAdmin."
+	echo -e "    lsnodejs\t\tInstall Node.js with NPM"
 	echo -e "    lswhatis\t\tOutput the script that would be run with a specific command."
 	echo -e "---------------------------------------------------------------------------------------------"
 }
@@ -441,6 +442,7 @@ function _aliases() {
 	alias lsvsftpd="lz vsftpd"
 	alias lswebmin="lz webmin"
 	alias lswordpress="lz wordpress"
+	alias lsnodejs="lz nodejs"
 }
 
 function lslogin() {
