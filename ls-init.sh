@@ -422,7 +422,7 @@ function lshelp() {
 	echo -e "    lscrtchk\t\tCheck SSL Cert/Key to make sure they match"
 	echo -e "    lsrpaf\t\tInstall mod_rpaf to set correct client IP behind a proxy."
 	echo -e "    lspma\t\tInstalls phpMyAdmin."
-	echo -e "    lsnodejs\t\tInstall Node.js with NPM"
+	echocho -e "    lsnodejs\t\tInstall Node.js with NPM"
 	echo -e "    lswhatis\t\tOutput the script that would be run with a specific command."
 	echo -e "---------------------------------------------------------------------------------------------"
 }
@@ -432,7 +432,7 @@ function lswhatis() { export -f $1; export -pf; export -fn $1; }
 function _aliases() {
 	alias lsapcheck="lz apachebuddy"
 	alias lsdrupal="lz drupal"
-	alias lshistsetup="lz hist"
+	#alias lshistsetup="lz hist"
 	alias lsrpaf="lz rpaf"
 	alias lsparsar="lz parsar"
 	alias lspostfix="lz postfix"
@@ -453,7 +453,7 @@ function lslogin() {
 	lscolors
 	lsinfo
 	lscolorprompt
-	lz hist
+	#lz hist
 	lscpchk
 	# Print the MOTD
 	cat /etc/motd
