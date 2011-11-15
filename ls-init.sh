@@ -432,7 +432,7 @@ function lswhatis() { export -f $1; export -pf; export -fn $1; }
 function _aliases() {
 	alias lsapcheck="lz apachebuddy"
 	alias lsdrupal="lz drupal"
-	alias lshistsetup="lz hist"
+	#alias lshistsetup="lz hist"
 	alias lsrpaf="lz rpaf"
 	alias lsparsar="lz parsar"
 	alias lspostfix="lz postfix"
@@ -453,7 +453,7 @@ function lslogin() {
 	lscolors
 	lsinfo
 	lscolorprompt
-	lz hist
+	#lz hist
 	lscpchk
 	# Print the MOTD
 	cat /etc/motd
