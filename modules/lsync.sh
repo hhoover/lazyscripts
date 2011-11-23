@@ -61,7 +61,7 @@ install_lsync() {
 	if [ "$distro" = "Ubuntu" ]; then
 		/usr/bin/apt-get install -yq build-essential lua5.1 liblua5.1-0-dev pkg-config rsync > /dev/null || die "$OUTPUT"
 	elif [ "$distro" = "Redhat/CentOS" ]; then
-		/usr/bin/yum -qy install lua lua-devel pkgconfig > /dev/null || die "$OUTPUT"
+		/usr/bin/yum -qy install lua lua-devel pkgconfig gcc > /dev/null || die "$OUTPUT"
 	fi
 	pass "$OUTPUT"
 
