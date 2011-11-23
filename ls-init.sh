@@ -1,276 +1,269 @@
 #!/bin/bash
+# LazyScripts Initializer Script
+# https://github.com/hhoover/lazyscripts/
+#
+# Usage: dot (`. ls-init.sh`) or source this file (`source ls-init.sh`)
+#        to load into your current shell
 #
 
-LZS_VERSION=002
-LZS_PREFIX="/root/.lazyscripts/tools"
+LZS_VERSION=003
+LZS_PREFIX=$(dirname $(readlink -f $BASH_SOURCE))
 LZS_APP="$LZS_PREFIX/ls-init.sh"
 LZS_URLPREFIX="git://github.com/hhoover/lazyscripts.git"
 LZS_GETURL="$LZS_URLPREFIX/ls-init.sh"
+LZS_MOD_PATH="${LZS_PREFIX}/modules/"
 
+function isFunction() {
+        declare -F $1 &> /dev/null
+        return $?
+}
+
+# lz - Main function
+function lz() {
+        # Find files matching the parameter, limit 1
+        local FILE=$(/bin/ls ${LZS_MOD_PATH}${1}.* 2> /dev/null | head -1)
+
+        if [ $# -eq 1 ]; then
+                if ( isFunction ${1} ); then
+                        # Run the function
+                        ${1}
+                elif [ -r "${FILE}" ]; then
+                        # Execute the module
+                        chmod +x ${FILE} && ${FILE}
+		else
+			return 1
+		fi
+	fi
+}
 
 function lscolors() { 
-# defines the available colors and makes them globally accessible
-    black='\E[0;30m';
-    red='\E[0;31m';
-    green='\E[0;32m';
-    yellow='\E[0;33m';
-    blue='\E[0;34m';
-    magenta='\E[0;35m';
-    cyan='\E[0;36m';
-    norm='\E[0m';
-    gray='\E[1;30m';
-    brightred='\E[1;31m';
-    brightgreen='\E[1;32m';
-    brightyellow='\E[1;33m';
-    brightblue='\E[1;34m';
-    brightmagenta='\E[1;35m';
-    brightcyan='\E[1;36m';
-    brightwhite='\E[1;37m';
-    blinkred='\E[5;1;31m';
-    blinkgreen='\E[5;1;32m';
-    blinkorange='\E[5;1;33m';
-    blinkblue='\E[5;1;34';
-    blinkmagenta='\E[5;1;35m';
-    blinkcyan='\E[5;1;36m';
-    blinkwhite='\E[5;1;37m';
-alias ls='ls --color'
+	# defines the available colors and makes them globally accessible
+	black='\E[0;30m';
+	red='\E[0;31m';
+	green='\E[0;32m';
+	yellow='\E[0;33m';
+	blue='\E[0;34m';
+	magenta='\E[0;35m';
+	cyan='\E[0;36m';
+	norm='\E[0m';
+	gray='\E[1;30m';
+	brightred='\E[1;31m';
+	brightgreen='\E[1;32m';
+	brightyellow='\E[1;33m';
+	brightblue='\E[1;34m';
+	brightmagenta='\E[1;35m';
+	brightcyan='\E[1;36m';
+	brightwhite='\E[1;37m';
+	blinkred='\E[5;1;31m';
+	blinkgreen='\E[5;1;32m';
+	blinkorange='\E[5;1;33m';
+	blinkblue='\E[5;1;34';
+	blinkmagenta='\E[5;1;35m';
+	blinkcyan='\E[5;1;36m';
+	blinkwhite='\E[5;1;37m';
+	alias ls='ls --color'
 }
 
 function lsversion(){
-# display version information 
- echo "LazyScripts ver$LZS_VERSION"
+	# display version information 
+	echo "LazyScripts ver$LZS_VERSION"
 }
 
 function lscolorprompt() {
-# sets a fancy colorized bash shell prompt
-    local GRAY="\[\033[1;30m\]"
-    local LIGHT_GRAY="\[\033[0;37m\]"
-    local CYAN="\[\033[0;36m\]"
-    local LIGHT_CYAN="\[\033[1;36m\]"
-    local NORM="\[\033[0m\]"
-    local LIGHT_BLUE="\[\033[1;34m\]" 
-    local YELLOW="\[\033[1;33m\]" 
-    local BLUE="\[\033[0;34m\]" 
-    local RED="\[\e[1;31m\]"
-    local GREEN="\[\e[1;32m\]"
-    local BROWN="\[\e[0;33m\]"
-if [ "${distro}" == "Redhat/CentOS" ]; then
-	PS1="$BLUE[$RED\000LZShell$LIGHT_BLUE \t$BLUE]$GRAY=$LIGHT_GRAY-$GRAY=$BLUE<$RED${distro}$BLUE>$GRAY=$LIGHT_GRAY-$GRAY=$BLUE($CYAN\u$GRAY @ $LIGHT_CYAN\H$BLUE)\n$BLUE($YELLOW\w$BLUE)$NORM # "
-else
-	if [ "${distro}" == "Ubuntu" ]; then
-	PS1="$BLUE[$RED\000LZShell$LIGHT_BLUE \t$BLUE]$GRAY=$LIGHT_GRAY-$GRAY=$BLUE<$BROWN${distro}$BLUE>$GRAY=$LIGHT_GRAY-$GRAY=$BLUE($CYAN\u$GRAY @ $LIGHT_CYAN\H$BLUE)\n$BLUE($YELLOW\w$BLUE)$NORM # "
-else
-	lsbwprompt
-	fi
-fi
+	# sets a fancy colorized bash shell prompt
+	local GRAY="\[\033[1;30m\]"
+	local LIGHT_GRAY="\[\033[0;37m\]"
+	local CYAN="\[\033[0;36m\]"
+	local LIGHT_CYAN="\[\033[1;36m\]"
+	local NORM="\[\033[0m\]"
+	local LIGHT_BLUE="\[\033[1;34m\]" 
+	local YELLOW="\[\033[1;33m\]" 
+	local BLUE="\[\033[0;34m\]" 
+	local RED="\[\e[1;31m\]"
+	local GREEN="\[\e[1;32m\]"
+	local BROWN="\[\e[0;33m\]"
+
+        if [ "${distro}" == "Redhat/CentOS" ]; then
+                export PS1="$BLUE[$RED\000LZShell$LIGHT_BLUE \t$BLUE]$GRAY=$LIGHT_GRAY-$GRAY=$BLUE<$RED${distro}$BLUE>$GRAY=$LIGHT_GRAY-$GRAY=$BLUE($CYAN\u$GRAY @ $LIGHT_CYAN\H$BLUE)\n$BLUE($YELLOW\w$BLUE)$NORM # "
+        elif [ "${distro}" == "Ubuntu" ]; then
+                export PS1="$BLUE[$RED\000LZShell$LIGHT_BLUE \t$BLUE]$GRAY=$LIGHT_GRAY-$GRAY=$BLUE<$BROWN${distro}$BLUE>$GRAY=$LIGHT_GRAY-$GRAY=$BLUE($CYAN\u$GRAY @ $LIGHT_CYAN\H$BLUE)\n$BLUE($YELLOW\w$BLUE)$NORM # "
+        else
+                bwprompt
+        fi  
 }
 
 function lsbwprompt() {
-# A more simple b&w compatible shell prompt
-    PS1="[\h \t]-(\w)# "
+	# A more simple b&w compatible shell prompt
+	PS1="[\h \t]-(\w)# "
 }
 
+# ostype - Determine Linux distribution
 function ostype() {
-
-    if [ -e /etc/redhat-release ]; then
-        export distro="Redhat/CentOS"
-    else
-        if [ "$(lsb_release -d | awk '{print $2}')" == "Ubuntu" ];then
-        export distro="Ubuntu"
-		
-    else
-        echo -e "could not detect operating system" && export distro="Other"
-    fi
-fi
+	if [ -e /etc/redhat-release ]; then
+		export distro="Redhat/CentOS"
+	elif [ "$(lsb_release -d | awk '{print $2}')" == "Ubuntu" ]; then
+		export distro="Ubuntu"
+	else
+		echo -e "Could not detect distribution type." && export distro="Other"
+	fi
 }
 
 function lsinfo() {
-echo -e "----- Operating System -----"
-    if [ -e /etc/redhat-release ]; then
-        cat /etc/redhat-release
-    else
-        if [ "$(lsb_release -d | awk '{print $2}')" == "Ubuntu" ];then
-            lsb_release -d
-    else
-        echo -e "could not detect operating system" && distro="Other"
-    
-    fi
-fi
-echo -e "----- Disk Utilization -----"
-df -l -h /
-echo -e "----- Memory Information -----"
-free -m
-echo -e "----- Network Interfaces -----"
-lsip
-echo -e "----- Uptime / Who is Online -----"
-uptime ; who
+        echo -e "----- Operating System -----"
+        if [ "${distro}" == "Redhat/CentOS" ]; then
+                cat /etc/redhat-release
+        elif [ "${distro}" == "Ubuntu" ]; then
+                lsb_release -d
+        else
+                echo "Could not detect distribution type."
+        fi
+	echo -e "----- Disk Utilization -----"
+	df -l -h /
+	echo -e "----- Memory Information -----"
+	free -m
+	echo -e "----- Network Interfaces -----"
+	lsip
+	echo -e "----- Uptime / Who is Online -----"
+	uptime ; who
 }
 
 function lscpchk() {
-# Check for Plesk
-if [ -f /usr/local/psa/version ]; then
-        hmpsaversion=$( cat /usr/local/psa/version )
-        echo -e "$brightyellow\bPlesk Detected: $brightblue\b $hmpsaversion. $norm\n"
-# Check for cPanel
-elif [ -d /usr/local/cpanel ]; then
+	# Check for Plesk
+	if [ -f /usr/local/psa/version ]; then
+		hmpsaversion=$( cat /usr/local/psa/version )
+		echo -e "$brightyellow\bPlesk Detected: $brightblue\b $hmpsaversion. $norm\n"
+	# Check for cPanel
+	elif [ -d /usr/local/cpanel ]; then
 		hmcpanversion=$( cat /usr/local/cpanel/version )
 		echo -e "$brightyellow\bcPanel Detected: $brightblue\b $hmcpanversion. $norm\n"
-else
-        echo -e "$brightred\bNo Control Panel Detected.$norm"
-     fi
+	else
+		echo -e "$brightred\bNo Control Panel Detected.$norm"
+	fi
 }
 
 function lsresize() {
-
-if [ "${distro}" == "Redhat/CentOS" ]; then
-    if [ -z "`which resize`" ]; then
-        echo "Installing xterm"
-        yum -y install xterm
-        resize
-    else
-        echo "resizing xterm"
-        resize
-    fi
-fi
-    if [ "${distro}" == "Ubuntu" ]; then
-        if [ -z "`which resize`" ]; then
-        echo "Installing xterm"
-        apt-get -y install xterm
-        resize
-    else
-        echo "resizing xterm"
-        resize
-    fi
-fi
-
+	if [ "${distro}" == "Redhat/CentOS" ]; then
+		if [ -z "`which resize`" ]; then
+			echo "Installing xterm"
+			yum -y install xterm
+			resize
+		else
+			echo "resizing xterm"
+			resize
+		fi
+	fi
+	if [ "${distro}" == "Ubuntu" ]; then
+		if [ -z "`which resize`" ]; then
+			echo "Installing xterm"
+			apt-get -y install xterm
+			resize
+		else
+			echo "resizing xterm"
+			resize
+		fi
+	fi
 }
 
 function lsbigfiles() {
-
-echo -e "[ls-scr] $brightyellow\b List the top 50 files based on disk usage. $norm"
-
-find / -type f -printf "%s %h/%f\n" | sort -rn -k1 | head -n 50 | awk '{ print $1/1048576 "MB" " " $2}'
-
+	echo -e "[ls-scr] $brightyellow\b List the top 50 files based on disk usage. $norm"
+	find / -type f -printf "%s %h/%f\n" | sort -rn -k1 | head -n 50 | awk '{ print $1/1048576 "MB" " " $2}'
 }
 
 function lsmytuner() {
-  install_bc
-  cd $LZS_PREFIX
-  chmod +x tuning-primer.sh
-  ./tuning-primer.sh
-  cd - > /dev/null 2>&1
+	lsinstall bc
+	lz tuning-primer
 }
 
-function install_bc() {
-	if [[ $distro = "Redhat/CentOS" ]]; then
-		if [ -z "`which bc 2>/dev/null`" ]; then
-		yum -y -q install bc
-	else 
-		echo "BC installed, proceeding"
+# lsinstall - Distro-agnostic quick installer 
+function lsinstall() {
+	if [[ -z $(which "$1" 2>-) ]]; then
+		if [[ ${distro} == "Redhat/CentOS" ]]; then
+			rpm -qa | egrep "^$1" &>- || yum -y install $1 &>-
+		elif [[ ${distro} == "Ubuntu" ]]; then
+			dpkg -l | egrep "^$1" &>- || apt-get -y install $1 &>-
+		else
+			echo "[ERROR] Unknown distribution. Exiting"
+			exit 1
 		fi
-	elif [ "${distro}" == "Ubuntu" ]; then
-	     if [ -z "`which bc 2>/dev/null`" ]; then
-	        apt-get -y -q install bc
-	    else
-	        echo "BC installed, proceeding"
-	     fi
 	fi
 }	
 
 function lscloudkick() {
-if [[ $distro = "Redhat/CentOS" ]]; then
-	cat > /etc/yum.repos.d/cloudkick.repo <<-EOF
-	[cloudkick]
-	name=Cloudkick
-	baseurl=http://packages.cloudkick.com/redhat/x86_64
-	gpgcheck=0
-	EOF
-	yum -y -q install cloudkick-agent
-	chkconfig cloudkick-agent on
-	echo -e "Please enter the login credentials and $blinkred\bstart the agent. $norm"
-	cloudkick-config
-elif [ "${distro}" == "Ubuntu" ]; then
-	echo 'deb http://packages.cloudkick.com/ubuntu lucid main' > /etc/apt/sources.list.d/cloudkick.list
-	curl http://packages.cloudkick.com/cloudkick.packages.key | apt-key add -
-	apt-get -q update
-	apt-get -y -q install cloudkick-agent
-	echo -e "Please enter the login credentials and $blinkred\bstart the agent. $norm"
-	cloudkick-config
-else 
-	echo "Unsupported OS. See https://support.cloudkick.com/Category:Installing_Cloudkick"
-	exit
-fi
+	if [[ $distro = "Redhat/CentOS" ]]; then
+		cat > /etc/yum.repos.d/cloudkick.repo <<-EOF
+		[cloudkick]
+		name=Cloudkick
+		baseurl=http://packages.cloudkick.com/redhat/x86_64
+		gpgcheck=0
+		EOF
+		yum -y -q install cloudkick-agent
+		chkconfig cloudkick-agent on
+		echo -e "Please enter the login credentials and $blinkred\bstart the agent. $norm"
+		cloudkick-config
+	elif [ "${distro}" == "Ubuntu" ]; then
+		echo 'deb http://packages.cloudkick.com/ubuntu lucid main' > /etc/apt/sources.list.d/cloudkick.list
+		curl http://packages.cloudkick.com/cloudkick.packages.key | apt-key add -
+		apt-get -q update
+		apt-get -y -q install cloudkick-agent
+		echo -e "Please enter the login credentials and $blinkred\bstart the agent. $norm"
+		cloudkick-config
+	else 
+		echo "Unsupported OS. See https://support.cloudkick.com/Category:Installing_Cloudkick"
+		exit
+	fi
 }	
 
 function lsmylogin() {
 # MySQL login helper
- mysql_client=$( which mysql )
- if [ -x $mysql_client ]; then
-   if [ -e /etc/psa/.psa.shadow ]; then
-    echo -e "[ls-scr] $brightyellow \bUsing Plesk's admin login. $norm"
-    mysql -u admin -p`cat /etc/psa/.psa.shadow`
-   else
-    i
+mysql_client=$( which mysql )
+if [ -x $mysql_client ]; then
+if [ -e /etc/psa/.psa.shadow ]; then
+echo -e "[ls-scr] $brightyellow \bUsing Plesk's admin login. $norm"
+mysql -u admin -p`cat /etc/psa/.psa.shadow`
+else
+i
 if [ -e /root/.my.cnf ]; then
-     echo -e "[ls-scr] $brightwhite \bFound a local $brightyellow \bmy.cnf $brightwhite \bin root's homedir, attempting to login without password prompt. $norm"
-      $mysql_client
-      if [ "$?" -ne "0" ]; then
-        echo -e "[ls-scr] $brightred \bFailed! $norm \bprompting for MySQL root password.$norm"
-      fi
-    else
-        echo -e "[ls-scr] $brightmagenta \bCould not auto-detect MySQL root password - prompting.$norm"
-       $mysql_client -u root -p
-      if [ "$?" -ne "0" ]; then
-        echo -e "[ls-scr] $brightyellow \bMySQL authentication failed or program exited with error.$norm"
-      fi
-    fi
-   fi
- else
-   echo -e "[ls-scr] $brightred\bCould not locate MySQL client in path.$norm"
- fi
- return 0;
-}
-
-function lsapcheck() {
-	if [ "${distro}" == "Redhat/CentOS" ]; then
-	    if [ -z "`which perl`" ]; then
-	        echo "Installing perl"
-	        yum -y install perl
-		fi
-	fi
-	    if [ "${distro}" == "Ubuntu" ]; then
-	        if [ -z "`which perl`" ]; then
-	        echo "Installing perl"
-	        apt-get -y install perl
-	    fi
-	fi
-/usr/bin/perl $LZS_PREFIX/apachebuddy.pl
+echo -e "[ls-scr] $brightwhite \bFound a local $brightyellow \bmy.cnf $brightwhite \bin root's homedir, attempting to login without password prompt. $norm"
+$mysql_client
+if [ "$?" -ne "0" ]; then
+echo -e "[ls-scr] $brightred \bFailed! $norm \bprompting for MySQL root password.$norm"
+fi
+else
+echo -e "[ls-scr] $brightmagenta \bCould not auto-detect MySQL root password - prompting.$norm"
+$mysql_client -u root -p
+if [ "$?" -ne "0" ]; then
+echo -e "[ls-scr] $brightyellow \bMySQL authentication failed or program exited with error.$norm"
+fi
+fi
+fi
+else
+echo -e "[ls-scr] $brightred\bCould not locate MySQL client in path.$norm"
+fi
+return 0;
 }
 
 function lsapdocs() {
-	if [[ "${distro}" == "Redhat/CentOS" ]]
-		then
-    httpd -S 2>&1|grep -v "^Warning:"|egrep "\/.*\/"|sed 's/.*(\(.*\):.*).*/\1/'|sort|uniq|xargs cat|grep -i DocumentRoot|egrep -v "^#"|awk '{print $2}'|sort|uniq
-	elif [[ "${distro}" == "Ubuntu" ]]
-		then
-	apache2ctl -S 2>&1|grep -v "^Warning:"|egrep "\/.*\/"|sed 's/.*(\(.*\):.*).*/\1/'|sort|uniq|xargs cat|grep -i DocumentRoot|egrep -v "^#"|awk '{print $2}'|sort|uniq
-else
-	echo "Unsupported OS. You're on your own."
-fi
+	if [[ "${distro}" == "Redhat/CentOS" ]]; then
+		httpd -S 2>&1|grep -v "^Warning:"|egrep "\/.*\/"|sed 's/.*(\(.*\):.*).*/\1/'|sort|uniq|xargs cat|grep -i DocumentRoot|egrep -v "^#"|awk '{print $2}'|sort|uniq
+	elif [[ "${distro}" == "Ubuntu" ]]; then
+		apache2ctl -S 2>&1|grep -v "^Warning:"|egrep "\/.*\/"|sed 's/.*(\(.*\):.*).*/\1/'|sort|uniq|xargs cat|grep -i DocumentRoot|egrep -v "^#"|awk '{print $2}'|sort|uniq
+	else
+		echo "Unsupported OS. You're on your own."
+	fi
 }
 
 function lshighio() {
 	echo "Collecting stats on I/O bound processes for ~10 seconds..."
-	    n=0
-	    iofile=$(mktemp)
-	    m=$((10*10))
-	    while [[ $n -lt $m ]]; do
-	        ps ax | awk '$3 ~ /D/ { print $5 }'
-	        sleep 0.1
-	        n=$((n+=1))
-	    done > $iofile
-	    echo "Top I/O bound processes in the last ~10 seconds."
-	    sort $iofile | uniq -c | sort -nr | head -n30
+	n=0
+	iofile=$(mktemp)
+	m=$((10*10))
+	while [[ $n -lt $m ]]; do
+		ps ax | awk '$3 ~ /D/ { print $5 }'
+		sleep 0.1
+		n=$((n+=1))
+	done > $iofile
+	echo "Top I/O bound processes in the last ~10 seconds."
+	sort $iofile | uniq -c | sort -nr | head -n30
 }
 
 function lsmyengines() {
@@ -303,169 +296,127 @@ function lsmyengines() {
 }
 
 function lsapproc() {
-if [ "${distro}" == "Redhat/CentOS" ]; then
-	for pid in $(pgrep httpd); do
-		echo $pid $(ps -p$pid -ouser|sed '1d') $(pmap -d $pid 2>/dev/null | awk '/private/{print $4}')|tr -d 'K'|awk '{printf "%s %s %s MB\n", $1, $2, $3/1024}'
-	done
-fi
-if [[ "${distro}" == "Ubuntu" ]]; then
-	for pid in $(pgrep apache2); do
-		echo $pid $(ps -p$pid -ouser|sed '1d') $(pmap -d $pid 2>/dev/null | awk '/private/{print $4}')|tr -d 'K'|awk '{printf "%s %s %s MB\n", $1, $2, $3/1024}'
-	done
-fi
+	if [ "${distro}" == "Redhat/CentOS" ]; then
+		for pid in $(pgrep httpd); do
+			echo $pid $(ps -p$pid -ouser|sed '1d') $(pmap -d $pid 2>/dev/null | awk '/private/{print $4}')|tr -d 'K'|awk '{printf "%s %s %s MB\n", $1, $2, $3/1024}'
+		done
+	elif [[ "${distro}" == "Ubuntu" ]]; then
+		for pid in $(pgrep apache2); do
+			echo $pid $(ps -p$pid -ouser|sed '1d') $(pmap -d $pid 2>/dev/null | awk '/private/{print $4}')|tr -d 'K'|awk '{printf "%s %s %s MB\n", $1, $2, $3/1024}'
+		done
+	fi
 }
 
 function lsmyusers() {
-    #mysql -B -N -e "SELECT DISTINCT CONCAT('SHOW GRANTS FOR ''',user,'''@''',host,''';') AS query FROM user" mysql | mysql 
-mysql -e "SELECT User,Host from mysql.user;" && mysql -B -N -e "SELECT user, host FROM user" mysql | sed 's,\t,"@",g;s,^,show grants for ",g;s,$,";,g;' | mysql | sed 's,$,;,g'
+	#mysql -B -N -e "SELECT DISTINCT CONCAT('SHOW GRANTS FOR ''',user,'''@''',host,''';') AS query FROM user" mysql | mysql 
+	mysql -e "SELECT User,Host from mysql.user;" && mysql -B -N -e "SELECT user, host FROM user" mysql | sed 's,\t,"@",g;s,^,show grants for ",g;s,$,";,g;' | mysql | sed 's,$,;,g'
 }
 
 function lsrblcheck() {
 	curl checkrbl.com
 }
 
-function lswordpress() {
-	cd $LZS_PREFIX
-	chmod +x wordpress.sh
-	./wordpress.sh
-	cd - > /dev/null 2>&1
-}
-
-function lspostfix() {
-	cd $LZS_PREFIX
-	chmod +x postfix.sh
-	./postfix.sh
-	cd - > /dev/null 2>&1
-}
-
-function lswebmin() {
-	cd $LZS_PREFIX
-	chmod +x webmin.sh
-	./webmin.sh
-	cd - > /dev/null 2>&1
-}
-
-function lsdrupal() {
-	cd $LZS_PREFIX
-	chmod +x drupal.sh
-	./drupal.sh
-	cd - > /dev/null 2>&1
-}
-
-function lslsync() {
-	cd $LZS_PREFIX
-	chmod +x lsync.sh
-	./lsync.sh
-	cd - > /dev/null 2>&1
-}
-
-function lshistsetup() {
-	cd $LZS_PREFIX
-	chmod +x hist.sh
-	./hist.sh
-	cd - > /dev/null 2>&1
-}
-
 function lsvhost() {
-if [[ $1 != "" ]]; then
+	if [[ $1 != "" ]]; then
 		domain=$1
 	else
-	read -p "Please enter a domain (no www): " 	domain
-fi
-        read -p "Does this domain require SSL (y/n)? "        reqssl
+		read -p "Please enter a domain (no www): " 	domain
+	fi
 	if [[ $distro = "Redhat/CentOS" ]]; then
 		cat > /etc/httpd/vhost.d/$domain.conf <<-EOF
 		<VirtualHost *:80>
-		ServerName $domain
-		ServerAlias www.$domain
-		DocumentRoot /var/www/vhosts/$domain
-			<Directory /var/www/vhosts/$domain>
-			AllowOverride All
-			</Directory>
-		CustomLog logs/$domain-access_log common
-		ErrorLog logs/$domain-error_log
-		</VirtualHost>
-		EOF
-	if [[ $reqssl = "y" ]]; then
-		cat >> /etc/httpd/vhost.d/$domain.conf <<-EOF
-		<VirtualHost *:443>
-			ServerName $domain
-			DocumentRoot /var/www/vhosts/$domain
-			<Directory /var/www/vhosts/$domain>
-				Options FollowSymLinks MultiViews
-				AllowOverride All
-			</Directory>
-			CustomLog /var/log/httpd/$domain-ssl-access.log combined
-			ErrorLog /var/log/httpd/$domain-ssl-error.log
-			LogLevel warn
-			SSLEngine on
-			SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
-			SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
-			<FilesMatch "\.(cgi|shtml|phtml|php)$">
-				SSLOptions +StdEnvVars
-			</FilesMatch>
-			BrowserMatch "MSIE [2-6]" \
-				nokeepalive ssl-unclean-shutdown \
-				downgrade-1.0 force-response-1.0
-			BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
-		</VirtualHost>
-		EOF
-			fi
-			mkdir -p /var/www/vhosts/$domain
-			service httpd restart > /dev/null 2>&1
-		elif [[ $distro = "Ubuntu" ]]; then
-			cat > /etc/apache2/sites-available/$domain <<-EOF
-			<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
 			DocumentRoot /var/www/vhosts/$domain
-				<Directory /var/www/vhosts/$domain>
+			<Directory /var/www/vhosts/$domain>
 				AllowOverride All
-				</Directory>
+			</Directory>
+			CustomLog logs/$domain-access_log common
+			ErrorLog logs/$domain-error_log
+		</VirtualHost>
+
+
+		# <VirtualHost _default_:443>
+		# ServerName $domain
+		# DocumentRoot /var/www/vhosts/$domain
+		# <Directory /var/www/vhosts/$domain>
+		#	AllowOverride All
+		# </Directory>
+
+		# CustomLog /var/log/httpd/$domain-ssl-access.log combined
+		# ErrorLog /var/log/httpd/$domain-ssl-error.log
+
+		# # Possible values include: debug, info, notice, warn, error, crit,
+		# # alert, emerg.
+		# LogLevel warn
+
+		# SSLEngine on
+		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
+		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+
+		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
+		# 	SSLOptions +StdEnvVars
+		# </FilesMatch>
+
+		# BrowserMatch "MSIE [2-6]" \\
+		#	nokeepalive ssl-unclean-shutdown \\
+		#	downgrade-1.0 force-response-1.0
+		# BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+		# </VirtualHost>
+		EOF
+
+		mkdir -p /var/www/vhosts/$domain
+		service httpd restart > /dev/null 2>&1
+
+	elif [[ $distro = "Ubuntu" ]]; then
+		cat > /etc/apache2/sites-available/$domain <<-EOF
+		<VirtualHost *:80>
+			ServerName $domain
+			ServerAlias www.$domain
+			DocumentRoot /var/www/vhosts/$domain
+			<Directory /var/www/vhosts/$domain>
+				AllowOverride All
+			</Directory>
 			CustomLog /var/log/apache2/$domain-access_log common
 			ErrorLog /var/log/apache2/$domain-error_log
-			</VirtualHost>
-			EOF
-			if [[ $reqssl = "y" ]]; then
-				cat > /etc/apache2/sites-available/$domain <<-EOF
-				<VirtualHost _default_:443>
-					ServerName $domain
-					DocumentRoot /var/www/$domain
-					<Directory /var/www/$domain>
-						AllowOverride All
-					</Directory>
-					CustomLog /var/log/apache2/$domain-ssl-access.log combined
-					ErrorLog /var/log/apache2/$domain-ssl-error.log
-					LogLevel warn
-					SSLEngine on
-					SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
-					SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
-					<FilesMatch "\.(cgi|shtml|phtml|php)$">
-						SSLOptions +StdEnvVars
-					</FilesMatch>
-					BrowserMatch "MSIE [2-6]" \
-						nokeepalive ssl-unclean-shutdown \
-						downgrade-1.0 force-response-1.0
-					BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
-				</VirtualHost>
-				EOF
-			fi
-			mkdir -p /var/www/vhosts/$domain
-			a2ensite $domain > /dev/null 2>&1
-			service apache2 restart	 > /dev/null 2>&1
-		else
-			echo "Unsupported OS"
-	fi
-	if [[ $reqssl = "y" ]]; then
-		echo "SSL setup. Make sure to configure the certificates..."
-	fi
-	}
+		</VirtualHost>
 
-function lssuphp() {
-	cd $LZS_PREFIX
-	chmod +x suphp.sh
-	./suphp.sh
-	cd - > /dev/null 2>&1
+
+		# <VirtualHost _default_:443>
+		# ServerName $domain
+		# DocumentRoot /var/www/vhosts/$domain
+		# <Directory /var/www/vhosts/$domain>
+		#	AllowOverride All
+		# </Directory>
+
+		# CustomLog /var/log/httpd/$domain-ssl-access.log combined
+		# ErrorLog /var/log/httpd/$domain-ssl-error.log
+
+		# # Possible values include: debug, info, notice, warn, error, crit,
+		# # alert, emerg.
+		# LogLevel warn
+
+		# SSLEngine on
+		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
+		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+
+		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
+		# 	SSLOptions +StdEnvVars
+		# </FilesMatch>
+
+		# BrowserMatch "MSIE [2-6]" \\
+		#	nokeepalive ssl-unclean-shutdown \\
+		#	downgrade-1.0 force-response-1.0
+		# BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+		# </VirtualHost>
+		EOF
+
+		mkdir -p /var/www/vhosts/$domain
+		a2ensite $domain > /dev/null 2>&1
+		service apache2 restart	 > /dev/null 2>&1
+	else
+		echo "Unsupported OS"
+	fi
 }
 
 function lscrtchk() {
@@ -483,113 +434,96 @@ function lscrtchk() {
 }
 
 function lsconcurchk() {
+	echo -e "[ls-scr] $brightyellow\b Concurrent connections listed by netstat in numerical order.$norm"
 
-echo -e "[ls-scr] $brightyellow\b Concurrent connections listed by netstat in numerical order.$norm"
-
-if [ -n "$1" ]; then
-netstat -an |grep -i tcp |grep -v "0.0.0.0" |grep -v "::" |awk '{print $4, $5}' |awk -F: '{print $2}' |awk '{print $2, $1}' |sort |uniq -c |sort -n |grep $1
-else
-netstat -an |grep -i tcp |grep -v "0.0.0.0" |grep -v "::" |awk '{print $4, $5}' |awk -F: '{print $2}' |awk '{print $2, $1}' |sort |uniq -c |sort -n
-fi
-}
-
-function lsrpaf() {
-	cd $LZS_PREFIX > /dev/null 2>&1
-	/bin/bash rpaf.sh
-	cd - > /dev/null 2>&1
-}
-
-function lsvarnish() {
-	cd $LZS_PREFIX > /dev/null 2>&1
-	/bin/bash varnish.sh
-	cd - > /dev/null 2>&1
-}
-
-function lsvsftpd() {
-	cd $LZS_PREFIX > /dev/null 2>&1
-	/bin/bash vsftpd.sh
-	cd - > /dev/null 2>&1
-}
-
-function lsparsar() {
-	if [ "${distro}" == "Redhat/CentOS" ]; then
-	    if [ -z "`which perl`" ]; then
-	        echo "Installing perl"
-	        yum -y install perl
-		fi
+	if [ -n "$1" ]; then
+		netstat -an |grep -i tcp |grep -v "0.0.0.0" |grep -v "::" |awk '{print $4, $5}' |awk -F: '{print $2}' |awk '{print $2, $1}' |sort |uniq -c |sort -n |grep $1
+	else
+	netstat -an |grep -i tcp |grep -v "0.0.0.0" |grep -v "::" |awk '{print $4, $5}' |awk -F: '{print $2}' |awk '{print $2, $1}' |sort |uniq -c |sort -n
 	fi
-	    if [ "${distro}" == "Ubuntu" ]; then
-	        if [ -z "`which perl`" ]; then
-	        echo "Installing perl"
-	        apt-get -y install perl
-	    fi
-	fi
-/usr/bin/perl $LZS_PREFIX/parsar.pl
 }
 
 # Prints IPv4 addresses for all eth* interfaces
 function lsip() {
-/sbin/ifconfig | awk '/^eth/ { printf("%s\t",$1) } /inet addr:/ { gsub(/.*:/,"",$2); if ($2 !~ /^127/) print $2; }'
-}
-
-function lspma() {
-	cd $LZS_PREFIX > /dev/null 2>&1
-	/bin/bash lspma.sh
-	cd - > /dev/null 2>&1
+	/sbin/ifconfig | awk '/^eth/ { printf("%s\t",$1) } /inet addr:/ { gsub(/.*:/,"",$2); if ($2 !~ /^127/) print $2; }'
 }
 
 function lshelp() {
-
-echo -e "[ls-scr] $brightred\b LazyScripts Project Page - https://github.com/hhoover/lazyscripts $norm"
-echo -e "[ls-scr] ---------------------------------------------------------------------------------------------"
-echo -e "[ls-scr] $brightred\b lshelp $norm - $brightblue\b This help message. $norm"
-echo -e "[ls-scr] $brightred\b lsversion $norm - $brightblue\b Display the current LazyScripts version. $norm"
-echo -e "[ls-scr] $brightred\b lsinfo $norm - $brightblue\b Display useful system information $norm"
-echo -e "[ls-scr] $brightred\b lsbwprompt $norm - $brightblue\b Switch to a plain prompt. $norm"
-echo -e "[ls-scr] $brightred\b lscolorprompt $norm - $brightblue\b Switch to a fancy colorized prompt. $norm"
-echo -e "[ls-scr] $brightred\b lsbigfiles $norm - $brightblue\b List the top 50 files based on disk usage. $norm"
-echo -e "[ls-scr] $brightred\b lsmytuner $norm - $brightblue\b MySQL Tuning Primer $norm"
-echo -e "[ls-scr] $brightred\b lshighio $norm - $brightblue\b Reports stats on processes in an uninterruptable sleep state. $norm"
-echo -e "[ls-scr] $brightred\b lsmylogin $norm - $brightblue\b Auto login to MySQL $norm"
-echo -e "[ls-scr] $brightred\b lsmyengines $norm - $brightblue\b List MySQL tables and their storage engine. $norm"
-echo -e "[ls-scr] $brightred\b lsmyusers $norm - $brightblue\b List MySQL users and grants. $norm"
-echo -e "[ls-scr] $brightred\b lsparsar $norm - $brightblue\b Pretty sar output $norm"
-echo -e "[ls-scr] $brightred\b lsapcheck $norm - $brightblue\b Verify apache max client settings and memory usage. $norm"
-echo -e "[ls-scr] $brightred\b lsapdocs $norm - $brightblue\b Prints out Apache's DocumentRoots $norm"
-echo -e "[ls-scr] $brightred\b lsapproc $norm - $brightblue\b Shows the memory used by each Apache process $norm"
-echo -e "[ls-scr] $brightred\b lsrblcheck $norm - $brightblue\b Server Email Blacklist Check $norm"
-echo -e "[ls-scr] $brightred\b lscloudkick $norm - $brightblue\b Install the Cloudkick agent $norm"
-echo -e "[ls-scr] $brightred\b lsvsftpd $norm - $brightblue\b Installs and configures VSFTPD $norm"
-echo -e "[ls-scr] $brightred\b lsvhost $norm - $brightblue\b Add an Apache virtual host $norm"
-echo -e "[ls-scr] $brightred\b lspostfix $norm - $brightblue\b Set up Postfix for relaying email $norm"
-echo -e "[ls-scr] $brightred\b lslsync $norm - $brightblue\b Install lsyncd and configure this server as a master$norm"
-echo -e "[ls-scr] $brightred\b lswordpress $norm - $brightblue\b Install Wordpress on this server $norm"
-echo -e "[ls-scr] $brightred\b lsdrupal $norm - $brightblue\b Install Drupal 7 on this server $norm"
-echo -e "[ls-scr] $brightred\b lswebmin $norm - $brightblue\b Install Webmin on this server $norm"
-echo -e "[ls-scr] $brightred\b lsvarnish $norm - $brightblue\b Install Varnish on this server $norm"
-echo -e "[ls-scr] $brightred\b lssuphp $norm - $brightblue\b Replaces mod_php with mod_suphp $norm"
-echo -e "[ls-scr] $brightred\b lsconcurchk $norm - $brightblue\b Show concurrent connections $norm"
-echo -e "[ls-scr] $brightred\b lscrtchk $norm - $brightblue\b Check SSL Cert/Key to make sure they match $norm"
-echo -e "[ls-scr] $brightred\b lsrpaf $norm - $brightblue\b Install mod_rpaf to set correct client IP behind a proxy. $norm"
-echo -e "[ls-scr] $brightred\b lspma $norm - $brightblue\b Installs phpMyAdmin. $norm"
-echo -e "[ls-scr] $brightred\b lswhatis $norm - $brightblue\b Output the script that would be run with a specific command. $norm"
-echo -e "[ls-scr] ---------------------------------------------------------------------------------------------"
+	echo -e "---------------------------------------------------------------------------------------------"
+	echo -e "    lshelp\t\tThis help message."
+	echo -e "    lsversion\t\tDisplay the current LazyScripts version."
+	echo -e "    lsinfo\t\tDisplay useful system information"
+	echo -e "    lsbwprompt\t\tSwitch to a plain prompt."
+	echo -e "    lscolorprompt\tSwitch to a fancy colorized prompt."
+	echo -e "    lsbigfiles\t\tList the top 50 files based on disk usage."
+	echo -e "    lsmytuner\t\tMySQL Tuning Primer"
+	echo -e "    lshighio\t\tReports stats on processes in an uninterruptable sleep state."
+	echo -e "    lsmylogin\t\tAuto login to MySQL"
+	echo -e "    lsmyengines\t\tList MySQL tables and their storage engine."
+	echo -e "    lsmyusers\t\tList MySQL users and grants."
+	echo -e "    lsparsar\t\tPretty sar output"
+	echo -e "    lsapcheck\t\tVerify apache max client settings and memory usage."
+	echo -e "    lsapdocs\t\tPrints out Apache's DocumentRoots"
+	echo -e "    lsapproc\t\tShows the memory used by each Apache process"
+	echo -e "    lsrblcheck\t\tServer Email Blacklist Check"
+	echo -e "    lscloudkick\t\tInstall the Cloudkick agent"
+	echo -e "    lsvsftpd\t\tInstalls and configures VSFTPD"
+	echo -e "    lsvhost\t\tAdd an Apache virtual host"
+	echo -e "    lspostfix\t\tSet up Postfix for relaying email"
+	echo -e "    lslsync\t\tInstall lsyncd and configure this server as a master"
+	echo -e "    lswordpress\t\tInstall Wordpress on this server"
+	echo -e "    lsdrupal\t\tInstall Drupal 7 on this server"
+	echo -e "    lswebmin\t\tInstall Webmin on this server"
+	echo -e "    lsvarnish\t\tInstall Varnish on this server"
+	echo -e "    lssuphp\t\tReplaces mod_php with mod_suphp"
+	echo -e "    lsconcurchk\t\tShow concurrent connections"
+	echo -e "    lscrtchk\t\tCheck SSL Cert/Key to make sure they match"
+	echo -e "    lsrpaf\t\tInstall mod_rpaf to set correct client IP behind a proxy."
+	echo -e "    lspma\t\tInstalls phpMyAdmin."
+	echo -e "    lsnodejs\t\tInstall Node.js with NPM"
+	echo -e "    lswhatis\t\tOutput the script that would be run with a specific command."
+	echo -e "---------------------------------------------------------------------------------------------"
 }
 
 function lswhatis() { export -f $1; export -pf; export -fn $1; }
 
-function lslogin() {
-# Set of commands to run at login
-ostype
-lsresize
-tset -s xterm
-clear
-lscolors
-lsinfo
-lscolorprompt
-lshistsetup
-lscpchk
-# Print the MOTD
-cat /etc/motd
-echo -e "LazyScripts login success - type $brightyellow\b lsinfo$norm for server info or $brightyellow\b lshelp$norm for a list of commands $norm"
+function _aliases() {
+	alias lsapcheck="lz apachebuddy"
+	alias lsdrupal="lz drupal"
+	#alias lshistsetup="lz hist"
+	alias lsrpaf="lz rpaf"
+	alias lsparsar="lz parsar"
+	alias lspostfix="lz postfix"
+	alias lspma="lz pma"
+	alias lslsync="lz lsync"
+	alias lsvarnish="lz varnish"
+	alias lsvsftpd="lz vsftpd"
+	alias lswebmin="lz webmin"
+	alias lswordpress="lz wordpress"
+	alias lsnodejs="lz nodejs"
 }
+
+function lslogin() {
+	# Set of commands to run at login
+	lsresize
+	tset -s xterm
+	clear
+	lscolors
+	lsinfo
+	lscolorprompt
+	#lz hist
+	lscpchk
+	# Print the MOTD
+	cat /etc/motd
+	echo -e "LazyScripts Project Page - https://github.com/hhoover/lazyscripts"
+}
+
+# Run these functions at source time
+ostype
+_aliases	 # Export the function aliases
+
+# Temporary RedHat/CentOS Fix
+if [[ $distro == "Redhat/CentOS" ]]; then
+	chmod 644 /etc/resolv.conf
+fi
+
