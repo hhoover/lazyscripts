@@ -2,7 +2,7 @@
 ## Node.js Installation Script
 ## Author: David Wittman <david@wittman.com>
 
-SOURCE="http://nodejs.org/dist/v0.6.1/node-v0.6.1.tar.gz"
+SOURCE="http://nodejs.org/dist/v0.6.3/node-v0.6.3.tar.gz"
 SOURCEPATH="/usr/local/src/"
 
 bold=$(tput bold)
@@ -78,21 +78,16 @@ install_deps() {
 	pass "${OUTPUT}"
 }
 
-install_npm() {
-	local REPO="https://github.com/isaacs/npm.git"
-	local SOURCEDIR="${SOURCEPATH}npm"
-	export GIT_SSL_NO_VERIFY=true
-
-	begin "Installing Node Package Manager..."
-	git clone https://github.com/isaacs/npm.git ${SOURCEDIR} &> /dev/null && cd ${SOURCEDIR} || die
-	curl -s http://npmjs.org/install.sh 2> /dev/null | sh &> /dev/null || die
-	pass "${OUTPUT}"
-}
-
 # Main thread
 detect_os
 install_deps
 sourceinstall ${SOURCE}
-install_npm
 
-echo "Node.js $(node -v) has successfully been installed."
+# Temporary fix for NPM installation bug
+# npm ERR! Error: ENOENT, no such file or directory '/usr/local/lib/node_modules/npm/man/man1/'
+BUGDIR="/usr/local/lib/node_modules/npm/man/man1"
+if [ ! -d "${BUGDIR}" ]; then
+	mkdir -p ${BUGDIR}
+fi
+
+echo "Node.js $(node -v) with NPM has successfully been installed."
