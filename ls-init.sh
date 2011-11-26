@@ -334,6 +334,35 @@ function lsvhost() {
 			CustomLog logs/$domain-access_log common
 			ErrorLog logs/$domain-error_log
 		</VirtualHost>
+
+
+		# <VirtualHost _default_:443>
+		# ServerName $domain
+		# DocumentRoot /var/www/vhosts/$domain
+		# <Directory /var/www/vhosts/$domain>
+		#	AllowOverride All
+		# </Directory>
+
+		# CustomLog /var/log/httpd/$domain-ssl-access.log combined
+		# ErrorLog /var/log/httpd/$domain-ssl-error.log
+
+		# # Possible values include: debug, info, notice, warn, error, crit,
+		# # alert, emerg.
+		# LogLevel warn
+
+		# SSLEngine on
+		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
+		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+
+		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
+		# 	SSLOptions +StdEnvVars
+		# </FilesMatch>
+
+		# BrowserMatch "MSIE [2-6]" \\
+		#	nokeepalive ssl-unclean-shutdown \\
+		#	downgrade-1.0 force-response-1.0
+		# BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+		# </VirtualHost>
 		EOF
 
 		mkdir -p /var/www/vhosts/$domain
@@ -350,7 +379,36 @@ function lsvhost() {
 			</Directory>
 			CustomLog /var/log/apache2/$domain-access_log common
 			ErrorLog /var/log/apache2/$domain-error_log
-			</VirtualHost>
+		</VirtualHost>
+
+
+		# <VirtualHost _default_:443>
+		# ServerName $domain
+		# DocumentRoot /var/www/vhosts/$domain
+		# <Directory /var/www/vhosts/$domain>
+		#	AllowOverride All
+		# </Directory>
+
+		# CustomLog /var/log/httpd/$domain-ssl-access.log combined
+		# ErrorLog /var/log/httpd/$domain-ssl-error.log
+
+		# # Possible values include: debug, info, notice, warn, error, crit,
+		# # alert, emerg.
+		# LogLevel warn
+
+		# SSLEngine on
+		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
+		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+
+		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
+		# 	SSLOptions +StdEnvVars
+		# </FilesMatch>
+
+		# BrowserMatch "MSIE [2-6]" \\
+		#	nokeepalive ssl-unclean-shutdown \\
+		#	downgrade-1.0 force-response-1.0
+		# BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+		# </VirtualHost>
 		EOF
 
 		mkdir -p /var/www/vhosts/$domain
