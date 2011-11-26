@@ -2,7 +2,8 @@
 ## Node.js Installation Script
 ## Author: David Wittman <david@wittman.com>
 
-SOURCE="http://nodejs.org/dist/v0.6.3/node-v0.6.3.tar.gz"
+VERSION="0.6.3"
+SOURCE="http://nodejs.org/dist/v${VERSION}/node-v${VERSION}.tar.gz"
 SOURCEPATH="/usr/local/src/"
 
 bold=$(tput bold)
