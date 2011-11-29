@@ -10,7 +10,7 @@ function SSLcheck() {
 			s) SSL="on" ;;
 			d) domain=$OPTARG ;;
 			*) echo "Usage: lsvhost [-s] -d domain.com"
-				exit 1 ;;
+				return 1 ;;
 		esac
 	done
 	
@@ -20,14 +20,14 @@ function SSLcheck() {
 		sslvhost
 	else
 		echo "Something went wrong. Oops."
-		exit 1
+		return 1
 	fi
 } 
 
 function noSSL() {
 	if [[ -z ${domain} ]]; then
 		echo "Usage: lsvhost [-s] -d domain.com"
-		exit 1
+		return 1
 	fi
 	
 	if [[ $distro = "Redhat/CentOS" ]]; then
@@ -130,7 +130,7 @@ function noSSL() {
 function sslvhost() {
 	if [[ -z ${domain} ]]; then
 		echo "Usage: lsvhost [-s] -d domain.com"
-		exit 1
+		return 1
 	fi
 read -p "Please enter the path to the key: " key
 read -p "Please enter the path to the cert: " cert
