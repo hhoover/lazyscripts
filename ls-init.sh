@@ -456,15 +456,14 @@ function lsmycreate() {
 	#$3=DBUSER
 	#$4=DBPASS
 	
-	if [[ -z ${1} ]] || [[ -z ${2} ]] || [[ -z ${3} ]] || [[ -z ${4} ]]; then
+	if [ $# -ne 4 ]; then
 		echo "Usage: lsmycreate (host) (database name) (MySQL username) (MySQL password)"
 		return 1
 	fi
 	
-	CREATE_DB="CREATE DATABASE ${2};"
+	CREATE_DB="CREATE DATABASE IF NOT EXISTS ${2};"
 	CREATE_DB_USER="GRANT ALL PRIVILEGES ON ${2}.* TO '${3}'@'${1}' IDENTIFIED BY '${4}';"
-	FP="FLUSH PRIVILEGES;"
-	SQL="${CREATE_DB}${CREATE_DB_USER}${FP}"
+	SQL="${CREATE_DB}${CREATE_DB_USER}"
 	mysql -e "$SQL"
 	echo "${2} created successfully."
 }
