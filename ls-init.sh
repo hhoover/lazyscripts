@@ -448,6 +448,27 @@ function lsip() {
 	/sbin/ifconfig | awk '/^eth/ { printf("%s\t",$1) } /inet addr:/ { gsub(/.*:/,"",$2); if ($2 !~ /^127/) print $2; }'
 }
 
+# creates a new MySQL database, and sets a grant statement
+function lsmycreate() {
+	# Explaining the variables
+	#$1=HOST
+	#$2=DBNAME
+	#$3=DBUSER
+	#$4=DBPASS
+	
+	if [[ -z ${1} ]] || [[ -z ${2} ]] || [[ -z ${3} ]] || [[ -z ${4} ]]; then
+		echo "Usage: lsmycreate (host) (database name) (MySQL username) (MySQL password)"
+		return 1
+	fi
+	
+	CREATE_DB="CREATE DATABASE ${2};"
+	CREATE_DB_USER="GRANT ALL PRIVILEGES ON ${2}.* TO '${3}'@'${1}' IDENTIFIED BY '${4}';"
+	FP="FLUSH PRIVILEGES;"
+	SQL="${CREATE_DB}${CREATE_DB_USER}${FP}"
+	mysql -e "$SQL"
+	echo "${2} created successfully."
+}
+
 function lshelp() {
 	echo -e "---------------------------------------------------------------------------------------------"
 	echo -e "    lshelp\t\tThis help message."
@@ -461,6 +482,7 @@ function lshelp() {
 	echo -e "    lsmylogin\t\tAuto login to MySQL"
 	echo -e "    lsmyengines\t\tList MySQL tables and their storage engine."
 	echo -e "    lsmyusers\t\tList MySQL users and grants."
+	echo -e "    lsmycreate\t\tCreates MySQL DB and MySQL user"
 	echo -e "    lsparsar\t\tPretty sar output"
 	echo -e "    lsapcheck\t\tVerify apache max client settings and memory usage."
 	echo -e "    lsapdocs\t\tPrints out Apache's DocumentRoots"

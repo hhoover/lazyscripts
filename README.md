@@ -17,7 +17,8 @@
 * lshighio  - Reports stats on processes in an uninterruptable sleep state. 
 * lsmylogin  - Auto login to MySQL 
 * lsmyengines  - List MySQL tables and their storage engine. 
-* lsmyusers  - List MySQL users and grants. 
+* lsmyusers  - List MySQL users and grants.
+* lsmycreate - Creates a MySQL DB and MySQL user
 * lsapcheck  - Verify apache max client settings and memory usage. 
 * lsapdocs  - Prints out Apache's DocumentRoots 
 * lsapproc  - Shows the memory used by each Apache process 
