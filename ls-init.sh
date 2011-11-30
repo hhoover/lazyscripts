@@ -468,6 +468,15 @@ function lsmycreate() {
 	echo "${2} created successfully."
 }
 
+#Copies an existing database to a new database
+function lsmycopy() {
+	if [ $# -ne 2 ]; then
+		echo "Usage: lsmycopy OLDDBNAME NEWDBNAME"
+		return 1
+	fi
+	mysql -e "CREATE DATABASE IF NOT EXISTS ${2};" && mysqldump -Q ${1} | mysql ${2}
+}
+
 function lshelp() {
 	echo -e "---------------------------------------------------------------------------------------------"
 	echo -e "    lshelp\t\tThis help message."
@@ -482,6 +491,7 @@ function lshelp() {
 	echo -e "    lsmyengines\t\tList MySQL tables and their storage engine."
 	echo -e "    lsmyusers\t\tList MySQL users and grants."
 	echo -e "    lsmycreate\t\tCreates MySQL DB and MySQL user"
+	echo -e "    lsmycopy\t\tCopies an existing database to a new database."
 	echo -e "    lsparsar\t\tPretty sar output"
 	echo -e "    lsapcheck\t\tVerify apache max client settings and memory usage."
 	echo -e "    lsapdocs\t\tPrints out Apache's DocumentRoots"
