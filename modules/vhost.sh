@@ -2,36 +2,34 @@
 # Virtual Host maker
 # Usage: lsvhost [-s] -d domain.com
 
+function usage() {
+	echo "Usage: lsvhost [-s] -d domain.com"
+	return 1
+}
+
 function SSLcheck() {
-	SSL="off"
+	SSL=false
 	OPTSTRING=sd:
 	while getopts ${OPTSTRING} OPTION; do
 		case $OPTION in
-			s) SSL="on" ;;
-			d) domain=$OPTARG ;;
-			*) echo "Usage: lsvhost [-s] -d domain.com"
-				return 1 ;;
+			s) SSL=true ;;
+			d) domain="$OPTARG"
+			domain=${domain//[[:space:]]}  # Remove whitespace
+			;;
+			*) usage ;;
 		esac
 	done
-	
-	if [[ $SSL = "off" ]]; then
-		noSSL
-	elif [[ $SSL = "on" ]]; then
-		sslvhost
-	else
-		echo "Something went wrong. Oops."
-		return 1
+
+	if [[ -z ${domain} ]]; then
+		usage
 	fi
+	
+	$SSL && sslvhost || noSSL
 } 
 
 function noSSL() {
-	if [[ -z ${domain} ]]; then
-		echo "Usage: lsvhost [-s] -d domain.com"
-		return 1
-	fi
-	
 	if [[ $distro = "Redhat/CentOS" ]]; then
-		cat > /etc/httpd/vhost.d/$domain.conf <<-EOF
+		cat > /etc/httpd/vhost.d/"${domain}".conf <<-EOF
 		<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
@@ -77,7 +75,7 @@ function noSSL() {
 		service httpd restart > /dev/null 2>&1
 
 	elif [[ $distro = "Ubuntu" ]]; then
-		cat > /etc/apache2/sites-available/$domain <<-EOF
+		cat > /etc/apache2/sites-available/"${domain}" <<-EOF
 		<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
@@ -128,10 +126,6 @@ function noSSL() {
 }
 
 function sslvhost() {
-	if [[ -z ${domain} ]]; then
-		echo "Usage: lsvhost [-s] -d domain.com"
-		return 1
-	fi
 read -p "Please enter the path to the key: " key
 read -p "Please enter the path to the cert: " cert
 read -p "Please enter the path to the bundle: " bundle
@@ -139,7 +133,7 @@ showips
 read -p "Please enter the IP you wish to use: " ip
 
 		if [[ $distro = "Redhat/CentOS" ]]; then
-			cat > /etc/httpd/vhost.d/$domain.conf <<-EOF
+			cat > /etc/httpd/vhost.d/"${domain}".conf <<-EOF
 			<VirtualHost *:80>
 				ServerName $domain
 				ServerAlias www.$domain
@@ -186,7 +180,7 @@ read -p "Please enter the IP you wish to use: " ip
 			service httpd restart > /dev/null 2>&1
 
 		elif [[ $distro = "Ubuntu" ]]; then
-			cat > /etc/apache2/sites-available/$domain <<-EOF
+			cat > /etc/apache2/sites-available/"${domain}" <<-EOF
 			<VirtualHost *:80>
 				ServerName $domain
 				ServerAlias www.$domain
