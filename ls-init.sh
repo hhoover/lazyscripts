@@ -474,7 +474,7 @@ function lsmycopy() {
 		echo "Usage: lsmycopy OLDDBNAME NEWDBNAME"
 		return 1
 	fi
-	mysql -e "CREATE DATABASE IF NOT EXISTS ${2};" && mysqldump -Q ${1} | mysql ${2}
+	mysql -e "CREATE DATABASE IF NOT EXISTS ${2};" && mysqldump -QR ${1} | mysql ${2}
 }
 
 function lshelp() {
