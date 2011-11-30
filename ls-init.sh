@@ -20,19 +20,19 @@ function isFunction() {
 
 # lz - Main function
 function lz() {
+	local ARG="$1"
+	shift	# Push $1 off the arguments
         # Find files matching the parameter, limit 1
-        local FILE=$(/bin/ls ${LZS_MOD_PATH}${1}.* 2> /dev/null | head -1)
+        local FILE=$(/bin/ls ${LZS_MOD_PATH}${ARG}.* 2> /dev/null | head -1)
 
-        if [ $# -eq 1 ]; then
-                if ( isFunction ${1} ); then
-                        # Run the function
-                        ${1}
-                elif [ -r "${FILE}" ]; then
-                        # Execute the module
-                        chmod +x ${FILE} && ${FILE}
-		else
-			return 1
-		fi
+	if ( isFunction ${ARG} ); then
+		# Run the function
+		${ARG} "$*"
+	elif [ -r "${FILE}" ]; then
+		# Execute the module
+		chmod +x ${FILE} && ${FILE} "$*"
+	else
+		return 1
 	fi
 }
 
