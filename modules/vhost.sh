@@ -13,9 +13,7 @@ function SSLcheck() {
 	while getopts ${OPTSTRING} OPTION; do
 		case $OPTION in
 			s) SSL=true ;;
-			d) domain="$OPTARG"
-			domain=${domain//[[:space:]]}  # Remove whitespace
-			;;
+			d) domain="${OPTARG//[[:space:]]}";;
 			*) usage ;;
 		esac
 	done
