@@ -316,109 +316,6 @@ function lsrblcheck() {
 	curl checkrbl.com
 }
 
-function lsvhost() {
-	if [[ $1 != "" ]]; then
-		domain=$1
-	else
-		read -p "Please enter a domain (no www): " 	domain
-	fi
-	if [[ $distro = "Redhat/CentOS" ]]; then
-		cat > /etc/httpd/vhost.d/$domain.conf <<-EOF
-		<VirtualHost *:80>
-			ServerName $domain
-			ServerAlias www.$domain
-			DocumentRoot /var/www/vhosts/$domain
-			<Directory /var/www/vhosts/$domain>
-				AllowOverride All
-			</Directory>
-			CustomLog logs/$domain-access_log common
-			ErrorLog logs/$domain-error_log
-		</VirtualHost>
-
-
-		# <VirtualHost _default_:443>
-		# ServerName $domain
-		# DocumentRoot /var/www/vhosts/$domain
-		# <Directory /var/www/vhosts/$domain>
-		#	AllowOverride All
-		# </Directory>
-
-		# CustomLog /var/log/httpd/$domain-ssl-access.log combined
-		# ErrorLog /var/log/httpd/$domain-ssl-error.log
-
-		# # Possible values include: debug, info, notice, warn, error, crit,
-		# # alert, emerg.
-		# LogLevel warn
-
-		# SSLEngine on
-		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
-		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
-
-		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
-		# 	SSLOptions +StdEnvVars
-		# </FilesMatch>
-
-		# BrowserMatch "MSIE [2-6]" \\
-		#	nokeepalive ssl-unclean-shutdown \\
-		#	downgrade-1.0 force-response-1.0
-		# BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
-		# </VirtualHost>
-		EOF
-
-		mkdir -p /var/www/vhosts/$domain
-		service httpd restart > /dev/null 2>&1
-
-	elif [[ $distro = "Ubuntu" ]]; then
-		cat > /etc/apache2/sites-available/$domain <<-EOF
-		<VirtualHost *:80>
-			ServerName $domain
-			ServerAlias www.$domain
-			DocumentRoot /var/www/vhosts/$domain
-			<Directory /var/www/vhosts/$domain>
-				AllowOverride All
-			</Directory>
-			CustomLog /var/log/apache2/$domain-access_log common
-			ErrorLog /var/log/apache2/$domain-error_log
-		</VirtualHost>
-
-
-		# <VirtualHost _default_:443>
-		# ServerName $domain
-		# DocumentRoot /var/www/vhosts/$domain
-		# <Directory /var/www/vhosts/$domain>
-		#	AllowOverride All
-		# </Directory>
-
-		# CustomLog /var/log/httpd/$domain-ssl-access.log combined
-		# ErrorLog /var/log/httpd/$domain-ssl-error.log
-
-		# # Possible values include: debug, info, notice, warn, error, crit,
-		# # alert, emerg.
-		# LogLevel warn
-
-		# SSLEngine on
-		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
-		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
-
-		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
-		# 	SSLOptions +StdEnvVars
-		# </FilesMatch>
-
-		# BrowserMatch "MSIE [2-6]" \\
-		#	nokeepalive ssl-unclean-shutdown \\
-		#	downgrade-1.0 force-response-1.0
-		# BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
-		# </VirtualHost>
-		EOF
-
-		mkdir -p /var/www/vhosts/$domain
-		a2ensite $domain > /dev/null 2>&1
-		service apache2 restart	 > /dev/null 2>&1
-	else
-		echo "Unsupported OS"
-	fi
-}
-
 function lscrtchk() {
 	cd $LZS_PREFIX
 	read -p "Enter path to key [/path/to/server.key]: " key
@@ -519,6 +416,7 @@ function lshelp() {
 function lswhatis() { export -f $1; export -pf; export -fn $1; }
 
 function _aliases() {
+	alias lsvhost="lz vhost"
 	alias lsapcheck="lz apachebuddy"
 	alias lsdrupal="lz drupal"
 	#alias lshistsetup="lz hist"

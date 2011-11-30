@@ -1,9 +1,8 @@
 #!/bin/bash
 # Virtual Host maker
-# Usage: lsvhost [-s] -d domain.com
 
 function usage() {
-	echo "Usage: lsvhost [-s] -d domain.com"
+	echo "Usage: lsvhost -[s]d domain.com"
 	return 1
 }
 
@@ -20,6 +19,7 @@ function SSLcheck() {
 
 	if [[ -z ${domain} ]]; then
 		usage
+		return 1
 	fi
 	
 	$SSL && sslvhost || noSSL
@@ -101,8 +101,8 @@ function noSSL() {
 		# LogLevel warn
 
 		# SSLEngine on
-		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
-		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+		# SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+		# SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
 
 		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
 		# 	SSLOptions +StdEnvVars
@@ -121,6 +121,7 @@ function noSSL() {
 	else
 		echo "Unsupported OS"
 	fi
+	return 0
 }
 
 function sslvhost() {
@@ -227,6 +228,7 @@ read -p "Please enter the IP you wish to use: " ip
 		else
 			echo "Unsupported OS"
 		fi
+		return 0
 }
 
 function showips() {
