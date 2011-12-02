@@ -2,8 +2,7 @@
 ## Node.js Installation Script
 ## Author: David Wittman <david@wittman.com>
 
-VERSION="0.6.3"
-SOURCE="http://nodejs.org/dist/v${VERSION}/node-v${VERSION}.tar.gz"
+SOURCE="http://nodejs.org/dist/node-latest.tar.gz"
 SOURCEPATH="/usr/local/src/"
 
 bold=$(tput bold)
@@ -75,7 +74,7 @@ install_deps() {
 	fi
 
 	begin "Installing dependencies..."
-	${INSTALL} ${DEPS} > /dev/null || die "${OUTPUT}"
+	${INSTALL} ${DEPS} &> /dev/null || die "${OUTPUT}"
 	pass "${OUTPUT}"
 }
 
