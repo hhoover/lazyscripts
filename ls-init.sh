@@ -375,7 +375,7 @@ function lsmycopy() {
 }
 
 function lshelp() {
-	echo -e "---------------------------------------------------------------------------------------------"
+    horizontal_row
 	echo -e "    lshelp\t\tThis help message."
 	echo -e "    lsversion\t\tDisplay the current LazyScripts version."
 	echo -e "    lsinfo\t\tDisplay useful system information"
@@ -410,7 +410,18 @@ function lshelp() {
 	echo -e "    lspma\t\tInstalls phpMyAdmin."
 	echo -e "    lsnodejs\t\tInstall Node.js with NPM"
 	echo -e "    lswhatis\t\tOutput the script that would be run with a specific command."
-	echo -e "---------------------------------------------------------------------------------------------"
+    horizontal_row
+}
+
+function horizontal_row() {
+        local COLUMNS=$(tput cols)
+        local CHAR=${1:--}
+        let "COLUMNS = $COLUMNS / ${#CHAR}"
+        echo ${COLUMNS}
+        for i in $(seq $COLUMNS); do
+                echo -n "$CHAR"
+        done
+        echo
 }
 
 function lswhatis() { export -f $1; export -pf; export -fn $1; }
