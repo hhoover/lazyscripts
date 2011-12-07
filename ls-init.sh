@@ -403,7 +403,6 @@ function lshelp() {
 	echo -e "    lsdrupal\t\tInstall Drupal 7 on this server"
 	echo -e "    lswebmin\t\tInstall Webmin on this server"
 	echo -e "    lsvarnish\t\tInstall Varnish on this server"
-	echo -e "    lssuphp\t\tReplaces mod_php with mod_suphp"
 	echo -e "    lsconcurchk\t\tShow concurrent connections"
 	echo -e "    lscrtchk\t\tCheck SSL Cert/Key to make sure they match"
 	echo -e "    lsrpaf\t\tInstall mod_rpaf to set correct client IP behind a proxy."
