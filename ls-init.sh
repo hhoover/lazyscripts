@@ -134,7 +134,7 @@ function lscpchk() {
 		echo -e "$brightyellow\bPlesk Detected: $brightblue\b $hmpsaversion. $norm\n"
 	# Check for cPanel
 	elif [ -d /usr/local/cpanel ]; then
-		hmcpanversion=$( cat /usr/local/cpanel/version )
+		hmcpanversion=$( /usr/local/cpanel/cpanel -V )
 		echo -e "$brightyellow\bcPanel Detected: $brightblue\b $hmcpanversion. $norm\n"
 	else
 		echo -e "$brightred\bNo Control Panel Detected.$norm"
