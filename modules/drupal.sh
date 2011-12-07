@@ -121,7 +121,7 @@ function get_drupal() {
 # Set up a database locally OR show the commands to run
 function configure_mysql() {
 	MYSQL=$( which mysql )
-	CREATE_DB="CREATE DATABASE ${database};"
+	CREATE_DB="CREATE DATABASE IF NOT EXISTS ${database};"
 	CREATE_DB_LOCAL_USER="GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES ON ${database}.* TO '${db_user}'@'${dbhost}' IDENTIFIED BY '${db_password}';"
 	CREATE_DB_REMOTE_USER="GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES ON ${database}.* TO '${db_user}'@'${eth1ip}' IDENTIFIED BY '${db_password}';"
 	FP="FLUSH PRIVILEGES;"
