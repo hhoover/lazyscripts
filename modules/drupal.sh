@@ -9,7 +9,7 @@ function get_domain() {
 	read -p "Please enter the 10.x.x.x address of your DB Server (or use localhost): " dbhost
 	read -p "Please enter desired MySQL database name: " database
 	read -p "Please enter desired MySQL username: " db_user
-	web_password=$( apg -m 7 -n 1 )
+	#web_password=$( apg -m 7 -n 1 )
 	db_password=$( apg -m 7 -n 1 )
 	eth1ip=$( ifconfig eth1 | grep 'inet addr:'| cut -d: -f2 | awk '{ print $1}' )
 }
@@ -17,31 +17,89 @@ function get_domain() {
 # add a virtual host and restart Apache
 function configure_apache() {
 	if [[ $distro = "Redhat/CentOS" ]]; then
-		cat > /etc/httpd/vhost.d/$domain.conf << EOF
-<VirtualHost *:80>
-ServerName $domain
-ServerAlias www.$domain
-DocumentRoot /var/www/vhosts/$domain/drupal-7.7
-	<Directory /var/www/vhosts/$domain/drupal-7.7>
-	AllowOverride All
-	</Directory>
-CustomLog logs/$domain-access_log common
-ErrorLog logs/$domain-error_log
-</VirtualHost>
+		cat > /etc/httpd/vhost.d/"${domain.conf}" <<-EOF
+		<VirtualHost *:80>
+			ServerName $domain
+			ServerAlias www.$domain
+			DocumentRoot /var/www/vhosts/$domain
+			<Directory /var/www/vhosts/$domain>
+				AllowOverride All
+			</Directory>
+			CustomLog logs/$domain-access_log common
+			ErrorLog logs/$domain-error_log
+		</VirtualHost>
+
+
+		# <VirtualHost _default_:443>
+		# ServerName $domain
+		# DocumentRoot /var/www/vhosts/$domain
+		# <Directory /var/www/vhosts/$domain>
+		#	AllowOverride All
+		# </Directory>
+
+		# CustomLog /var/log/httpd/$domain-ssl-access.log combined
+		# ErrorLog /var/log/httpd/$domain-ssl-error.log
+
+		# # Possible values include: debug, info, notice, warn, error, crit,
+		# # alert, emerg.
+		# LogLevel warn
+
+		# SSLEngine on
+		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
+		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+
+		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
+		# 	SSLOptions +StdEnvVars
+		# </FilesMatch>
+
+		# BrowserMatch "MSIE [2-6]" \\
+		#	nokeepalive ssl-unclean-shutdown \\
+		#	downgrade-1.0 force-response-1.0
+		# BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+		# </VirtualHost>
 EOF
 		service httpd restart > /dev/null 2>&1
 	elif [[ $distro = "Ubuntu" ]]; then
-		cat > /etc/apache2/sites-available/$domain << EOF
-<VirtualHost *:80>
-ServerName $domain
-ServerAlias www.$domain
-DocumentRoot /var/www/vhosts/$domain/drupal-7.7
-	<Directory /var/www/vhosts/$domain/drupal-7.7>
-	AllowOverride All
-	</Directory>
-CustomLog /var/log/apache2/$domain-access_log common
-ErrorLog /var/log/apache2/$domain-error_log
-</VirtualHost>
+		cat > /etc/apache2/sites-available/"${domain}" <<-EOF
+		<VirtualHost *:80>
+			ServerName $domain
+			ServerAlias www.$domain
+			DocumentRoot /var/www/vhosts/$domain
+			<Directory /var/www/vhosts/$domain>
+				AllowOverride All
+			</Directory>
+			CustomLog /var/log/apache2/$domain-access_log common
+			ErrorLog /var/log/apache2/$domain-error_log
+		</VirtualHost>
+
+
+		# <VirtualHost _default_:443>
+		# ServerName $domain
+		# DocumentRoot /var/www/vhosts/$domain
+		# <Directory /var/www/vhosts/$domain>
+		#	AllowOverride All
+		# </Directory>
+
+		# CustomLog /var/log/httpd/$domain-ssl-access.log combined
+		# ErrorLog /var/log/httpd/$domain-ssl-error.log
+
+		# # Possible values include: debug, info, notice, warn, error, crit,
+		# # alert, emerg.
+		# LogLevel warn
+
+		# SSLEngine on
+		# SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+		# SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+
+		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
+		# 	SSLOptions +StdEnvVars
+		# </FilesMatch>
+
+		# BrowserMatch "MSIE [2-6]" \\
+		#	nokeepalive ssl-unclean-shutdown \\
+		#	downgrade-1.0 force-response-1.0
+		# BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+		# </VirtualHost>
 EOF
 		a2ensite $domain > /dev/null 2>&1
 		service apache2 restart	 > /dev/null 2>&1
@@ -57,7 +115,7 @@ function get_drupal() {
 	tar -C /var/www/vhosts/$domain -xzf drupal-7.7.tar.gz
 	rm -f /root/drupal-7.7.tar.gz
 	useradd -d /var/www/vhosts/$domain $username > /dev/null 2>&1
-	echo $web_password | passwd $username --stdin > /dev/null 2>&1
+	#echo $web_password | passwd $username --stdin > /dev/null 2>&1
 }
 
 # Set up a database locally OR show the commands to run
@@ -116,7 +174,8 @@ configure_apache
 echo "Apache has been configured for ${domain} and restarted."
 echo "The SFTP credentials are: "
 echo "User: ${username}"
-echo "Password: ${web_password}"
+#echo "Password: ${web_password}"
+echo "PLEASE SET A SFTP PASSWORD!"
 configure_mysql
 echo "I like salsa!"
 exit 0
