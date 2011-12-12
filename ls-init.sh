@@ -190,6 +190,9 @@ function lsinstall() {
 
 function lscloudkick() {
 	if [[ $distro = "Redhat/CentOS" ]]; then
+		if [[ -n $( cat /etc/issue | grep 6 ) ]]; then
+		rpm -Uvh http://packages.cloudkick.com/releases/cloudkick-config/binaries/cloudkick-config-centos6-1.2.1-0.x86_64.rpm http://packages.cloudkick.com/releases/cloudkick-agent/binaries/cloudkick-agent-centos6-0.9.21-0.x86_64.rpm
+		else
 		cat > /etc/yum.repos.d/cloudkick.repo <<-EOF
 		[cloudkick]
 		name=Cloudkick
@@ -197,6 +200,7 @@ function lscloudkick() {
 		gpgcheck=0
 		EOF
 		yum -y -q install cloudkick-agent
+		fi
 		chkconfig cloudkick-agent on
 		echo -e "Please enter the login credentials and $blinkred\bstart the agent. $norm"
 		cloudkick-config
