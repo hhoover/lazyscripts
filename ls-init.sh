@@ -393,6 +393,7 @@ function lshelp() {
 	echo -e "    lsmyusers\t\tList MySQL users and grants."
 	echo -e "    lsmycreate\t\tCreates MySQL DB and MySQL user"
 	echo -e "    lsmycopy\t\tCopies an existing database to a new database."
+	echo -e "    lsnginx\t\tInstalls Nginx and PHP-FPM; Does not work on Ubuntu 10.04"
 	echo -e "    lsparsar\t\tPretty sar output"
 	echo -e "    lsapcheck\t\tVerify apache max client settings and memory usage."
 	echo -e "    lsapdocs\t\tPrints out Apache's DocumentRoots"
@@ -444,6 +445,7 @@ function _aliases() {
 	alias lswebmin="lz webmin"
 	alias lswordpress="lz wordpress"
 	alias lsnodejs="lz nodejs"
+	alias lsnginx="lz nginx"
 }
 
 function lslogin() {
