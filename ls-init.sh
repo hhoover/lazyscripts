@@ -420,7 +420,6 @@ function horizontal_row() {
         local COLUMNS=$(tput cols)
         local CHAR=${1:--}
         let "COLUMNS = $COLUMNS / ${#CHAR}"
-        echo ${COLUMNS}
         for i in $(seq $COLUMNS); do
                 echo -n "$CHAR"
         done
