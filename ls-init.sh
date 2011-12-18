@@ -463,9 +463,3 @@ function lslogin() {
 # Run these functions at source time
 ostype
 _aliases	 # Export the function aliases
-
-# Temporary RedHat/CentOS Fix
-if [[ $distro == "Redhat/CentOS" ]]; then
-	chmod 644 /etc/resolv.conf
-fi
-
