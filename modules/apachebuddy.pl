@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 #
 # author: jacob walcik
-# version: 0.3
+# version: 0.4
 # description: This will make some recommendations on tuning your Apache 
 # configuration based on your current settings and Apache's memory usage
 #
@@ -13,6 +13,8 @@ use Getopt::Long qw(:config no_ignore_case bundling pass_through);
 use POSIX;
 use strict;
 use Term::ANSIColor;
+
+our $VERSION = "0.4";
 
 # here we're going to build a list of the files included by the Apache 
 # configuration
@@ -103,10 +105,10 @@ sub find_included_files {
 			# if the file doesn't start with a comment, then we want to examine it
 			if ( $_ !~ m/^\s*#/ ) {
 				# find lines that include other files
-				if ( $_ =~ m/\s*include\s+/i ) {
+				if ( $_ =~ m/^\s*include\s+/i ) {
 
 					# grab the included file name or file glob
-					$_ =~ s/\s*include\s+(.*)\s*/$1/i;
+					$_ =~ s/^\s*include\s+(.*)\s*/$1/i;
 
 					# prepend the Apache root for files or
 					# globs that are relative
@@ -240,12 +242,6 @@ sub find_master_value {
 		$result = $results[0];
 	}
 
-	#Result not found
-	if (@results == 0) {
-		$result = "CONFIG NOT FOUND";
-	}
-
-	print "VERBOSE: $result " if $main::VERBOSE;
 	# Ubuntu does not store the Apache user, group, or pidfile definitions 
 	# in the apache2.conf file. instead, variables are in the configuration 
 	# file and the real values are in /etc/apache2/envvars. this is a 
@@ -540,7 +536,14 @@ sub get_php_setting {
 
 	# this will return an array with all of the local and global PHP 
 	# settings
-	my @php_config_array = `php -r "phpinfo(4);"`;
+  my $debini = "/etc/php5/apache2/php.ini";
+  my @php_config_array;
+  if(-f $debini) {
+    @php_config_array = `php  --php-ini /etc/php5/apache2/php.ini -r "phpinfo(4);"`;
+  }
+  else {
+    @php_config_array = `php -r "phpinfo(4);"`;
+  }
 
 	my @results;
 
@@ -574,8 +577,15 @@ sub get_php_setting {
 }
 
 sub generate_standard_report {
-	my ( $available_mem, $maxclients, $apache_proc_highest, $model, $threadsperchild ) = @_;
+	my ( $available_mem, $maxclients, $apache_proc_highest ) = @_;
 
+	# based on the Apache memory usage (size of the largest process, 
+	# check to see if the maxclients setting for Apache is sane
+	my $max_rec_maxclients = $available_mem / $apache_proc_highest;
+	$max_rec_maxclients = floor($max_rec_maxclients);
+
+	# determine the maximum potential memory usage by Apache
+	my $max_potential_usage = $maxclients * $apache_proc_highest;
 
 	# print a report header
 	print color 'bold white' if ! $main::NOCOLOR;
@@ -584,121 +594,45 @@ sub generate_standard_report {
 
 	# show what we're going to use to generate our numbers
 	print "\nSettings considered for this report:\n\n";
-
 	print "\tYour server's physical RAM:\t\t";
 	print color 'bold' if ! $main::NOCOLOR;
 	print $available_mem."MB\n";
 	print color 'reset' if ! $main::NOCOLOR;
-
 	print "\tApache's MaxClients directive:\t\t";
 	print color 'bold' if ! $main::NOCOLOR;
 	print $maxclients."\n";
 	print color 'reset' if ! $main::NOCOLOR;
-
-	print "\tApache MPM Model:\t\t\t";
-	print color 'bold' if ! $main::NOCOLOR;
-	print $model ."\n";
-	print color 'reset' if ! $main::NOCOLOR;
-
 	print "\tLargest Apache process (by memory):\t";
 	print color 'bold' if ! $main::NOCOLOR;
 	print $apache_proc_highest."MB\n";
 	print color 'reset' if ! $main::NOCOLOR;
-
-	if ($model eq "prefork") {
-		# based on the Apache memory usage (size of the largest process, 
-		# check to see if the maxclients setting for Apache is sane
-		my $max_rec_maxclients = $available_mem / $apache_proc_highest;
-		$max_rec_maxclients = floor($max_rec_maxclients);
-
-		# determine the maximum potential memory usage by Apache
-		my $max_potential_usage = $maxclients * $apache_proc_highest;
-		my $max_potential_usage_pct = round(($max_potential_usage/$available_mem)*100);
-		if ( $maxclients <= $max_rec_maxclients ) {
-			print color 'bold green' if ! $main::NOCOLOR;
-			print "[ OK ]"; 
-			print color 'reset' if ! $main::NOCOLOR;
-			print "\tYour MaxClients setting is within an acceptable range.\n";
-			print "\tMax potential memory usage: \t\t";
-			print color 'bold white' if ! $main::NOCOLOR;
-			print $max_potential_usage." MB" ;
-			print color 'reset';
-			print "\n\n";
-
-			print "\tPercentage of RAM allocated to Apache\t";
-			print color 'bold white' if ! $main::NOCOLOR;
-			print $max_potential_usage_pct." %" ;
-			print color 'reset';
-			print "\n\n";
-		}
-		else {
-			print color 'bold red' if ! $main::NOCOLOR;
-			print "[ !! ]";
-			print color 'reset' if ! $main::NOCOLOR;
-			print "\tYour MaxClients setting is too high. It should be no greater than ";
-			print color 'bold white' if ! $main::NOCOLOR;
-			print $max_rec_maxclients.".\n";
-			print color 'reset';
-			print "\tMax potential memory usage: ";
-			print color 'bold white' if ! $main::NOCOLOR;
-			print $max_potential_usage." MB" ."($max_potential_usage_pct % of available RAM)" ;
-			print color 'reset';
-			print "\n\n";
-
-			print "\tPercentage of RAM allocated to Apache\t\t";
-			print color 'bold white' if ! $main::NOCOLOR;
-			print $max_potential_usage_pct." %" ;
-			print color 'reset';
-			print "\n\n";
-		}
-	}
-	if ($model eq "worker") {
-		my $max_rec_maxclients = int((($available_mem/$apache_proc_highest) * $threadsperchild)/25)*25;
-
-		my $max_potential_usage = ($maxclients/$threadsperchild) * $apache_proc_highest;
-		$max_potential_usage = round($max_potential_usage);
-		my $max_potential_usage_pct = round(($max_potential_usage/$available_mem)*100);
-		if ( $maxclients <= $max_rec_maxclients ) {
-			print color 'bold green' if ! $main::NOCOLOR;
-			print "[ OK ]"; 
-			print color 'reset' if ! $main::NOCOLOR;
-			print "\tYour MaxClients setting is within an acceptable range.\n";
-			print "\t(Max potential memory usage: ";
-			print color 'bold white' if ! $main::NOCOLOR;
-			print $max_potential_usage." MB" ."($max_potential_usage_pct % of available RAM)" ;
-			print color 'reset';
-			print ")\n\n";
-			
-			print "\tPercentage of RAM allocated to Apache\t\t";
-			print color 'bold white' if ! $main::NOCOLOR;
-			print $max_potential_usage_pct." %" ;
-			print color 'reset';
-			print "\n\n";
-
-		}
-		else {
-			print color 'bold red' if ! $main::NOCOLOR;
-			print "[ !! ]";
-			print color 'reset' if ! $main::NOCOLOR;
-			print "\tYour MaxClients setting is too high. It should be no greater than ";
-			print color 'bold white' if ! $main::NOCOLOR;
-			print $max_rec_maxclients.".\n";
-			print color 'reset';
-			print "\tMax potential memory usage: ";
-			print color 'bold white' if ! $main::NOCOLOR;
-			print $max_potential_usage." MB" ."($max_potential_usage_pct % of available RAM)" ;
-			print color 'reset';
-			print ")\n\n";
-
-			print "\tPercentage of RAM allocated to Apache\t\t";
-			print color 'bold white' if ! $main::NOCOLOR;
-			print $max_potential_usage_pct." %" ;
-			print color 'reset';
-			print "\n\n";
-		}
-	}
-
 	print "-----------------------------------------------------------------------\n";
+
+	if ( $maxclients <= $max_rec_maxclients ) {
+		print color 'bold green' if ! $main::NOCOLOR;
+		print "[ OK ]"; 
+		print color 'reset' if ! $main::NOCOLOR;
+		print "\tYour MaxClients setting is within an acceptable range.\n";
+		print "\t(max potential memory usage: ";
+		print color 'bold white' if ! $main::NOCOLOR;
+		print $max_potential_usage."MB";
+		print color 'reset';
+		print ")\n\n";
+	}
+	else {
+		print color 'bold red' if ! $main::NOCOLOR;
+		print "[ !! ]";
+		print color 'reset' if ! $main::NOCOLOR;
+		print "\tYour MaxClients setting is too high. It should be no greater\n\tthan ";
+		print color 'bold white' if ! $main::NOCOLOR;
+		print $max_rec_maxclients.".\n";
+		print color 'reset';
+		print "\t(max potential memory usage: ";
+		print color 'bold white' if ! $main::NOCOLOR;
+		print $max_potential_usage."MB";
+		print color 'reset';
+		print ")\n\n";
+	}
 }
 
 # generate the optional report based on the server's PHP settings
@@ -777,15 +711,6 @@ sub round {
 	return $value;
 }	
 
-#Return the number of CPU cores
-sub get_cores {
-    my $cmd = 'egrep ' . "'". '^physical id|^core id|^$' . "'" . ' /proc/cpuinfo | awk '. "'" . 'ORS=NR%3?",":"\n"' . "'" . '| sort | uniq | wc -l';
-    my $cmd_out = `$cmd`;
-    chomp $cmd_out;
-    return $cmd_out;
-}
-
-
 # print usage
 sub usage {
 	print "Usage: apachebuddy.pl [OPTIONS]\n";
@@ -802,7 +727,7 @@ sub usage {
 sub print_header {
 	print color 'bold white' if ! $main::NOCOLOR;
 	print "########################################################################\n";
-	print "# Apache Buddy v 0.2 ###################################################\n";
+	print "# Apache Buddy v $VERSION ###################################################\n";
 	print "########################################################################\n";
 	print color 'reset' if ! $main::NOCOLOR;
 }
@@ -984,9 +909,6 @@ else {
 	if ( $model eq 0 ) {
 		print "Unable to determine whether Apache is using worker or prefork\n";
 	}
-	else {
-		print "Apache is using $model model\n";
-	}
 
 	print color 'bold white' if ! $NOCOLOR;
 	print "\nExamining your Apache configuration...\n";
@@ -1003,15 +925,6 @@ else {
 	my $maxclients = find_master_value(\@config_array, $model, 'maxclients');
 	print "Your max clients setting is ".$maxclients."\n";
 
-	#calculate ThreadsPerChild. This is useful for the worker MPM calculations
-       	my $threadsperchild = find_master_value(\@config_array, $model, 'threadsperchild');
-       	my $serverlimit = find_master_value(\@config_array, $model, 'serverlimit');
-
-	if ($model eq "worker") {
-		print "Your ThreadsPerChild setting for worker MPM is  ".$threadsperchild."\n";
-		print "Your ServerLimit setting for worker MPM is  ".$serverlimit."\n";
-	}
-
 	print color 'bold white' if ! $NOCOLOR;
 	print "\nAnalyzing memory use...\n";
 	print color 'reset' if ! $NOCOLOR;
@@ -1026,33 +939,20 @@ else {
 	my $apache_proc_lowest = get_memory_usage($process_name, $apache_user, 'low');
 	my $apache_proc_average = get_memory_usage($process_name, $apache_user, 'average');
 
+	print "The largest apache process is using ".$apache_proc_highest." MB of memory\n";
+	print "The smallest apache process is using ".$apache_proc_lowest." MB of memory\n";
+	print "The average apache process is using ".$apache_proc_average." MB of memory\n";
 
-	if ( $model eq "prefork") {
-		print "The largest apache process is using ".$apache_proc_highest." MB of memory\n";
-		print "The smallest apache process is using ".$apache_proc_lowest." MB of memory\n";
-		print "The average apache process is using ".$apache_proc_average." MB of memory\n";
+	#my $average_potential_use = $maxclients * $apache_proc_average;
+	#$average_potential_use = round($average_potential_use);
 
-		my $average_potential_use = $maxclients * $apache_proc_average;
-		$average_potential_use = round($average_potential_use);
-		my $average_potential_use_pct = round(($average_potential_use/$available_mem)*100);
-		print "Going by the average Apache process, Apache can potentially use ".$average_potential_use." MB RAM ($average_potential_use_pct % of available RAM)\n" ;
+	#print "Based on your average process size, the total potential memory use for Apache is: ".$average_potential_use."MB\n";
 
-		my $highest_potential_use = $maxclients * $apache_proc_highest;
-		$highest_potential_use = round($highest_potential_use);
-		my $highest_potential_use_pct = round(($highest_potential_use/$available_mem)*100);
-		print "Going by the largest Apache process, Apache can potentially use ".$highest_potential_use." MB RAM ($highest_potential_use_pct % of available RAM)\n" ;
-	}
+	my $highest_potential_use = $maxclients * $apache_proc_highest;
+	$highest_potential_use = round($highest_potential_use);
 
-	if ( $model eq "worker") {
-		print "The largest apache process is using ".$apache_proc_highest." MB of memory\n";
-		print "The smallest apache process is using ".$apache_proc_lowest." MB of memory\n";
-		print "The average apache process is using ".$apache_proc_average." MB of memory\n";
+	print "The total potential memory use for Apache is: ".$highest_potential_use."MB\n";
 
-		my $highest_potential_use = ($maxclients/$threadsperchild) * $apache_proc_highest;
-		$highest_potential_use = round($highest_potential_use);
-		my $highest_potential_use_pct = round(($highest_potential_use/$available_mem)*100);
-		print "Going by the largest Apache process, Apache can potentially use ".$highest_potential_use." MB RAM ($highest_potential_use_pct % of available RAM)\n" ;
-	}
 	print color 'bold white' if ! $NOCOLOR;
 	print "\nGenerating reports...\n";
 	print color 'reset' if ! $NOCOLOR;
@@ -1062,8 +962,9 @@ else {
 		generate_php_report($available_mem, $maxclients);
 	}
 	else {
-		generate_standard_report($available_mem, $maxclients, $apache_proc_highest, $model, $threadsperchild);
+		generate_standard_report($available_mem, $maxclients, $apache_proc_highest);
 	}
 }
 
 print "-----------------------------------------------------------------------\n";
+
