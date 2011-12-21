@@ -1,11 +1,15 @@
-<h1>LazyScripts</h1>
+# LazyScripts
 
-<p>This is a set of bash shell functions to simplify and automate specific routine tasks, as well as some more specialized ones.</p>
+This is a set of bash shell functions to simplify and automate specific routine tasks, as well as some more specialized ones.
 
-<p>Compatibility - RHEL/CentOS 5+, Ubuntu 10.04+</p>
+## Compatibility
+* RedHat Enterprise Linux 5+
+* CentOS 5+
+* Ubuntu 10.04+
 
-<h3>How to use:</h3>
-<p> Run this bash function as root:</p>
+## Installation
+Run this bash function as root:
+
 ```bash
 function lsgethelper() {
         local LZDIR=/root/.lazyscripts/tools;
@@ -23,7 +27,8 @@ function lsgethelper() {
 }
 lsgethelper && lslogin
 ```
-<h3>Functions included:</h3>
+Throw this in your .bashrc for extra credit.
+## Functions
 * lsinfo  - Display useful system information 
 * lsbwprompt  - Switch to a plain prompt. 
 * lscolorprompt  - Switch to a fancy colorized prompt. 
@@ -58,4 +63,4 @@ lsgethelper && lslogin
 * lswhatis  - Output the script that would be run with a specific command.
 * lsnodejs - Installs Node.js and Node Package Manager
 
-<p>Enjoy!</p>
+Enjoy!
