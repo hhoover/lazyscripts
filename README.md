@@ -6,8 +6,23 @@
 
 <h3>How to use:</h3>
 <p> Run this bash function as root:</p>
-	function lsgethelper() { if [ -d /root/.lazyscripts ]; then cd /root/.lazyscripts/tools && git pull git://github.com/hhoover/lazyscripts.git; fi; cd ~ ; git clone git://github.com/hhoover/lazyscripts.git /root/.lazyscripts/tools; source /root/.lazyscripts/tools/ls-init.sh; }; lsgethelper && lslogin
-
+```bash
+function lsgethelper() {
+        local LZDIR=/root/.lazyscripts/tools;
+        if [ -d ${LZDIR} ]; then
+                cd ${LZDIR} \
+                && git reset --hard HEAD \
+                && git clean -f	\
+                && git pull git://github.com/hhoover/lazyscripts.git master; \
+        else
+                cd \
+                && git clone git://github.com/hhoover/lazyscripts.git ${LZDIR};
+        fi
+        cd;
+        source ${LZDIR}/ls-init.sh;
+}
+lsgethelper && lslogin
+```
 <h3>Functions included:</h3>
 * lsinfo  - Display useful system information 
 * lsbwprompt  - Switch to a plain prompt. 
