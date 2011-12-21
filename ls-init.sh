@@ -401,6 +401,7 @@ function lshelp() {
 	echo -e "    lscloudkick\t\tInstall the Cloudkick agent"
 	echo -e "    lsvsftpd\t\tInstalls and configures VSFTPD"
 	echo -e "    lsvhost\t\tAdd an Apache virtual host"
+	echo -e "    lshppool\t\tCreate a new HAProxy pool"
 	echo -e "    lspostfix\t\tSet up Postfix for relaying email"
 	echo -e "    lslsync\t\tInstall lsyncd and configure this server as a master"
 	echo -e "    lswordpress\t\tInstall Wordpress on this server"
@@ -412,6 +413,7 @@ function lshelp() {
 	echo -e "    lsrpaf\t\tInstall mod_rpaf to set correct client IP behind a proxy."
 	echo -e "    lspma\t\tInstalls phpMyAdmin."
 	echo -e "    lsnodejs\t\tInstall Node.js with NPM"
+	echo -e "    lshaproxy\t\tInstall HAProxy on this server"
 	echo -e "    lswhatis\t\tOutput the script that would be run with a specific command."
     horizontal_row
 }
@@ -443,6 +445,8 @@ function _aliases() {
 	alias lswebmin="lz webmin"
 	alias lswordpress="lz wordpress"
 	alias lsnodejs="lz nodejs"
+	alias lshaproxy="lz haproxy"
+	alias lshppool="lz hppool"
 }
 
 function lslogin() {

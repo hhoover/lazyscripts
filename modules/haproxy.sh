@@ -6,20 +6,21 @@ clear
 echo "This installs HAProxy as a load balancer."
 echo "Coming soon: lsheartbeat"
 echo "For now, you need to set up heartbeat manually if you need failover."
+echo "ONLY USE FOR BOTH HTTP AND HTTPS. **If you only need HTTP, CTRL-C NOW!**"
 }
 
 function check_existing() {
 	# checks for an existing install
 	if [[ $distro = "Redhat/CentOS" ]]; then
-		rpm -q haproxy
+		rpm -q haproxy > /dev/null 2>&1
 	if [[ $? = 0 ]]; then
 		echo "HAProxy might be already installed! Check yourself before you wreck yourself."
-		return 1
+		exit 1
 	fi
 elif [[ $distro = "Ubuntu" ]]; then
 	if [[ -n $( dpkg -s haproxy | grep installed ) ]]; then
 		echo "HAProxy might be already installed! Check yourself before you wreck yourself."
-		return 1
+		exit 1
 	fi
 fi
 }
@@ -32,9 +33,9 @@ function list_ips() {
 function get_info() {
 	# Get installation variables from the user
 # READ IN INSECURE HOSTS
-	read -p "What IP should be used for the web pool?" BAL_IP
+	read -p "What IP should be used for the web pool? " BAL_IP
 	read -p "Please enter a name for the pool (domain.com): " POOL_NAME
-	read -p "How many INSECURE servers will be load balanced? (port 80) [1] " -e N_HOSTS
+	read -p "How many INSECURE servers will be load balanced? (port 80): " -e N_HOSTS
 	N_HOSTS=${N_HOSTS:-1}
 	for ((i=1; i <= $N_HOSTS; i++)); do
 		read -p "Server IP #${i}: " -e BAL_HOSTS80[$i]
@@ -42,7 +43,7 @@ function get_info() {
 	unset N_HOSTS
 	
 # READ IN SECURE HOSTS
-	read -p "How many SECURE servers will be load balanced? (port 443) [1] " -e N_HOSTS
+	read -p "How many SECURE servers will be load balanced? (port 443): " -e N_HOSTS
 	N_HOSTS=${N_HOSTS:-1}
 	for ((i=1; i <= $N_HOSTS; i++)); do
 		read -p "Server IP #${i}: " -e BAL_HOSTS443[$i]
@@ -132,4 +133,5 @@ get_info
 install_haproxy
 config_haproxy
 service haproxy start
-echo "Complete."
+echo "Complete!"
+echo "HAProxy Login credentials: admin:${ADMIN_PASSWORD}"

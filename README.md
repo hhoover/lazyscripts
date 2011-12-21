@@ -38,6 +38,8 @@
 * lscrtchk - Check SSL Cert/Key to make sure they match
 * lsrpaf - Install mod_rpaf to set correct client IP behind a proxy.
 * lspma - Installs phpMyAdmin
+* lshaproxy - Install HAProxy on this server
+* lshppool - Adds a new pool to an existing HAProxy config
 * lswhatis  - Output the script that would be run with a specific command.
 * lsnodejs - Installs Node.js and Node Package Manager
 
