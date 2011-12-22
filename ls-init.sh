@@ -432,7 +432,7 @@ function lswhatis() { export -f $1; export -pf; export -fn $1; }
 
 function _aliases() {
 	alias lsvhost="lz vhost"
-	alias lsapcheck="lz apachebuddy"
+	alias lsapcheck="perl ${LZS_PREFIX}/modules/apachebuddy.pl ${@}"
 	alias lsdrupal="lz drupal"
 	#alias lshistsetup="lz hist"
 	alias lsrpaf="lz rpaf"
