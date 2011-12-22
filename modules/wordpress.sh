@@ -21,8 +21,8 @@ function configure_apache() {
 		<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
-			DocumentRoot /var/www/vhosts/$domain
-			<Directory /var/www/vhosts/$domain>
+			DocumentRoot /var/www/vhosts/$domain/wordpress
+			<Directory /var/www/vhosts/$domain/wordpress>
 				AllowOverride All
 			</Directory>
 			CustomLog logs/$domain-access_log common
@@ -32,8 +32,8 @@ function configure_apache() {
 
 		# <VirtualHost _default_:443>
 		# ServerName $domain
-		# DocumentRoot /var/www/vhosts/$domain
-		# <Directory /var/www/vhosts/$domain>
+		# DocumentRoot /var/www/vhosts/$domain/wordpress
+		# <Directory /var/www/vhosts/$domain/wordpress>
 		#	AllowOverride All
 		# </Directory>
 
@@ -64,8 +64,8 @@ EOF
 		<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
-			DocumentRoot /var/www/vhosts/$domain
-			<Directory /var/www/vhosts/$domain>
+			DocumentRoot /var/www/vhosts/$domain/wordpress
+			<Directory /var/www/vhosts/$domain/wordpress>
 				AllowOverride All
 			</Directory>
 			CustomLog /var/log/apache2/$domain-access_log common
@@ -75,8 +75,8 @@ EOF
 
 		# <VirtualHost _default_:443>
 		# ServerName $domain
-		# DocumentRoot /var/www/vhosts/$domain
-		# <Directory /var/www/vhosts/$domain>
+		# DocumentRoot /var/www/vhosts/$domain/wordpress
+		# <Directory /var/www/vhosts/$domain/wordpress>
 		#	AllowOverride All
 		# </Directory>
 
