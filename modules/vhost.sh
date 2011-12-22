@@ -2,16 +2,23 @@
 # Virtual Host maker
 
 function usage() {
-	echo "Usage: lsvhost -[s]d domain.com"
+	cat <<-EOF
+	Usage: lsvhost [-s] [-r /path/to/docroot] -d domain.com
+	Options:
+	-s = SSL
+	-r = custom documentroot
+	-d = your domain *REQUIRED*
+	EOF
 	return 1
 }
 
 function SSLcheck() {
 	SSL=false
-	OPTSTRING=sd:
+	OPTSTRING=sr:d:
 	while getopts ${OPTSTRING} OPTION; do
 		case $OPTION in
 			s) SSL=true ;;
+			r) DOCROOT="${OPTARG//[[:space:]]}";;
 			d) domain="${OPTARG//[[:space:]]}";;
 			*) usage ;;
 		esac
@@ -22,6 +29,10 @@ function SSLcheck() {
 		return 1
 	fi
 	
+	DEFAULT_DOCROOT="/var/www/vhosts/${domain}"
+	DOCROOT=${DOCROOT:-${DEFAULT_DOCROOT}}
+	
+	
 	$SSL && sslvhost || noSSL
 } 
 
@@ -31,8 +42,8 @@ function noSSL() {
 		<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
-			DocumentRoot /var/www/vhosts/$domain
-			<Directory /var/www/vhosts/$domain>
+			DocumentRoot ${DOCROOT}
+			<Directory ${DOCROOT}>
 				AllowOverride All
 			</Directory>
 			CustomLog logs/$domain-access_log common
@@ -42,8 +53,8 @@ function noSSL() {
 
 		# <VirtualHost _default_:443>
 		# ServerName $domain
-		# DocumentRoot /var/www/vhosts/$domain
-		# <Directory /var/www/vhosts/$domain>
+		# DocumentRoot ${DOCROOT}
+		# <Directory ${DOCROOT}>
 		#	AllowOverride All
 		# </Directory>
 
@@ -69,7 +80,7 @@ function noSSL() {
 		# </VirtualHost>
 		EOF
 
-		mkdir -p /var/www/vhosts/$domain
+		mkdir -p ${DOCROOT}
 		service httpd restart > /dev/null 2>&1
 
 	elif [[ $distro = "Ubuntu" ]]; then
@@ -77,8 +88,8 @@ function noSSL() {
 		<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
-			DocumentRoot /var/www/vhosts/$domain
-			<Directory /var/www/vhosts/$domain>
+			DocumentRoot ${DOCROOT}
+			<Directory ${DOCROOT}>
 				AllowOverride All
 			</Directory>
 			CustomLog /var/log/apache2/$domain-access_log common
@@ -88,8 +99,8 @@ function noSSL() {
 
 		# <VirtualHost _default_:443>
 		# ServerName $domain
-		# DocumentRoot /var/www/vhosts/$domain
-		# <Directory /var/www/vhosts/$domain>
+		# DocumentRoot ${DOCROOT}
+		# <Directory ${DOCROOT}>
 		#	AllowOverride All
 		# </Directory>
 
@@ -115,7 +126,7 @@ function noSSL() {
 		# </VirtualHost>
 		EOF
 
-		mkdir -p /var/www/vhosts/$domain
+		mkdir -p ${DOCROOT}
 		a2ensite $domain > /dev/null 2>&1
 		service apache2 restart	 > /dev/null 2>&1
 	else
@@ -136,8 +147,8 @@ read -p "Please enter the IP you wish to use: " ip
 			<VirtualHost *:80>
 				ServerName $domain
 				ServerAlias www.$domain
-				DocumentRoot /var/www/vhosts/$domain
-				<Directory /var/www/vhosts/$domain>
+				DocumentRoot ${DOCROOT}
+				<Directory ${DOCROOT}>
 					AllowOverride All
 				</Directory>
 				CustomLog logs/$domain-access_log common
@@ -147,8 +158,8 @@ read -p "Please enter the IP you wish to use: " ip
 
 			 <VirtualHost $ip:443>
 			 ServerName $domain
-			 DocumentRoot /var/www/vhosts/$domain
-			 <Directory /var/www/vhosts/$domain>
+			 DocumentRoot ${DOCROOT}
+			 <Directory ${DOCROOT}>
 				AllowOverride All
 			 </Directory>
 
@@ -175,7 +186,7 @@ read -p "Please enter the IP you wish to use: " ip
 			 </VirtualHost>
 			EOF
 
-			mkdir -p /var/www/vhosts/$domain
+			mkdir -p ${DOCROOT}
 			service httpd restart > /dev/null 2>&1
 
 		elif [[ $distro = "Ubuntu" ]]; then
@@ -183,8 +194,8 @@ read -p "Please enter the IP you wish to use: " ip
 			<VirtualHost *:80>
 				ServerName $domain
 				ServerAlias www.$domain
-				DocumentRoot /var/www/vhosts/$domain
-				<Directory /var/www/vhosts/$domain>
+				DocumentRoot ${DOCROOT}
+				<Directory ${DOCROOT}>
 					AllowOverride All
 				</Directory>
 				CustomLog /var/log/apache2/$domain-access_log common
@@ -194,8 +205,8 @@ read -p "Please enter the IP you wish to use: " ip
 
 			 <VirtualHost $ip:443>
 			 ServerName $domain
-			 DocumentRoot /var/www/vhosts/$domain
-			 <Directory /var/www/vhosts/$domain>
+			 DocumentRoot ${DOCROOT}
+			 <Directory ${DOCROOT}>
 				AllowOverride All
 			 </Directory>
 
@@ -222,7 +233,7 @@ read -p "Please enter the IP you wish to use: " ip
 			 </VirtualHost>
 			EOF
 
-			mkdir -p /var/www/vhosts/$domain
+			mkdir -p ${DOCROOT}
 			a2ensite $domain > /dev/null 2>&1
 			service apache2 restart	 > /dev/null 2>&1
 		else
