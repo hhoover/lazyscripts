@@ -21,10 +21,21 @@ then
 	then
 		OS=cent6
 	fi
+elif [ -a /etc/redhat-release ] && [ "$(awk '{print $1 $2}' /etc/redhat-release)" == "RedHat" ]
+then
+        if [[ "$(awk '{print $7}' /etc/redhat-release)" =~ 5. ]]
+        then
+                OS=rh5
+        elif [[ "$(awk '{print $7}' /etc/redhat-release)" =~ 6. ]]
+        then
+                OS=rh6
+        fi
+
 else
 	echo "Unsupported OS detected, this script will now exit."
 	exit 0
 fi
+
 
 
 #Check for Repo
@@ -46,6 +57,23 @@ check_repo()
 		else
 			REPOEXISTS=1
 		fi
+	elif [[ "${OS}" == "cent6" ]]
+        then
+		if [[ -z "$(grep -Ri "nginx" /etc/yum.repos.d)" ]]
+		then
+			REPOEXISTS=0
+		else
+			REPOEXISTS=1
+		fi
+	elif [[ "${OS}" == "rh5" ]]
+        then
+                if [[ -z "$(grep -Ri "nginx" /etc/yum.repos.d)" ]]
+                then
+                        REPOEXISTS=0
+                else
+                        REPOEXISTS=1
+                fi
+
 	fi
 }
 
@@ -65,6 +93,20 @@ create_repo() {
 		echo 'baseurl=http://nginx.org/packages/centos/5/$basearch/' >> /etc/yum.repos.d/nginx.repo
 		echo 'gpgcheck=0' >> /etc/yum.repos.d/nginx.repo
 		echo 'enabled=1' >> /etc/yum.repos.d/nginx.repo
+	elif [ "${OS}" == "cent6" ]
+        then
+                echo '[nginx]' >> /etc/yum.repos.d/nginx.repo
+                echo 'name=nginx repo' >> /etc/yum.repos.d/nginx.repo
+                echo 'baseurl=http://nginx.org/packages/centos/6/$basearch/' >> /etc/yum.repos.d/nginx.repo
+                echo 'gpgcheck=0' >> /etc/yum.repos.d/nginx.repo
+                echo 'enabled=1' >> /etc/yum.repos.d/nginx.repo
+	elif [ "${OS}" == "cent6" ]
+        then
+                echo '[nginx]' >> /etc/yum.repos.d/nginx.repo
+                echo 'name=nginx repo' >> /etc/yum.repos.d/nginx.repo
+                echo 'baseurl=http://nginx.org/packages/rhel/5/$basearch/' >> /etc/yum.repos.d/nginx.repo
+                echo 'gpgcheck=0' >> /etc/yum.repos.d/nginx.repo
+                echo 'enabled=1' >> /etc/yum.repos.d/nginx.repo
 	fi
 }
 
@@ -93,6 +135,24 @@ then
 	echo "Stopping Apache and disabling it on boot.."
 	service httpd stop > /dev/null 2>&1
 	chkconfig httpd off > /dev/null 2>&1
+elif [ "${OS}" == "cent6" ]
+then
+        echo "Stopping Apache and disabling it on boot.."
+        service httpd stop > /dev/null 2>&1
+        chkconfig httpd off > /dev/null 2>&1
+elif [ "${OS}" == "rh5" ]
+then
+        echo "Stopping Apache and disabling it on boot.."
+        service httpd stop > /dev/null 2>&1
+	#Some kind of bug with it not stopping on the first attempt, so we try it twice.
+	/etc/init.d/httpd stop > /dev/null 2>&1
+	for i in $(ps aux | grep httpd | grep -v grep | awk '{print $2'})
+	do 
+		echo "Manualling Killing PID $i"...
+		kill -9 $i  > /dev/null 2>&1
+	done
+        chkconfig httpd off > /dev/null 2>&1
+
 fi
 
 #Check for if  Nginx is installed
@@ -116,6 +176,27 @@ then
 		echo "Nginx is already installed, remove it and try the installation again."
                 exit 0
 	fi
+elif [ "${OS}" == "cent6" ]
+then
+        echo "Checking for existing nginx installation..."
+        if [ -z "$(rpm -qa | grep -i nginx)" ]
+        then
+                NGINXINSTALLED=0
+        else
+                echo "Nginx is already installed, remove it and try the installation again."
+                exit 0
+        fi
+elif [ "${OS}" == "rh5" ]
+then
+        echo "Checking for existing nginx installation..."
+        if [ -z "$(rpm -qa | grep -i nginx)" ]
+        then
+                NGINXINSTALLED=0
+        else
+                echo "Nginx is already installed, remove it and try the installation again."
+                exit 0
+        fi
+
 fi
 
 
@@ -132,6 +213,16 @@ elif [ "${OS}" == "cent5" ] && [ "${NGINXINSTALLED}" == 0 ]
 then
 	echo "Installing Nginx..."
 	yum -y install nginx > /dev/null 2>&1
+elif [ "${OS}" == "cent6" ] && [ "${NGINXINSTALLED}" == 0 ]
+then
+        echo "Installing Nginx..."
+        yum -y install nginx > /dev/null 2>&1
+elif [ "${OS}" == "rh5" ] && [ "${NGINXINSTALLED}" == 0 ]
+then
+        echo "Installing Nginx..."
+        yum -y install nginx > /dev/null 2>&1
+
+
 fi
 
 
@@ -245,6 +336,23 @@ then
 	else
 		FPMINSTALLED=1
 	fi
+elif [[ "${OS}" == "cent6" ]]
+then
+        if [[ -z "$(rpm -qa | grep php53u-fpm)" ]]
+        then
+                FPMINSTALLED=0
+        else
+                FPMINSTALLED=1
+        fi
+elif [[ "${OS}" == "rh5" ]]
+then
+        if [[ -z "$(rpm -qa | grep php53u-fpm)" ]]
+        then
+                FPMINSTALLED=0
+        else
+                FPMINSTALLED=1
+        fi
+
 fi
 
 
@@ -264,6 +372,24 @@ then
 		yum -y install php53u-fpm > /dev/null 2>&1
 	fi
 	sed -i 's_listen\ =\ .*_listen = /var/run/php5-fpm.sock_' /etc/php-fpm.d/www.conf
+elif [[ "${OS}" == "cent6" ]]
+then
+        if [[ "${FPMINSTALLED}" == 0 ]]
+        then
+		#We need to remove old php, as it doesn't have FPM, and install php53u.
+		yum -y remove php php-* > /dev/null 2>&1 
+                yum -y install php53u-fpm php53u-suhosin php53u-pear php53u-pecl-apc php53u-pdo php53u-xml php53u-gd php53u-mbstring php53u-mcrypt php53u-mysql > /dev/null 2>&1
+        fi
+        sed -i 's_listen\ =\ .*_listen = /var/run/php5-fpm.sock_' /etc/php-fpm.d/www.conf
+elif [[ "${OS}" == "rh5" ]]
+then
+        if [[ "${FPMINSTALLED}" == 0 ]]
+        then
+                yum -y install php53u-fpm > /dev/null 2>&1
+        fi
+        sed -i 's_listen\ =\ .*_listen = /var/run/php5-fpm.sock_' /etc/php-fpm.d/www.conf
+
+
 fi
 
 #Start things and set to start on boot.
@@ -279,5 +405,18 @@ then
 	service php-fpm start
 	chkconfig nginx on
 	chkconfig php-fpm on
+elif [ "${OS}" == "cent6" ]
+then
+        service nginx start
+        service php-fpm start
+        chkconfig nginx on
+        chkconfig php-fpm on
+elif [ "${OS}" == "rh5" ]
+then
+        service nginx start
+        service php-fpm start
+        chkconfig nginx on
+        chkconfig php-fpm on
+
 fi
 
