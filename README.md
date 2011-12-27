@@ -63,6 +63,7 @@ Throw this in your .bashrc for extra credit.
 |lshaproxy|Install HAProxy on this server|
 |lshppool|Adds a new pool to an existing HAProxy config|
 |lswhatis|Output the script that would be run with a specific command.|
+|lsnginx|Installs nginx and php-fpm. Does not work on Ubuntu 10.04|
 |lsnodejs|Installs Node.js and Node Package Manager|
 
 Enjoy!
