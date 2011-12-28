@@ -183,7 +183,7 @@ then
 	echo "Checking for existing nginx installation..."
 	if [ -z "$(dpkg -l | grep -i nginx)" ]
 	then
-		NGINXNSTALLED=0
+		NGINXINSTALLED=0
 	else	
  		echo "Nginx is already installed, remove it and try the installation again."
 		exit 0
