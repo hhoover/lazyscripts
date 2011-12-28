@@ -355,7 +355,7 @@ echo "upstream php5-fpm-sock {
 
 
 #Check that php-fpm isn't alreadu installed
-
+echo "Checking for current PHP-FPM..."
 if [[ "${OS}" == "ubuntu" ]] 
 then
 	if [[ -z "$(dpkg -l | grep -i php-fpm)" ]]
@@ -402,6 +402,7 @@ fi
 
 
 #Install PHP-FPM and make it listen on a UNIX socket instead of TCP.
+echo "Setting up PHP-FPM..."
 if [[ "${OS}" == "ubuntu" ]]
 then
 	if [[ "${FPMINSTALLED}" == 0 ]]
@@ -446,36 +447,37 @@ then
 fi
 
 #Start things and set to start on boot.
+echo "Making it start on boot, and starting services..."
 if [ "${OS}" == "ubuntu" ]
 then
-	service nginx restart
-	service php5-fpm restart
+	service nginx restart > /dev/null 2>&1
+	service php5-fpm restart > /dev/null 2>&1
 	update-rc.d nginx enable > /dev/null 2>&1
 	update-rc.d php5-fpm enable > /dev/null 2>&1
 elif [ "${OS}" == "cent5" ]
 then
-	service nginx restart
-	service php-fpm restart
-	chkconfig nginx on
-	chkconfig php-fpm on
+	service nginx restart > /dev/null 2>&1
+	service php-fpm restart > /dev/null 2>&1
+	chkconfig nginx on > /dev/null 2>&1
+	chkconfig php-fpm on > /dev/null 2>&1
 elif [ "${OS}" == "cent6" ]
 then
-        service nginx restart
-        service php-fpm restart
-        chkconfig nginx on
-        chkconfig php-fpm on
+        service nginx restart > /dev/null 2>&1
+        service php-fpm restart > /dev/null 2>&1
+        chkconfig nginx on > /dev/null 2>&1
+        chkconfig php-fpm on > /dev/null 2>&1
 elif [ "${OS}" == "rh5" ]
 then
-        service nginx restart
-        service php-fpm restart
-        chkconfig nginx on
-        chkconfig php-fpm on
+        service nginx restart > /dev/null 2>&1
+        service php-fpm restart > /dev/null 2>&1
+        chkconfig nginx on > /dev/null 2>&1
+        chkconfig php-fpm on > /dev/null 2>&1
 elif [ "${OS}" == "rh6" ]
 then
-        service nginx restart
-        service php-fpm restart
-        chkconfig nginx on
-        chkconfig php-fpm on
+        service nginx restart > /dev/null 2>&1
+        service php-fpm restart > /dev/null 2>&1
+        chkconfig nginx on > /dev/null 2>&1
+        chkconfig php-fpm on > /dev/null 2>&1
 
 fi
-
+echo "Nginx and PHP-FPM setup complete."
