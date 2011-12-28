@@ -448,32 +448,32 @@ fi
 #Start things and set to start on boot.
 if [ "${OS}" == "ubuntu" ]
 then
-	service nginx start
-	service php5-fpm start
+	service nginx restart
+	service php5-fpm restart
 	update-rc.d nginx enable > /dev/null 2>&1
 	update-rc.d php5-fpm enable > /dev/null 2>&1
 elif [ "${OS}" == "cent5" ]
 then
-	service nginx start
-	service php-fpm start
+	service nginx restart
+	service php-fpm restart
 	chkconfig nginx on
 	chkconfig php-fpm on
 elif [ "${OS}" == "cent6" ]
 then
-        service nginx start
-        service php-fpm start
+        service nginx restart
+        service php-fpm restart
         chkconfig nginx on
         chkconfig php-fpm on
 elif [ "${OS}" == "rh5" ]
 then
-        service nginx start
-        service php-fpm start
+        service nginx restart
+        service php-fpm restart
         chkconfig nginx on
         chkconfig php-fpm on
 elif [ "${OS}" == "rh6" ]
 then
-        service nginx start
-        service php-fpm start
+        service nginx restart
+        service php-fpm restart
         chkconfig nginx on
         chkconfig php-fpm on
 
