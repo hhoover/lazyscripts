@@ -271,7 +271,7 @@ fi
 mkdir /var/www/vhosts/ > /dev/null 2>&1
 mkdir /var/www/vhosts/default > /dev/null 2>&1
 mkdir /etc/nginx/vhost.d > /dev/null 2>&1
-head -$((`wc -l /etc/nginx/nginx.conf | awk '{print $1}'` - 1)) /etc/nginx/nginx.conf > /tmp/nginx.conf
+sed -e '$d' /etc/nginx/nginx.conf > /tmp/nginx.conf
 cat /tmp/nginx.conf > /etc/nginx.conf
 echo -e "include /etc/nginx/vhost.d/*.conf;\n }" >> /etc/nginx.conf
 rm -rf /tmp/nginx.conf
