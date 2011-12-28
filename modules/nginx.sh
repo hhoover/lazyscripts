@@ -143,41 +143,37 @@ fi
 if [ "${OS}" == "ubuntu" ]
 then
 	echo "Stopping Apache and disabling it on boot.."
+	monit stop apache > /dev/null 2>&1
+	monit unmonitor apache > /dev/null 2>&1
 	service apache2 stop > /dev/null 2>&1
 	update-rc.d apache2 disable > /dev/null 2>&1
 elif [ "${OS}" == "cent5" ]
 then
 	echo "Stopping Apache and disabling it on boot.."
+	monit stop apache > /dev/null 2>&1
+        monit unmonitor apache > /dev/null 2>&1
 	service httpd stop > /dev/null 2>&1
 	chkconfig httpd off > /dev/null 2>&1
 elif [ "${OS}" == "cent6" ]
 then
         echo "Stopping Apache and disabling it on boot.."
+	monit stop apache > /dev/null 2>&1
+        monit unmonitor apache > /dev/null 2>&1
         service httpd stop > /dev/null 2>&1
         chkconfig httpd off > /dev/null 2>&1
 elif [ "${OS}" == "rh5" ]
 then
         echo "Stopping Apache and disabling it on boot.."
+	monit stop apache > /dev/null 2>&1
+        monit unmonitor apache > /dev/null 2>&1
         service httpd stop > /dev/null 2>&1
-	#Some kind of bug with it not stopping on the first attempt, so we try it twice.
-	/etc/init.d/httpd stop > /dev/null 2>&1
-	for i in $(ps aux | grep httpd | grep -v grep | awk '{print $2'})
-	do 
-		echo "Manualling Killing PID $i"...
-		kill -9 $i  > /dev/null 2>&1
-	done
         chkconfig httpd off > /dev/null 2>&1
 elif [ "${OS}" == "rh6" ]
 then
         echo "Stopping Apache and disabling it on boot.."
+	monit stop apache > /dev/null 2>&1
+        monit unmonitor apache > /dev/null 2>&1
         service httpd stop > /dev/null 2>&1
-        #Some kind of bug with it not stopping on the first attempt, so we try it twice.
-        /etc/init.d/httpd stop > /dev/null 2>&1
-        for i in $(ps aux | grep httpd | grep -v grep | awk '{print $2'})
-        do
-                echo "Manualling Killing PID $i"...
-                kill -9 $i  > /dev/null 2>&1
-        done
         chkconfig httpd off > /dev/null 2>&1
 fi
 
