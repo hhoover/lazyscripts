@@ -237,8 +237,8 @@ if [ "${OS}" == "ubuntu" ] && [ "${NGINXINSTALLED}" == 0 ]
 then
 	echo "Installing Nginx..."
 
-	gpg --keyserver pgpkeys.mit.edu --recv-key  ABF5BD827BD9BF62 
-	gpg -a --export ABF5BD827BD9BF62 | sudo apt-key add -
+	gpg --keyserver pgpkeys.mit.edu --recv-key  ABF5BD827BD9BF62 > /dev/null 2>&1
+	gpg -a --export ABF5BD827BD9BF62 | sudo apt-key add - > /dev/null 2>&1
 	apt-get  update > /dev/null 2>&1
 	apt-get -y install nginx > /dev/null 2>&1
 elif [ "${OS}" == "cent5" ] && [ "${NGINXINSTALLED}" == 0 ]
@@ -449,9 +449,9 @@ fi
 if [ "${OS}" == "ubuntu" ]
 then
 	service nginx start
-	service php-fpm start
-	update-rc.d nginx enable
-	update-rc.d php-fpm enable
+	service php5-fpm start
+	update-rc.d nginx enable > /dev/null 2>&1
+	update-rc.d php5-fpm enable > /dev/null 2>&1
 elif [ "${OS}" == "cent5" ]
 then
 	service nginx start
