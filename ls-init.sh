@@ -411,6 +411,7 @@ function lshelp() {
 	echo -e "    lsconcurchk\t\tShow concurrent connections"
 	echo -e "    lscrtchk\t\tCheck SSL Cert/Key to make sure they match"
 	echo -e "    lsrpaf\t\tInstall mod_rpaf to set correct client IP behind a proxy."
+	echo -e "    lsnginx\t\tInstalls Nginx and PHP-FPM; Does not work on Ubuntu 10.04"
 	echo -e "    lspma\t\tInstalls phpMyAdmin."
 	echo -e "    lsnodejs\t\tInstall Node.js with NPM"
 	echo -e "    lshaproxy\t\tInstall HAProxy on this server"
@@ -447,6 +448,7 @@ function _aliases() {
 	alias lsnodejs="lz nodejs"
 	alias lshaproxy="lz haproxy"
 	alias lshppool="lz hppool"
+	alias lsnginx="lz nginx"
 }
 
 function lslogin() {
