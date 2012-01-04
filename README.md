@@ -42,6 +42,7 @@ Throw this in your .bashrc for extra credit.
 |lsmyusers|List MySQL users and grants.|
 |lsmycreate|Creates a MySQL DB and MySQL user|
 |lsmycopy|Copies an existing database to a new database.|
+|lsap|Show a virtual host listing.|
 |lsapcheck|Verify apache max client settings and memory usage.|
 |lsapdocs|Prints out Apache's DocumentRoots|
 |lsapproc|Shows the memory used by each Apache process|

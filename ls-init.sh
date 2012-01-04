@@ -378,6 +378,18 @@ function lsmycopy() {
 	mysql -e "CREATE DATABASE IF NOT EXISTS ${2};" && mysqldump -QR ${1} | mysql ${2}
 }
 
+function lsap() {
+	# This function performs a virtual host list regardless of OS
+	if [[ $distro = "Redhat/CentOS" ]]; then
+		httpd -S
+	elif [ "${distro}" == "Ubuntu" ]; then
+		apache2ctl -S
+	else
+		echo "Unsupported OS"
+		return 1
+	fi
+}
+
 function lshelp() {
     horizontal_row
 	echo -e "    lshelp\t\tThis help message."
@@ -394,6 +406,7 @@ function lshelp() {
 	echo -e "    lsmycreate\t\tCreates MySQL DB and MySQL user"
 	echo -e "    lsmycopy\t\tCopies an existing database to a new database."
 	echo -e "    lsparsar\t\tPretty sar output"
+	echo -e "    lsap\t\tShow a virtual host listing."
 	echo -e "    lsapcheck\t\tVerify apache max client settings and memory usage."
 	echo -e "    lsapdocs\t\tPrints out Apache's DocumentRoots"
 	echo -e "    lsapproc\t\tShows the memory used by each Apache process"
