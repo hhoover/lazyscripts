@@ -448,7 +448,6 @@ function _aliases() {
 	alias lsvhost="lz vhost"
 	alias lsapcheck="perl ${LZS_PREFIX}/modules/apachebuddy.pl ${@}"
 	alias lsdrupal="lz drupal"
-	#alias lshistsetup="lz hist"
 	alias lsrpaf="lz rpaf"
 	alias lsparsar="lz parsar"
 	alias lspostfix="lz postfix"
@@ -472,7 +471,6 @@ function lslogin() {
 	lscolors
 	lsinfo
 	lscolorprompt
-	#lz hist
 	lscpchk
 	# Print the MOTD
 	cat /etc/motd
