@@ -6,7 +6,7 @@
 #        to load into your current shell
 #
 
-LZS_VERSION=003
+LZS_VERSION=004
 LZS_PREFIX=$(dirname $(readlink -f $BASH_SOURCE))
 LZS_APP="$LZS_PREFIX/ls-init.sh"
 LZS_URLPREFIX="git://github.com/hhoover/lazyscripts.git"
@@ -28,12 +28,26 @@ function lz() {
 	if ( isFunction ${ARG} ); then
 		# Run the function
 		${ARG} "$*"
+	elif ( isFunction ls${ARG} ); then
+		ls${ARG} "$*"
 	elif [ -r "${FILE}" ]; then
 		# Execute the module
 		chmod +x ${FILE} && ${FILE} "$*"
 	else
 		return 1
 	fi
+}
+
+# _lz - Tab completion function
+function _lz() {
+        local cur opts
+        cur=${COMP_WORDS[COMP_CWORD]}
+        # Append new functions here
+        opts="ap apcheck apdocs approc cloudkick postfix vhost vsftpd"
+        opts="${opts} lsync wordpress drupal webmin varnish concurchk"
+        opts="${opts} crtchk rpaf pma nginx haproxy hppool nodejs mytuner"
+        opts="${opts} rblcheck"
+        COMPREPLY=( $(compgen -W "${opts}" -- $cur) )
 }
 
 function lscolors() { 
@@ -246,6 +260,10 @@ fi
 return 0;
 }
 
+function lsapcheck() {
+	perl ${LZS_MOD_PATH}apachebuddy.pl ${@}
+}
+
 function lsapdocs() {
 	if [[ "${distro}" == "Redhat/CentOS" ]]; then
 		httpd -S 2>&1|grep -v "^Warning:"|egrep "\/.*\/"|sed 's/.*(\(.*\):.*).*/\1/'|sort|uniq|xargs cat|grep -i DocumentRoot|egrep -v "^#"|awk '{print $2}'|sort|uniq
@@ -446,7 +464,6 @@ function lswhatis() { export -f $1; export -pf; export -fn $1; }
 
 function _aliases() {
 	alias lsvhost="lz vhost"
-	alias lsapcheck="perl ${LZS_PREFIX}/modules/apachebuddy.pl ${@}"
 	alias lsdrupal="lz drupal"
 	alias lsrpaf="lz rpaf"
 	alias lsparsar="lz parsar"
@@ -479,4 +496,5 @@ function lslogin() {
 
 # Run these functions at source time
 ostype
+complete -F _lz lz	# Tab completion stuff
 _aliases	 # Export the function aliases
