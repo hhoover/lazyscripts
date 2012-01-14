@@ -49,6 +49,7 @@ function configure_vsftpd() {
 		EOF
 		touch /etc/vsftpd/vsftpd.chroot_list
 		service vsftpd restart > /dev/null 2>&1
+		chkconfig vsftpd on
 		echo "VSFTPD configured."
 	elif [ ${distro} == "Ubuntu" ]; then
 			mv /etc/vsftpd.conf /etc/vsftpd.conf.orig
