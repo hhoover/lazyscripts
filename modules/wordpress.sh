@@ -11,6 +11,7 @@ function get_domain() {
 	read -p "Please enter desired MySQL username: " db_user
 	#web_password=$( apg -m 7 -n 1 )
 	db_password=$( apg -m 7 -n 1 )
+	db_password=${db_password/\'/\\\'}
 	eth1ip=$( ifconfig eth1 | grep 'inet addr:'| cut -d: -f2 | awk '{ print $1}' )
 }
 
