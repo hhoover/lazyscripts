@@ -11,13 +11,14 @@ function get_domain() {
 	read -p "Please enter desired MySQL username: " db_user
 	#web_password=$( apg -m 7 -n 1 )
 	db_password=$( apg -m 7 -n 1 )
+	db_password=${db_password/\'/\\\'}
 	eth1ip=$( ifconfig eth1 | grep 'inet addr:'| cut -d: -f2 | awk '{ print $1}' )
 }
 
 # add a virtual host and restart Apache
 function configure_apache() {
 	if [[ $distro = "Redhat/CentOS" ]]; then
-		cat > /etc/httpd/vhost.d/"${domain.conf}" <<-EOF
+		cat > /etc/httpd/vhost.d/"${domain}.conf" <<-EOF
 		<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
@@ -144,7 +145,7 @@ function create_settings() {
 	cd /var/www/vhosts/$domain/drupal-7.7/sites/default
 	cat > settings.php <<-EOF
 	<?php
-	$databases['default']['default'] = array(
+	\$databases['default']['default'] = array(
 		'driver' => 'mysql',
 	 	'database' => '${database}',
 	 	'username' => '${db_user}',
@@ -153,8 +154,8 @@ function create_settings() {
 		'prefix' => 'main_',
 		'collation' => 'utf8_general_ci',
 	);
-	$update_free_access = FALSE;
-	$drupal_hash_salt = '';
+	\$update_free_access = FALSE;
+	\$drupal_hash_salt = '';
 	ini_set('session.gc_probability', 1);
 	ini_set('session.gc_divisor', 100);
 	ini_set('session.gc_maxlifetime', 200000);
