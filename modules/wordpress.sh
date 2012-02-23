@@ -18,7 +18,7 @@ function get_domain() {
 # add a virtual host and restart Apache
 function configure_apache() {
 	if [[ $distro = "Redhat/CentOS" ]]; then
-		cat > /etc/httpd/vhost.d/"${domain.conf}" <<-EOF
+		cat > /etc/httpd/vhost.d/"${domain}".conf <<-EOF
 		<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
