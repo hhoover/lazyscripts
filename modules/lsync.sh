@@ -2,7 +2,7 @@
 ## Lsyncd Installation Script
 ## Author: David Wittman <david@wittman.com>
 
-SOURCE="http://lsyncd.googlecode.com/files/lsyncd-2.0.5.tar.gz"
+SOURCE="http://lsyncd.googlecode.com/files/lsyncd-2.0.6.tar.gz"
 BASENAME=$(basename ${SOURCE})
 SOURCEDEST=/usr/local/src/$(echo ${BASENAME} | sed 's/\.tar\.gz//')
 DEFAULT_PATH="/var/www"
