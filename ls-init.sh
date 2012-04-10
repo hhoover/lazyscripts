@@ -111,6 +111,18 @@ function lsbwprompt() {
 	PS1="[\h \t]-(\w)# "
 }
 
+function lsclippy() {
+# Just for fun. Haters gonna hate.
+cat <<-EOF
+I see you're installing LazyScripts...
+	v
+	╭─╮
+	⌾ ⌾
+	│||
+	╰─╯
+EOF
+}
+
 # ostype - Determine Linux distribution
 function ostype() {
 	if [ -e /etc/redhat-release ]; then
@@ -485,6 +497,7 @@ function lslogin() {
 	lsresize
 	tset -s xterm
 	clear
+	lsclippy
 	lscolors
 	lsinfo
 	lscolorprompt
