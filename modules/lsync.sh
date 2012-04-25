@@ -32,6 +32,20 @@ die() {
 	exit 1
 }
 
+nfs_check() {
+        local NETSTAT=$(netstat -tnlp | grep "rpc.mountd" | wc -l)
+        local MTAB=$(grep " nfs " /etc/mtab | wc -l)
+        local LSYNCD=""
+
+        if [[ $NETSTAT -gt 0 ]] || [[ $MTAB -gt 0 ]]; then
+                echo -n "It looks like NFS might be running on this server. Please "
+                echo "take extra caution when installing Lsyncd alongside NFS."
+                while [[ ! "${LSYNCD}" == "LSYNCD" ]]; do
+                        read -p "Enter LSYNCD to continue: " -e LSYNCD
+                done
+        fi
+}
+
 get_info() {
 	# Get installation variables from the user
 	read -p "How many slave hosts will be synchronized? [1] " -e N_HOSTS
@@ -306,6 +320,7 @@ start_lsync() {
 }
 
 # Main thread
+nfs_check
 get_info
 install_lsync
 configure
