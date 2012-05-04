@@ -66,5 +66,6 @@ Throw this in your .bashrc for extra credit.
 |lshppool|Adds a new pool to an existing HAProxy config|
 |lswhatis|Output the script that would be run with a specific command.|
 |lsnodejs|Installs Node.js and Node Package Manager|
+|lsapitools|Installs API tools for Rackspace Cloud|
 
 Enjoy!
