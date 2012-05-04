@@ -446,6 +446,7 @@ function lshelp() {
 	echo -e "    lspma\t\tInstalls phpMyAdmin."
 	echo -e "    lsnodejs\t\tInstall Node.js with NPM"
 	echo -e "    lshaproxy\t\tInstall HAProxy on this server"
+	echo -e "    lsapitools\t\tInstall Rackspace API tools"
 	echo -e "    lswhatis\t\tOutput the script that would be run with a specific command."
     horizontal_row
 }
@@ -478,6 +479,7 @@ function _aliases() {
 	alias lshaproxy="lz haproxy"
 	alias lshppool="lz hppool"
 	alias lsnginx="lz nginx"
+	alias lsapitools="lz apitools"
 }
 
 function lslogin() {
