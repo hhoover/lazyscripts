@@ -142,7 +142,7 @@ function configure_mysql() {
 
 # make settings.php
 function create_settings() {
-	cd /var/www/vhosts/$domain/drupal-7.7/sites/default
+	cd /var/www/vhosts/$domain/drupal-7.14/sites/default
 	cat > settings.php <<-EOF
 	<?php
 	\$databases['default']['default'] = array(
