@@ -111,10 +111,10 @@ fi
 # make a document root
 function get_drupal() {
 	cd /root
-	wget -q http://ftp.drupal.org/files/projects/drupal-7.7.tar.gz
+	wget -q http://ftp.drupal.org/files/projects/drupal-7.14.tar.gz
 	mkdir -p /var/www/vhosts/$domain
-	tar -C /var/www/vhosts/$domain -xzf drupal-7.7.tar.gz
-	rm -f /root/drupal-7.7.tar.gz
+	tar -C /var/www/vhosts/$domain -xzf drupal-7.14.tar.gz
+	rm -f /root/drupal-7.14.tar.gz
 	useradd -d /var/www/vhosts/$domain $username > /dev/null 2>&1
 	#echo $web_password | passwd $username --stdin > /dev/null 2>&1
 }
@@ -162,14 +162,14 @@ function create_settings() {
 	ini_set('session.cookie_lifetime', 2000000);
 	?>
 	EOF
-	chmod 666 /var/www/vhosts/$domain/drupal-7.7/sites/default/settings.php
+	chmod 666 /var/www/vhosts/$domain/drupal-7.14/sites/default/settings.php
 	chown -R $username: /var/www/vhosts/$domain
 }
 
 get_domain
 echo "Beginning Drupal 7 installation."
 get_drupal
-echo "Drupal has been installed in /var/www/vhosts/${domain}/drupal-7.7."
+echo "Drupal has been installed in /var/www/vhosts/${domain}/drupal-7.14."
 create_settings
 configure_apache
 echo "Apache has been configured for ${domain} and restarted."
