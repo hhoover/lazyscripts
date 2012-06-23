@@ -288,27 +288,34 @@ configure() {
 	# Create basic lsyncd configuration file
 	cat > /etc/lsyncd.lua <<-EOF
 	settings = {
-	   logfile    = "/var/log/lsyncd/lsyncd.log",
-	   statusFile = "/var/log/lsyncd/lsyncd-status.log",
-	   statusInterval = 20
+	    logfile    = "/var/log/lsyncd/lsyncd.log",
+	    statusFile = "/var/log/lsyncd/lsyncd-status.log",
+	    statusInterval = 20
 	}
 
+	servers = {
 	EOF
 
-	# Iterate through SYNC_HOSTS array
-	# and create appropriate sync block for each
+	# Iterate through SYNC_HOSTS array and add to servers block
 	for HOST in ${SYNC_HOSTS[*]}; do
 		cat >> /etc/lsyncd.lua <<-EOF
-		sync {
-			default.rsyncssh,
-			source="${SYNC_SOURCE}",
-			host="${HOST}",
-			targetdir="${SYNC_TARGET}",
-			rsyncOpts="-avz"
-		}
-
+		    "${HOST}",
 		EOF
 	done
+
+	cat >> /etc/lsyncd.lua <<-EOF
+	}
+
+	for _, server in ipairs(servers) do
+	    sync {
+	        default.rsync,
+	        source="${SYNC_SOURCE}",
+	        target=server..":${SYNC_TARGET}",
+	        rsyncOpts={"-e", "/usr/bin/ssh -o StrictHostKeyChecking=no", "-avz"}
+	    }
+	end
+	EOF
+
 	pass "${OUTPUT}"
 }
 
