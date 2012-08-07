@@ -185,8 +185,8 @@ echo "Apache has been configured for ${domain} and restarted."
 echo "The SFTP credentials are: "
 echo "User: ${username}"
 echo "Password: ${web_password}"
-echo "WordPress has been configured to use FTP for updates."
-echo "Check with the customer for configuring SSH2 updates."
+echo "***WordPress has been configured to use FTP for updates.***"
+echo "***Check with the customer for configuring SSH2 updates.***"
 configure_mysql
 echo "I like salsa!"
 exit 0
