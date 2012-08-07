@@ -74,6 +74,7 @@ function configure_vsftpd() {
 			chroot_list_file=/etc/vsftpd.chroot_list
 			EOF
 			touch /etc/vsftpd.chroot_list
+			touch /etc/vsftpd.user_list
 			service vsftpd restart > /dev/null 2>&1
 			echo "VSFTPD configured."
 	else
