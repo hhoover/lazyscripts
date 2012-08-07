@@ -9,7 +9,8 @@ function get_domain() {
 	read -p "Please enter the 10.x.x.x address of your DB Server (or use localhost): " dbhost
 	read -p "Please enter desired MySQL database name: " database
 	read -p "Please enter desired MySQL username: " db_user
-	#web_password=$( apg -m 7 -n 1 )
+	web_password=$( apg -m 7 -n 1 )
+	web_password=${web_password/\'/\\\'}
 	db_password=$( apg -m 7 -n 1 )
 	db_password=${db_password/\'/\\\'}
 	eth1ip=$( ifconfig eth1 | grep 'inet addr:'| cut -d: -f2 | awk '{ print $1}' )
@@ -152,6 +153,11 @@ function create_wp_config() {
 	define('DB_HOST', '${dbhost}');
 	define('DB_CHARSET', 'utf8');
 	define('DB_COLLATE', '');
+	define('FTP_BASE', '/var/www/vhosts/${domain}/wordpress/');
+	define('FTP_CONTENT_DIR', '/var/www/vhosts/${domain}/wordpress/wp-content/');
+	define('FTP_USER','${username}');
+	define('FTP_PASS','${web_password}');
+	define('FTP_HOST','127.0.0.1');
 	$keys
 	\$table_prefix  = 'wp_';
 	define('WPLANG', '');
@@ -178,8 +184,9 @@ configure_apache
 echo "Apache has been configured for ${domain} and restarted."
 echo "The SFTP credentials are: "
 echo "User: ${username}"
-#echo "Password: ${web_password}"
-echo "PLEASE SET A PASSWORD FOR THE SFTP USER!"
+echo "Password: ${web_password}"
+echo "WordPress has been configured to use FTP for updates."
+echo "Check with the customer for configuring SSH2 updates."
 configure_mysql
 echo "I like salsa!"
 exit 0
