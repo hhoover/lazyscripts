@@ -290,8 +290,9 @@ configure() {
 	settings = {
 	    logfile    = "/var/log/lsyncd/lsyncd.log",
 	    statusFile = "/var/log/lsyncd/lsyncd-status.log",
-	    statusInterval = 20
-	}
+	    statusInterval = 20,
+	    delay = 20
+	},
 
 	servers = {
 	EOF
