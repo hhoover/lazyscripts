@@ -482,6 +482,19 @@ function _aliases() {
 	alias lsapitools="lz apitools"
 }
 
+function lsheart() {
+cat <<-EOF
+$RED .:::.    .:::.
+ :::::::.:::::::
+ :::::::::::::::
+ ':::::::::::::'
+   ':::::::::'
+    ':::::'
+      ':'
+HAPPY VALENTINES DAY!$NORM
+EOF
+}
+
 function lslogin() {
 	# Set of commands to run at login
 	lsresize
@@ -494,6 +507,7 @@ function lslogin() {
 	# Print the MOTD
 	cat /etc/motd
 	echo -e "LazyScripts Project Page - https://github.com/hhoover/lazyscripts"
+    lsheart
 }
 
 # Run these functions at source time
