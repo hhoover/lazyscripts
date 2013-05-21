@@ -292,7 +292,7 @@ configure() {
 	    statusFile = "/var/log/lsyncd/lsyncd-status.log",
 	    statusInterval = 20,
 	    delay = 20
-	},
+	}
 
 	servers = {
 	EOF
