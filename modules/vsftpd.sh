@@ -24,9 +24,9 @@ function install_vsftpd() {
 }
 
 function check_21() {
-        if netstat -ntlp | grep 22 2>/dev/null
+        if netstat -ntlp | grep 21 2>/dev/null
         then
-        echo -e "\a\n Something is running on port 22"
+        echo -e "\a\n Something is running on port 21"
         echo -e "\a\n Closing Script"
         exit 1
         else
