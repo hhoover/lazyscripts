@@ -1,14 +1,14 @@
 #!/bin/bash
 # Installs RS Cloud API tools
-
+set pipper = ""
 echo "This will install some CLI tools that interact with the Rackspace APIs"
 
 function os_checker() {
        if [[ $distro = "Redhat/CentOS" ]]; then
-                set pipper = python-pip
+                pipper='python-pip'
 
         elif [[ $distro = "Ubuntu" ]]; then
-		set pipper = pip
+		pipper='pip'
         else
                 echo "Unsupported OS"
         fi
@@ -19,9 +19,9 @@ function os_checker() {
 # Need python-setuptools
 function get_setuptools() {
 	if [[ ${distro} == "Redhat/CentOS" ]]; then
-		yum -q -y install python-setuptools python-pip
+		yum -q -y install python-setuptools python-pip python-novaclient
 	elif [[ ${distro} == "Ubuntu" ]]; then
-		apt-get -q -y install python-setuptools python-pip
+		apt-get -q -y install python-setuptools python-pip python-novaclient
 	else
 		echo "[ERROR] Unknown distribution. Exiting"
 		return 1
