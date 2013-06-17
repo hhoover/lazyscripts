@@ -22,8 +22,8 @@ function configure_apache() {
 		<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
-			DocumentRoot /var/www/vhosts/$domain
-			<Directory /var/www/vhosts/$domain>
+			DocumentRoot /var/www/vhosts/$domain/public_html
+			<Directory /var/www/vhosts/$domain/public_html>
 				AllowOverride All
 			</Directory>
 			CustomLog logs/$domain-access_log common
@@ -33,8 +33,8 @@ function configure_apache() {
 
 		# <VirtualHost _default_:443>
 		# ServerName $domain
-		# DocumentRoot /var/www/vhosts/$domain
-		# <Directory /var/www/vhosts/$domain>
+		# DocumentRoot /var/www/vhosts/$domain/public_html
+		# <Directory /var/www/vhosts/$domain/public_html>
 		#	AllowOverride All
 		# </Directory>
 
@@ -48,6 +48,7 @@ function configure_apache() {
 		# SSLEngine on
 		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
 		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+		# SSLCertificateChainFile /etc/pki/tls/certs/CA.crt
 
 		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
 		# 	SSLOptions +StdEnvVars
@@ -65,8 +66,8 @@ EOF
 		<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
-			DocumentRoot /var/www/vhosts/$domain
-			<Directory /var/www/vhosts/$domain>
+			DocumentRoot /var/www/vhosts/$domain/public_html
+			<Directory /var/www/vhosts/$domain/public_html>
 				AllowOverride All
 			</Directory>
 			CustomLog /var/log/apache2/$domain-access_log common
@@ -76,8 +77,8 @@ EOF
 
 		# <VirtualHost _default_:443>
 		# ServerName $domain
-		# DocumentRoot /var/www/vhosts/$domain
-		# <Directory /var/www/vhosts/$domain>
+		# DocumentRoot /var/www/vhosts/$domain/public_html
+		# <Directory /var/www/vhosts/$domain/public_html>
 		#	AllowOverride All
 		# </Directory>
 
@@ -91,6 +92,7 @@ EOF
 		# SSLEngine on
 		# SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
 		# SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+		# SSLCertificateChainFile /etc/ssl/certs/ca.crt
 
 		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
 		# 	SSLOptions +StdEnvVars
@@ -112,8 +114,8 @@ fi
 function get_drupal() {
 	cd /root
 	wget -q http://ftp.drupal.org/files/projects/drupal-7.14.tar.gz
-	mkdir -p /var/www/vhosts/$domain
-	tar -C /var/www/vhosts/$domain -xzf drupal-7.14.tar.gz
+	mkdir -p /var/www/vhosts/$domain/public_html
+	tar -C /var/www/vhosts/$domain/public_html -xzf drupal-7.14.tar.gz
 	rm -f /root/drupal-7.14.tar.gz
 	useradd -d /var/www/vhosts/$domain $username > /dev/null 2>&1
 	#echo $web_password | passwd $username --stdin > /dev/null 2>&1
@@ -176,7 +178,7 @@ echo "Apache has been configured for ${domain} and restarted."
 echo "The SFTP credentials are: "
 echo "User: ${username}"
 #echo "Password: ${web_password}"
-echo "PLEASE SET A SFTP PASSWORD!"
+echo -e "\e[0;31m*** Please Set A SFTP Password ***\e[0m" 
 configure_mysql
 echo "I like salsa!"
 exit 0

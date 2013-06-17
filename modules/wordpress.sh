@@ -117,6 +117,7 @@ function get_wordpress() {
 	wget -q http://wordpress.org/latest.tar.gz
 	mkdir -p /var/www/vhosts/$domain
 	tar -C /var/www/vhosts/$domain -xzf latest.tar.gz
+	mv wordpress public_html/
 	rm -f /root/latest.tar.gz
 	useradd -d /var/www/vhosts/$domain $username > /dev/null 2>&1
 	#echo $web_password | passwd $username --stdin > /dev/null 2>&1
