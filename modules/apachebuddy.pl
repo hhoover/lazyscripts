@@ -536,9 +536,15 @@ sub get_php_setting {
 
 	# this will return an array with all of the local and global PHP 
 	# settings
-	
-	my @php_config_array = `php -r "phpinfo(4);"`;
-	
+  my $debini = "/etc/php5/apache2/php.ini";
+  my @php_config_array;
+  if(-f $debini) {
+    @php_config_array = `php  --php-ini /etc/php5/apache2/php.ini -r "phpinfo(4);"`;
+  }
+  else {
+    @php_config_array = `php -r "phpinfo(4);"`;
+  }
+
 	my @results;
 
 	# search the array for our desired setting
@@ -961,3 +967,4 @@ else {
 }
 
 print "-----------------------------------------------------------------------\n";
+
