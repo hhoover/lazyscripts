@@ -31,7 +31,7 @@ function get_setuptools() {
 # Rackspace Nova Client
 function install_rsnova() {
 	echo "Installing Rackspace Nova Client"
-	$pipper install rackspace-novaclient
+	$pipper install --upgrade rackspace-novaclient
 	echo "Installed Rackspace Nova Client and all Dependancies"
 }
 
