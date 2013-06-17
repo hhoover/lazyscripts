@@ -475,11 +475,14 @@ function lslogin() {
 }
 
 function lsnova() {
+	if [[ -a ~/.novarc ]]; then
+	echo -e "NovaRC file found sourcing file."
+	else
 	read -p "Rackspace Username: " rsusername
 	#read -p "Rackspace Account Number: " rsddi
 	read -p "Rackspace API Key: " rsapikey
 	read -p "Region (LON/DFW/ORD): " region
-
+cat >~/.novarc <<EOL
 	OS_AUTH_URL=https://identity.api.rackspacecloud.com/v2.0/
 	OS_VERSION=2.0
 	OS_AUTH_SYSTEM=rackspace
@@ -490,7 +493,9 @@ function lsnova() {
 	OS_PASSWORD=$rsapikey
 	OS_NO_CACHE=1
 	export OS_AUTH_URL OS_VERSION OS_AUTH_SYSTEM OS_REGION_NAME OS_SERVICE_NAME OS_TENANT_NAME OS_USERNAME OS_PASSWORD OS_NO_CACHE
-
+EOL
+	source ~/.novarc
+	fi
 }
 
 # Run these functions at source time
