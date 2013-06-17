@@ -477,6 +477,7 @@ function lslogin() {
 function lsnova() {
 	if [[ -a ~/.novarc ]]; then
 	echo -e "NovaRC file found sourcing file."
+	source ~/.novarc
 	else
 	read -p "Rackspace Username: " rsusername
 	#read -p "Rackspace Account Number: " rsddi
