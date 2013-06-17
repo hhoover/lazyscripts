@@ -115,9 +115,8 @@ fi
 function get_wordpress() {
 	cd /root
 	wget -q http://wordpress.org/latest.tar.gz
-	mkdir -p /var/www/vhosts/$domain
+	mkdir -p /var/www/vhosts/$domain/public_html
 	tar -C /var/www/vhosts/$domain -xzf latest.tar.gz
-	mv wordpress public_html/
 	rm -f /root/latest.tar.gz
 	useradd -d /var/www/vhosts/$domain $username > /dev/null 2>&1
 	#echo $web_password | passwd $username --stdin > /dev/null 2>&1
@@ -193,4 +192,6 @@ echo "***WordPress has been configured to use FTP for updates.***"
 echo "***Check with the customer for configuring SSH2 updates.***"
 configure_mysql
 echo "I like salsa!"
+mv /var/www/vhosts/$domain/wordpress /var/www/vhosts/$domain/public_html
+#Moved the move command as the extraction wasn't completing in time.
 exit 0
