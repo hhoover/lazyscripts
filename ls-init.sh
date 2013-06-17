@@ -423,7 +423,8 @@ function lshelp() {
 	echo -e "    lshaproxy\t\tInstall HAProxy on this server"
 	echo -e "    lsapitools\t\tInstall Rackspace API tools"
 	echo -e "    lswhatis\t\tOutput the script that would be run with a specific command."
-	echo -e "    lsrecap\t\tInstalls the Recap tool https://github.com/rackerlabs/recap "
+	echo -e "    lsrecap\t\tInstalls the Recap tool https://github.com/rackerlabs/recap."
+	echo -e "    lsnova\t\tPrompts for Rackspace API Information."
     horizontal_row
 }
 
@@ -471,6 +472,25 @@ function lslogin() {
 	# Print the MOTD
 	cat /etc/motd
 	echo -e "LazyScripts Project Page - https://github.com/hhoover/lazyscripts"
+}
+
+function lsnova() {
+	read -p "Rackspace Username: " rsusername
+	#read -p "Rackspace Account Number: " rsddi
+	read -p "Rackspace API Key: " rsapikey
+	read -p "Region (LON/DFW/ORD): " region
+
+	OS_AUTH_URL=https://identity.api.rackspacecloud.com/v2.0/
+	OS_VERSION=2.0
+	OS_AUTH_SYSTEM=rackspace
+	OS_REGION_NAME=$region
+	OS_SERVICE_NAME=cloudserversOpenStack
+	OS_TENANT_NAME=$rsusername
+	OS_USERNAME=$rsusername
+	OS_PASSWORD=$rsapikey
+	OS_NO_CACHE=1
+	export OS_AUTH_URL OS_VERSION OS_AUTH_SYSTEM OS_REGION_NAME OS_SERVICE_NAME OS_TENANT_NAME OS_USERNAME OS_PASSWORD OS_NO_CACHE
+
 }
 
 # Run these functions at source time
