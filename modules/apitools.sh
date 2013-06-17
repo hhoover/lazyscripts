@@ -19,9 +19,9 @@ function os_checker() {
 # Need python-setuptools
 function get_setuptools() {
 	if [[ ${distro} == "Redhat/CentOS" ]]; then
-		yum -q -y install python-setuptools python-pip python-novaclient
+		yum -q -y install python-dev python-setuptools python-pip python-novaclient
 	elif [[ ${distro} == "Ubuntu" ]]; then
-		apt-get -q -y install python-setuptools python-pip python-novaclient
+		apt-get -q -y install python-dev python-setuptools python-pip python-novaclient
 	else
 		echo "[ERROR] Unknown distribution. Exiting"
 		return 1
