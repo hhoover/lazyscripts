@@ -46,7 +46,7 @@ function _lz() {
         opts="ap apcheck apdocs approc cloudkick postfix vhost vsftpd"
         opts="${opts} lsync wordpress drupal webmin varnish concurchk"
         opts="${opts} crtchk rpaf pma nginx haproxy hppool nodejs mytuner"
-        opts="${opts} rblcheck"
+        opts="${opts} rblcheck recap"
         COMPREPLY=( $(compgen -W "${opts}" -- $cur) )
 }
 
@@ -423,6 +423,7 @@ function lshelp() {
 	echo -e "    lshaproxy\t\tInstall HAProxy on this server"
 	echo -e "    lsapitools\t\tInstall Rackspace API tools"
 	echo -e "    lswhatis\t\tOutput the script that would be run with a specific command."
+	echo -e "    lsrecap\t\tInstalls the Recap tool https://github.com/rackerlabs/recap "
     horizontal_row
 }
 
@@ -455,6 +456,7 @@ function _aliases() {
 	alias lshppool="lz hppool"
 	alias lsnginx="lz nginx"
 	alias lsapitools="lz apitools"
+	alias lsrecap="lz recap"
 }
 
 function lslogin() {
