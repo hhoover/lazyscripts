@@ -33,6 +33,22 @@ function install_webmin() {
 	fi
 }
 
+function configure_firewall() {
+        if [[ ${distro} = "Redhat/CentOS" ]]; then
+                iptables -I INPUT -p tcp --dport 10000 -m comment --comment "Webmin" -j ACCEPT
+                /etc/init.d/iptables save
+                echo "Firewall open on ports 10000"
+        elif [ ${distro} == "Ubuntu" ]; then
+                ufw allow 10000
+                echo "Firewall open on ports 10000"
+        else
+                echo "Unsupported OS. Exiting."
+                exit 1
+        fi
+}
+
+
 echo "Beginning Installation"
 install_webmin
+configure_firewall
 echo "Webmin installation complete. Port 10000 is open."

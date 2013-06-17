@@ -203,32 +203,7 @@ function lsinstall() {
 }	
 
 function lscloudkick() {
-	if [[ $distro = "Redhat/CentOS" ]]; then
-		if [[ -n $( cat /etc/issue | grep "release 6" ) ]]; then
-		rpm -Uvh http://packages.cloudkick.com/releases/cloudkick-config/binaries/cloudkick-config-centos6-1.2.1-0.x86_64.rpm http://packages.cloudkick.com/releases/cloudkick-agent/binaries/cloudkick-agent-centos6-0.9.21-0.x86_64.rpm
-		else
-		cat > /etc/yum.repos.d/cloudkick.repo <<-EOF
-		[cloudkick]
-		name=Cloudkick
-		baseurl=http://packages.cloudkick.com/redhat/x86_64
-		gpgcheck=0
-		EOF
-		yum -y -q install cloudkick-agent
-		fi
-		chkconfig cloudkick-agent on
-		echo -e "Please enter the login credentials and $blinkred\bstart the agent. $norm"
-		cloudkick-config
-	elif [ "${distro}" == "Ubuntu" ]; then
-		echo 'deb http://packages.cloudkick.com/ubuntu lucid main' > /etc/apt/sources.list.d/cloudkick.list
-		curl http://packages.cloudkick.com/cloudkick.packages.key | apt-key add -
-		apt-get -q update
-		apt-get -y -q install cloudkick-agent
-		echo -e "Please enter the login credentials and $blinkred\bstart the agent. $norm"
-		cloudkick-config
-	else 
-		echo "Unsupported OS. See https://support.cloudkick.com/Category:Installing_Cloudkick"
-		exit
-	fi
+	echo -e "\e[1;34mFunction deprecated\e[0m"
 }	
 
 function lsmylogin() {
@@ -429,12 +404,12 @@ function lshelp() {
 	echo -e "    lsapdocs\t\tPrints out Apache's DocumentRoots"
 	echo -e "    lsapproc\t\tShows the memory used by each Apache process"
 	echo -e "    lsrblcheck\t\tServer Email Blacklist Check"
-	echo -e "    lscloudkick\t\tInstall the Cloudkick agent"
+	echo -e "    lscloudkick\t\t**deprecated** Install the Cloudkick agent"
 	echo -e "    lsvsftpd\t\tInstalls and configures VSFTPD"
 	echo -e "    lsvhost\t\tAdd an Apache virtual host"
 	echo -e "    lshppool\t\tCreate a new HAProxy pool"
 	echo -e "    lspostfix\t\tSet up Postfix for relaying email"
-	echo -e "    lslsync\t\tInstall lsyncd and configure this server as a master"
+	echo -e "    lslsync\t\tInstall lsyncd (2.1.5) and configure this server as a master"
 	echo -e "    lswordpress\t\tInstall Wordpress on this server"
 	echo -e "    lsdrupal\t\tInstall Drupal 7 on this server"
 	echo -e "    lswebmin\t\tInstall Webmin on this server"

@@ -29,7 +29,7 @@ function SSLcheck() {
 		return 1
 	fi
 	
-	DEFAULT_DOCROOT="/var/www/vhosts/${domain}"
+	DEFAULT_DOCROOT="/var/www/vhosts/${domain}/public_html"
 	DOCROOT=${DOCROOT:-${DEFAULT_DOCROOT}}
 	
 	
@@ -68,6 +68,7 @@ function noSSL() {
 		# SSLEngine on
 		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
 		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+		# SSLCertificateChainFile /etc/pki/tls/certs/CA.crt		
 
 		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
 		# 	SSLOptions +StdEnvVars
@@ -114,6 +115,7 @@ function noSSL() {
 		# SSLEngine on
 		# SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
 		# SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+                # SSLCertificateChainFile /etc/pki/tls/certs/CA.crt
 
 		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
 		# 	SSLOptions +StdEnvVars

@@ -23,6 +23,18 @@ function install_vsftpd() {
 	fi
 }
 
+function check_21() {
+        if netstat -ntlp | grep 22 2>/dev/null
+        then
+        echo -e "\a\n Something is running on port 22"
+        echo -e "\a\n Closing Script"
+        exit 1
+        else
+        echo -e "\a\n Nothing Running on port 21"
+        fi
+}
+
+
 function configure_vsftpd() {
 	if [[ ${distro} = "Redhat/CentOS" ]]; then
 		mv /etc/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd.conf.orig
@@ -99,6 +111,8 @@ function configure_firewall() {
 	fi
 }
 
+echo "Checking Port 21"
+check_21
 echo "Beginning vsftpd installation"
 install_vsftpd
 echo "Configuring vsftpd"
