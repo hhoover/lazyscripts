@@ -46,7 +46,7 @@ function _lz() {
         opts="ap apcheck apdocs approc cloudkick postfix vhost vsftpd"
         opts="${opts} lsync wordpress drupal webmin varnish concurchk"
         opts="${opts} crtchk rpaf pma nginx haproxy hppool nodejs mytuner"
-        opts="${opts} rblcheck"
+        opts="${opts} rblcheck recap"
         COMPREPLY=( $(compgen -W "${opts}" -- $cur) )
 }
 
@@ -203,32 +203,7 @@ function lsinstall() {
 }	
 
 function lscloudkick() {
-	if [[ $distro = "Redhat/CentOS" ]]; then
-		if [[ -n $( cat /etc/issue | grep "release 6" ) ]]; then
-		rpm -Uvh http://packages.cloudkick.com/releases/cloudkick-config/binaries/cloudkick-config-centos6-1.2.1-0.x86_64.rpm http://packages.cloudkick.com/releases/cloudkick-agent/binaries/cloudkick-agent-centos6-0.9.21-0.x86_64.rpm
-		else
-		cat > /etc/yum.repos.d/cloudkick.repo <<-EOF
-		[cloudkick]
-		name=Cloudkick
-		baseurl=http://packages.cloudkick.com/redhat/x86_64
-		gpgcheck=0
-		EOF
-		yum -y -q install cloudkick-agent
-		fi
-		chkconfig cloudkick-agent on
-		echo -e "Please enter the login credentials and $blinkred\bstart the agent. $norm"
-		cloudkick-config
-	elif [ "${distro}" == "Ubuntu" ]; then
-		echo 'deb http://packages.cloudkick.com/ubuntu lucid main' > /etc/apt/sources.list.d/cloudkick.list
-		curl http://packages.cloudkick.com/cloudkick.packages.key | apt-key add -
-		apt-get -q update
-		apt-get -y -q install cloudkick-agent
-		echo -e "Please enter the login credentials and $blinkred\bstart the agent. $norm"
-		cloudkick-config
-	else 
-		echo "Unsupported OS. See https://support.cloudkick.com/Category:Installing_Cloudkick"
-		exit
-	fi
+	echo -e "\e[1;34mFunction deprecated\e[0m"
 }	
 
 function lsmylogin() {
@@ -429,12 +404,12 @@ function lshelp() {
 	echo -e "    lsapdocs\t\tPrints out Apache's DocumentRoots"
 	echo -e "    lsapproc\t\tShows the memory used by each Apache process"
 	echo -e "    lsrblcheck\t\tServer Email Blacklist Check"
-	echo -e "    lscloudkick\t\tInstall the Cloudkick agent"
+	echo -e "    lscloudkick\t\t**deprecated** Install the Cloudkick agent"
 	echo -e "    lsvsftpd\t\tInstalls and configures VSFTPD"
 	echo -e "    lsvhost\t\tAdd an Apache virtual host"
 	echo -e "    lshppool\t\tCreate a new HAProxy pool"
 	echo -e "    lspostfix\t\tSet up Postfix for relaying email"
-	echo -e "    lslsync\t\tInstall lsyncd and configure this server as a master"
+	echo -e "    lslsync\t\tInstall lsyncd (2.1.5) and configure this server as a master"
 	echo -e "    lswordpress\t\tInstall Wordpress on this server"
 	echo -e "    lsdrupal\t\tInstall Drupal 7 on this server"
 	echo -e "    lswebmin\t\tInstall Webmin on this server"
@@ -448,6 +423,8 @@ function lshelp() {
 	echo -e "    lshaproxy\t\tInstall HAProxy on this server"
 	echo -e "    lsapitools\t\tInstall Rackspace API tools"
 	echo -e "    lswhatis\t\tOutput the script that would be run with a specific command."
+	echo -e "    lsrecap\t\tInstalls the Recap tool https://github.com/rackerlabs/recap."
+	echo -e "    lsnova\t\tPrompts for Rackspace API Information."
     horizontal_row
 }
 
@@ -480,6 +457,7 @@ function _aliases() {
 	alias lshppool="lz hppool"
 	alias lsnginx="lz nginx"
 	alias lsapitools="lz apitools"
+	alias lsrecap="lz recap"
 }
 
 function lslogin() {
@@ -494,6 +472,31 @@ function lslogin() {
 	# Print the MOTD
 	cat /etc/motd
 	echo -e "LazyScripts Project Page - https://github.com/hhoover/lazyscripts"
+}
+
+function lsnova() {
+	if [[ -a ~/.novarc ]]; then
+	echo -e "NovaRC file found sourcing file."
+	source ~/.novarc
+	else
+	read -p "Rackspace Username: " rsusername
+	#read -p "Rackspace Account Number: " rsddi
+	read -p "Rackspace API Key: " rsapikey
+	read -p "Region (LON/DFW/ORD): " region
+cat >~/.novarc <<EOL
+	OS_AUTH_URL=https://identity.api.rackspacecloud.com/v2.0/
+	OS_VERSION=2.0
+	OS_AUTH_SYSTEM=rackspace
+	OS_REGION_NAME=$region
+	OS_SERVICE_NAME=cloudserversOpenStack
+	OS_TENANT_NAME=$rsusername
+	OS_USERNAME=$rsusername
+	OS_PASSWORD=$rsapikey
+	OS_NO_CACHE=1
+	export OS_AUTH_URL OS_VERSION OS_AUTH_SYSTEM OS_REGION_NAME OS_SERVICE_NAME OS_TENANT_NAME OS_USERNAME OS_PASSWORD OS_NO_CACHE
+EOL
+	source ~/.novarc
+	fi
 }
 
 # Run these functions at source time

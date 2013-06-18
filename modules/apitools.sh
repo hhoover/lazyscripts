@@ -1,40 +1,42 @@
 #!/bin/bash
 # Installs RS Cloud API tools
-
+set pipper = ""
 echo "This will install some CLI tools that interact with the Rackspace APIs"
+
+function os_checker() {
+       if [[ $distro = "Redhat/CentOS" ]]; then
+                pipper='python-pip'
+
+        elif [[ $distro = "Ubuntu" ]]; then
+		pipper='pip'
+        else
+                echo "Unsupported OS"
+        fi
+        return 0
+}
+
 
 # Need python-setuptools
 function get_setuptools() {
 	if [[ ${distro} == "Redhat/CentOS" ]]; then
-		yum -q -y install python-setuptools
+		yum -q -y install python-dev python-setuptools python-pip python-novaclient
 	elif [[ ${distro} == "Ubuntu" ]]; then
-		apt-get -q -y install python-setuptools
+		apt-get -q -y install python-dev python-setuptools python-pip python-novaclient
 	else
 		echo "[ERROR] Unknown distribution. Exiting"
 		return 1
 	fi
 }
 
-# Cloud Load Balancers
-function install_clb() {
-	echo "Installing Cloud Load Balancers CLI"
-	CLBDIR="/root/.lazyscripts/tools/clb"
-	git clone git://github.com/calebgroom/clb.git ${CLBDIR}
-	cd ${CLBDIR}
-	python setup.py -q install
-	echo "CLB installed."
+# Rackspace Nova Client
+function install_rsnova() {
+	echo "Installing Rackspace Nova Client"
+	$pipper install --upgrade rackspace-novaclient
+	echo "Installed Rackspace Nova Client and all Dependancies"
 }
 
-# OpenStack Compute
-function install_osc() {
-	echo "Installing OpenStack Compute CLI tool"
-	OSCDIR="/root/.lazyscripts/tools/osc"
-	git clone git://github.com/jacobian/openstack.compute.git ${OSCDIR}
-	cd ${OSCDIR}
-	python setup.py -q install
-	echo "OpenStack Compute CLI tool installed."
-}
+	
 
 get_setuptools
-install_clb
-install_osc
+os_checker
+install_rsnova

@@ -67,5 +67,7 @@ Throw this in your .bashrc for extra credit.
 |lswhatis|Output the script that would be run with a specific command.|
 |lsnodejs|Installs Node.js and Node Package Manager|
 |lsapitools|Installs API tools for Rackspace Cloud|
+|lsrecap|Installs Recap - https://github.com/rackerlabs/recap|
+|lsnova|Nova Configuration generator|
 
 Enjoy!
