@@ -27,5 +27,4 @@ function install_rsnova() {
 	
 
 get_setuptools
-os_checker
 install_rsnova
