@@ -164,6 +164,7 @@ function create_wp_config() {
 	\$table_prefix  = 'wp_';
 	define('WPLANG', '');
 	define('WP_DEBUG', false);
+	/* That's all, stop editing! Happy blogging. */
 	if ( !defined('ABSPATH') )
 	        define('ABSPATH', dirname(__FILE__) . '/');
 			require_once(ABSPATH . 'wp-settings.php');
