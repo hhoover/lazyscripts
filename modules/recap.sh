@@ -19,7 +19,7 @@ function get_setuptools() {
 # Recap - 
 function install_recap() {
 	echo "Installing recap"
-	cd tmp
+	cd /tmp
 	git clone https://github.com/rackerlabs/recap.git
 	cd recap
 	./recap-installer
