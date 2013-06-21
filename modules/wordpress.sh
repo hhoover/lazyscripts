@@ -10,7 +10,7 @@ function get_domain() {
 	read -p "Please enter desired MySQL database name: " database
 	read -p "Please enter desired MySQL username: " db_user
 	web_password=$( apg -m 7 -n 1 )
-	web_password=${web_password/\'/\\\'}
+#	web_password=${web_password/\'/\\\'}
 	db_password=$( apg -m 7 -n 1 )
 	db_password=${db_password/\'/\\\'}
 	eth1ip=$( ifconfig eth1 | grep 'inet addr:'| cut -d: -f2 | awk '{ print $1}' )
@@ -23,8 +23,8 @@ function configure_apache() {
 		<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
-			DocumentRoot /var/www/vhosts/$domain/wordpress
-			<Directory /var/www/vhosts/$domain/wordpress>
+			DocumentRoot /var/www/vhosts/$domain/public_html
+			<Directory /var/www/vhosts/$domain/public_html>
 				AllowOverride All
 			</Directory>
 			CustomLog logs/$domain-access_log common
@@ -34,8 +34,8 @@ function configure_apache() {
 
 		# <VirtualHost _default_:443>
 		# ServerName $domain
-		# DocumentRoot /var/www/vhosts/$domain/wordpress
-		# <Directory /var/www/vhosts/$domain/wordpress>
+		# DocumentRoot /var/www/vhosts/$domain/public_html
+		# <Directory /var/www/vhosts/$domain/public_html>
 		#	AllowOverride All
 		# </Directory>
 
@@ -49,6 +49,7 @@ function configure_apache() {
 		# SSLEngine on
 		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
 		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+		# SSLCertificateChainFile /etc/pki/tls/certs/CA.crt
 
 		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
 		# 	SSLOptions +StdEnvVars
@@ -66,8 +67,8 @@ EOF
 		<VirtualHost *:80>
 			ServerName $domain
 			ServerAlias www.$domain
-			DocumentRoot /var/www/vhosts/$domain/wordpress
-			<Directory /var/www/vhosts/$domain/wordpress>
+			DocumentRoot /var/www/vhosts/$domain/public_html
+			<Directory /var/www/vhosts/$domain/public_html>
 				AllowOverride All
 			</Directory>
 			CustomLog /var/log/apache2/$domain-access_log common
@@ -77,8 +78,8 @@ EOF
 
 		# <VirtualHost _default_:443>
 		# ServerName $domain
-		# DocumentRoot /var/www/vhosts/$domain/wordpress
-		# <Directory /var/www/vhosts/$domain/wordpress>
+		# DocumentRoot /var/www/vhosts/$domain/public_html
+		# <Directory /var/www/vhosts/$domain/public_html>
 		#	AllowOverride All
 		# </Directory>
 
@@ -92,6 +93,7 @@ EOF
 		# SSLEngine on
 		# SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
 		# SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+                # SSLCertificateChainFile /etc/ssl/certs/CA.crt
 
 		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
 		# 	SSLOptions +StdEnvVars
@@ -113,7 +115,7 @@ fi
 function get_wordpress() {
 	cd /root
 	wget -q http://wordpress.org/latest.tar.gz
-	mkdir -p /var/www/vhosts/$domain
+	mkdir -p /var/www/vhosts/$domain/public_html
 	tar -C /var/www/vhosts/$domain -xzf latest.tar.gz
 	rm -f /root/latest.tar.gz
 	useradd -d /var/www/vhosts/$domain $username > /dev/null 2>&1
@@ -143,7 +145,7 @@ function configure_mysql() {
 
 # make wp-config.php and protect it
 function create_wp_config() {
-	cd /var/www/vhosts/$domain/wordpress
+	cd /var/www/vhosts/$domain/public_html
 	keys=$( curl -s -k https://api.wordpress.org/secret-key/1.1/salt )
 	cat > wp-config.php <<-EOF
 	<?php
@@ -153,8 +155,8 @@ function create_wp_config() {
 	define('DB_HOST', '${dbhost}');
 	define('DB_CHARSET', 'utf8');
 	define('DB_COLLATE', '');
-	define('FTP_BASE', '/var/www/vhosts/${domain}/wordpress/');
-	define('FTP_CONTENT_DIR', '/var/www/vhosts/${domain}/wordpress/wp-content/');
+	define('FTP_BASE', '/var/www/vhosts/${domain}/public_html/');
+	define('FTP_CONTENT_DIR', '/var/www/vhosts/${domain}/public_html/wp-content/');
 	define('FTP_USER','${username}');
 	define('FTP_PASS','${web_password}');
 	define('FTP_HOST','127.0.0.1');
@@ -162,6 +164,7 @@ function create_wp_config() {
 	\$table_prefix  = 'wp_';
 	define('WPLANG', '');
 	define('WP_DEBUG', false);
+	/* That's all, stop editing! Happy blogging. */
 	if ( !defined('ABSPATH') )
 	        define('ABSPATH', dirname(__FILE__) . '/');
 			require_once(ABSPATH . 'wp-settings.php');
@@ -178,15 +181,18 @@ function create_wp_config() {
 get_domain
 echo "Beginning Wordpress installation."
 get_wordpress
-echo "Wordpress has been installed in /var/www/vhosts/${domain}/wordpress."
+echo "Wordpress has been installed in /var/www/vhosts/${domain}/public_html."
 create_wp_config
 configure_apache
 echo "Apache has been configured for ${domain} and restarted."
 echo "The SFTP credentials are: "
 echo "User: ${username}"
-echo "Password: ${web_password}"
+#echo "Password: ${web_password}"
+echo -e "\e[0;31m*** Please Set A SFTP Password ***\e[0m"
 echo "***WordPress has been configured to use FTP for updates.***"
 echo "***Check with the customer for configuring SSH2 updates.***"
 configure_mysql
 echo "I like salsa!"
+mv /var/www/vhosts/$domain/wordpress /var/www/vhosts/$domain/public_html
+#Moved the move command as the extraction wasn't completing in time.
 exit 0
