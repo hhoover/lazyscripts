@@ -4,6 +4,10 @@
 
 echo "This will install the recap application  https://github.com/rackerlabs/recap/"
 
+function git_check() {
+command -v git >/dev/null 2>&1 || { echo >&2 "I am going to install git"; get_setuptools; }
+}
+
 # Need Git
 function get_setuptools() {
 	if [[ ${distro} == "Redhat/CentOS" ]]; then
@@ -26,7 +30,5 @@ function install_recap() {
 	echo "Installed recap"
 }
 
-	
-
-get_setuptools
+git_check
 install_recap
