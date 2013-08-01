@@ -47,8 +47,8 @@ function configure_apache() {
 		# LogLevel warn
 
 		# SSLEngine on
-		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
-		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+		# SSLCertificateFile    /etc/pki/tls/certs/$domain.crt
+		# SSLCertificateKeyFile /etc/pki/tls/private/$domain.key
 		# SSLCertificateChainFile /etc/pki/tls/certs/CA.crt
 
 		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
@@ -91,8 +91,8 @@ EOF
 		# LogLevel warn
 
 		# SSLEngine on
-		# SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
-		# SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+		# SSLCertificateFile    /etc/ssl/certs/$domain.pem
+		# SSLCertificateKeyFile /etc/ssl/private/$domain.key
                 # SSLCertificateChainFile /etc/ssl/certs/CA.crt
 
 		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
