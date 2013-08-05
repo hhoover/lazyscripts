@@ -193,6 +193,7 @@ echo "***WordPress has been configured to use FTP for updates.***"
 echo "***Check with the customer for configuring SSH2 updates.***"
 configure_mysql
 echo "I like salsa!"
-mv /var/www/vhosts/$domain/wordpress /var/www/vhosts/$domain/public_html
+mv /var/www/vhosts/$domain/wordpress/* /var/www/vhosts/$domain/public_html/
+mv /var/www/vhosts/$domain/wordpress/.h* /var/www/vhosts/$domain/public_html
 #Moved the move command as the extraction wasn't completing in time.
 exit 0
