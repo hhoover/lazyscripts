@@ -47,8 +47,8 @@ function configure_apache() {
 		# LogLevel warn
 
 		# SSLEngine on
-		# SSLCertificateFile    /etc/pki/tls/certs/localhost.crt
-		# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+		# SSLCertificateFile    /etc/pki/tls/certs/$domain.crt
+		# SSLCertificateKeyFile /etc/pki/tls/private/$domain.key
 		# SSLCertificateChainFile /etc/pki/tls/certs/CA.crt
 
 		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
@@ -91,8 +91,8 @@ EOF
 		# LogLevel warn
 
 		# SSLEngine on
-		# SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
-		# SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+		# SSLCertificateFile    /etc/ssl/certs/$domain.pem
+		# SSLCertificateKeyFile /etc/ssl/private/$domain.key
                 # SSLCertificateChainFile /etc/ssl/certs/CA.crt
 
 		# <FilesMatch "\.(cgi|shtml|phtml|php)$">
@@ -193,6 +193,7 @@ echo "***WordPress has been configured to use FTP for updates.***"
 echo "***Check with the customer for configuring SSH2 updates.***"
 configure_mysql
 echo "I like salsa!"
-mv /var/www/vhosts/$domain/wordpress /var/www/vhosts/$domain/public_html
+mv /var/www/vhosts/$domain/wordpress/* /var/www/vhosts/$domain/public_html/
+mv /var/www/vhosts/$domain/wordpress/.h* /var/www/vhosts/$domain/public_html
 #Moved the move command as the extraction wasn't completing in time.
 exit 0

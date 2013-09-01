@@ -287,35 +287,31 @@ configure() {
 
 	# Create basic lsyncd configuration file
 	cat > /etc/lsyncd.lua <<-EOF
-	settings = {
+	settings {
 	    logfile    = "/var/log/lsyncd/lsyncd.log",
 	    statusFile = "/var/log/lsyncd/lsyncd-status.log",
 	    statusInterval = 20,
 	    delay = 20
 	}
 
-	servers = {
 	EOF
 
 	# Iterate through SYNC_HOSTS array and add to servers block
 	for HOST in ${SYNC_HOSTS[*]}; do
 		cat >> /etc/lsyncd.lua <<-EOF
-		    "${HOST}",
-		EOF
-	done
-
-	cat >> /etc/lsyncd.lua <<-EOF
-	}
-
-	for _, server in ipairs(servers) do
-	    sync {
-	        default.rsync,
+		sync {
+ 		    default.rsync,
 	        source="${SYNC_SOURCE}",
-	        target=server..":${SYNC_TARGET}",
-	        rsyncOpts={"-e", "/usr/bin/ssh -o StrictHostKeyChecking=no", "-avz"}
+	        target="${HOST}:${SYNC_TARGET}",
+	        rsync = {
+	        	compress = true,
+	        	archive = true,
+	        	verbose = true,
+	        	rsh = "/usr/bin/ssh -p 22 -o StrictHostKeyChecking=no"
+	        }
 	    }
-	end
 	EOF
+	done
 
 	pass "${OUTPUT}"
 }
@@ -336,4 +332,4 @@ start_lsync
 
 echo
 echo "Ding! Fries are done. Now install SSH keys and rsync on the slaves."
-echo "${red}NOTE:${normal} Lsyncd 2.0.5+ will gracefully quit if it cannot rsync to the destination servers."
+echo "${red}NOTE:${normal} Lsyncd 2.1.5+ will gracefully quit if it cannot rsync to the destination servers."
