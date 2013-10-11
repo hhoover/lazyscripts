@@ -13,17 +13,25 @@ Run this bash function as root:
 ```bash
 function lsgethelper() {
         local LZDIR=/root/.lazyscripts/tools;
-        if [ -d ${LZDIR} ]; then
-                cd ${LZDIR} \
-                && git reset --hard HEAD \
-                && git clean -f	\
-                && git pull git://github.com/hhoover/lazyscripts.git master; \
+        if command -v git 2>&1 1>/dev/null; then
+            if [[ -d ${LZDIR} ]]; then
+                    cd "${LZDIR}" \
+                    && git reset --hard HEAD \
+                    && git clean -f	\
+                    && git pull git://github.com/hhoover/lazyscripts.git master; \
+            else
+                    cd \
+                    && git clone git://github.com/hhoover/lazyscripts.git "${LZDIR}";
+            fi
+            cd;
+            source ${LZDIR}/ls-init.sh;
         else
-                cd \
-                && git clone git://github.com/hhoover/lazyscripts.git ${LZDIR};
+            rm -rf "${LZDIR}"/lazyscripts-master
+            cd "${LZDIR}" \
+            && curl -L https://github.com/hhover/lazyscripts/archive/master.tar.gz | tar xvz
+            cd;
+            source "${LZDIR}"/lazyscripts-master/ls-init.sh;
         fi
-        cd;
-        source ${LZDIR}/ls-init.sh;
 }
 lsgethelper && lslogin
 ```
