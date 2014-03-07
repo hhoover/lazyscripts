@@ -61,7 +61,7 @@ function configure_apache() {
 		# BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 		# </VirtualHost>
 EOF
-		service httpd restart > /dev/null 2>&1
+		service httpd graceful > /dev/null 2>&1
 	elif [[ $distro = "Ubuntu" ]]; then
 		cat > /etc/apache2/sites-available/"${domain}" <<-EOF
 		<VirtualHost *:80>
@@ -106,7 +106,7 @@ EOF
 		# </VirtualHost>
 EOF
 		a2ensite $domain > /dev/null 2>&1
-		service apache2 restart	 > /dev/null 2>&1
+		service apache2 graceful > /dev/null 2>&1
 fi
 }
 
@@ -117,7 +117,7 @@ function get_wordpress() {
 	wget -q http://wordpress.org/latest.tar.gz
 	mkdir -p /var/www/vhosts/$domain/public_html
 	tar -C /var/www/vhosts/$domain -xzf latest.tar.gz
-	rm -f /root/latest.tar.gz
+	rsync -Aa /var/www/vhosts/$domain/wordpress/ /var/www/vhosts/$domain/public_html/
 	useradd -d /var/www/vhosts/$domain $username > /dev/null 2>&1
 	#echo $web_password | passwd $username --stdin > /dev/null 2>&1
 }
@@ -175,7 +175,12 @@ function create_wp_config() {
 	deny from all
 	</files>
 	EOF
-	chown -R $username: /var/www/vhosts/$domain
+	chown -R $username: /var/www/vhosts/$domain/public_html
+}
+
+function clean_up() {
+	rm -f /root/latest.tar.gz
+	rm -rf /var/www/vhosts/${domain}/wordpress
 }
 
 get_domain
@@ -188,12 +193,12 @@ echo "Apache has been configured for ${domain} and restarted."
 echo "The SFTP credentials are: "
 echo "User: ${username}"
 #echo "Password: ${web_password}"
-echo -e "\e[0;31m*** Please Set A SFTP Password ***\e[0m"
-echo "***WordPress has been configured to use FTP for updates.***"
-echo "***Check with the customer for configuring SSH2 updates.***"
+echo -e "\e[0;31m*** Please run 'passwd ${username}' to set an SFTP password ***\e[0m"
+echo "*** WordPress has been configured to use FTP for updates ***"
+echo "*** Check with the customer for configuring SSH2 updates ***"
 configure_mysql
+echo "Cleaning up..."
+clean_up
 echo "I like salsa!"
-mv /var/www/vhosts/$domain/wordpress/* /var/www/vhosts/$domain/public_html/
-mv /var/www/vhosts/$domain/wordpress/.h* /var/www/vhosts/$domain/public_html
-#Moved the move command as the extraction wasn't completing in time.
+
 exit 0
